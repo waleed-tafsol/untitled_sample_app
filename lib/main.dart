@@ -49,6 +49,7 @@ class MyApp extends StatelessWidget {
       DeviceOrientation.portraitDown,
     ]);
     return ScreenUtilInit(
+
       designSize: const Size(375, 812),
       //useInheritedMediaQuery: true,
       minTextAdapt: true,
