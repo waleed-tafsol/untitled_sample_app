@@ -41,6 +41,8 @@ dependencies:
   image_cropper: ^9.1.0
   country_code_picker: ^3.4.0
   iconsax: ^0.0.8
+  flutter_staggered_animations: ^1.1.1
+
 
 
   #firebase

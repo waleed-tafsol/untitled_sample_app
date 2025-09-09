@@ -10,8 +10,8 @@ Widget customButton ({required String text,required VoidCallback onPressed, requ
     child: ElevatedButton(
       style: ElevatedButton.styleFrom(
         elevation: 0,
-        backgroundColor: colored ? CustomColors.orangeColor : CustomColors.whiteColor,
-        shape: const StadiumBorder(side: BorderSide(width: 1.0,color: CustomColors.orangeColor)),
+        backgroundColor: colored ? CustomColors.purpleColor : CustomColors.whiteColor,
+        shape: const StadiumBorder(side: BorderSide(width: 1.0,color: CustomColors.purpleColor)),
       ),
       onPressed: onPressed,
       child: Row(
@@ -19,20 +19,20 @@ Widget customButton ({required String text,required VoidCallback onPressed, requ
         children: [
           icon != null?  Padding(
             padding: const EdgeInsets.symmetric(horizontal: 5),
-            child: Icon(icon,color: colored ? CustomColors.whiteColor : CustomColors.orangeColor,),
+            child: Icon(icon,color: colored ? CustomColors.whiteColor : CustomColors.purpleColor,),
           ) : Container(),
           Text(text,
               style: TextStyle(
                 fontFamily: 'CircularStd',
                 fontSize: 14.sp,
                   fontWeight: FontWeight.w500,
-                  color: colored ? CustomColors.whiteColor : CustomColors.orangeColor,)),
+                  color: colored ? CustomColors.whiteColor : CustomColors.purpleColor,)),
           boldText != null?Text(boldText,
               style: TextStyle(
                 fontFamily: 'CircularStd',
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w900,
-                color: colored ? CustomColors.whiteColor : CustomColors.orangeColor,)):const SizedBox()
+                color: colored ? CustomColors.whiteColor : CustomColors.purpleColor,)):const SizedBox()
         ],
       ),
     ),
@@ -46,10 +46,10 @@ Widget customSquareButton ({required String text,required VoidCallback onPressed
       style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.symmetric(horizontal: 5),
         elevation: 0,
-        backgroundColor: colored ? CustomColors.orangeColor : CustomColors.whiteColor,
+        backgroundColor: colored ? CustomColors.purpleColor : CustomColors.whiteColor,
         shape:  RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
-            side: const BorderSide(width: 1.0,color: CustomColors.orangeColor)),
+            side: const BorderSide(width: 1.0,color: CustomColors.purpleColor)),
       ),
       onPressed: onPressed,
       child: Text(text,textAlign: TextAlign.center,
@@ -57,7 +57,7 @@ Widget customSquareButton ({required String text,required VoidCallback onPressed
             fontFamily: 'CircularStd',
             fontSize: 12.sp,
             fontWeight: FontWeight.w500,
-            color: colored ? CustomColors.whiteColor : CustomColors.orangeColor,)),
+            color: colored ? CustomColors.whiteColor : CustomColors.purpleColor,)),
     ),
   );
 }

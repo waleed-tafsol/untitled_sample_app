@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../view_models/auth_view_model.dart';
 import '../widgets/user_form_fields_widget.dart';
+import '../route_generator.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -13,21 +14,6 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  Future<void> _sendOtp() async {
-    if (_formKey.currentState!.validate()) {
-      final authViewModel = Provider.of<AuthViewModel>(context, listen: false);
-      final success = await authViewModel.sendOtp();
-      if (success && mounted) {
-        // Navigate to OTP screen or show success message
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('OTP sent successfully!'),
-            backgroundColor: Colors.green,
-          ),
-        );
-      }
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,21 +28,6 @@ class _LoginScreenState extends State<LoginScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 const SizedBox(height: 60),
-                Container(
-                  height: 120,
-                  width: 120,
-                  decoration: BoxDecoration(
-                    color: Colors.blue.shade50,
-                    borderRadius: BorderRadius.circular(60),
-                  ),
-                  child: Icon(
-                    Icons.phone_android,
-                    size: 60,
-                    color: Colors.blue.shade600,
-                  ),
-                ),
-
-                const SizedBox(height: 40),
                 Text(
                   'Welcome Back',
                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
@@ -77,46 +48,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
                 const SizedBox(height: 40),
 
-                PhoneFieldWidget(),
+                phoneFieldWidget(),
 
                 const SizedBox(height: 24),
 
                 // Error message
-                Consumer<AuthViewModel>(
-                  builder: (context, authViewModel, child) {
-                    if (authViewModel.errorMessage != null) {
-                      return Container(
-                        padding: const EdgeInsets.all(12),
-                        margin: const EdgeInsets.only(bottom: 16),
-                        decoration: BoxDecoration(
-                          color: Colors.red.shade50,
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: Colors.red.shade200),
-                        ),
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.error_outline,
-                              color: Colors.red.shade600,
-                              size: 20,
-                            ),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: Text(
-                                authViewModel.errorMessage!,
-                                style: TextStyle(
-                                  color: Colors.red.shade600,
-                                  fontSize: 14,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    }
-                    return const SizedBox.shrink();
-                  },
-                ),
 
                 const Spacer(),
                 Consumer<AuthViewModel>(
@@ -124,7 +60,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     return SizedBox(
                       height: 56,
                       child: ElevatedButton(
-                        onPressed: authViewModel.isLoading ? null : _sendOtp,
+                        onPressed: () {
+                          Navigator.pushNamed(context, registrationStepperRoute);
+                        },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue.shade600,
                       foregroundColor: Colors.white,
@@ -133,16 +71,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       elevation: 2,
                     ),
-                        child: authViewModel.isLoading
-                            ? const SizedBox(
-                                height: 20,
-                                width: 20,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                                ),
-                              )
-                            : const Text(
+                        child:  const Text(
                                 'Send OTP',
                                 style: TextStyle(
                                   fontSize: 16,

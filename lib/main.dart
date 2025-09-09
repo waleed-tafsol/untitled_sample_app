@@ -6,6 +6,8 @@ import 'package:provider/provider.dart';
 import 'package:untitled_sample_app/route_generator.dart';
 import 'package:untitled_sample_app/utils/custom_colors.dart';
 import 'package:untitled_sample_app/view_models/auth_view_model.dart';
+import 'package:untitled_sample_app/view_models/driver_registration_view_model.dart';
+
 
 void configLoading() {
   EasyLoading.instance
@@ -14,10 +16,10 @@ void configLoading() {
     ..loadingStyle = EasyLoadingStyle.custom
     ..indicatorSize = 45.0
     ..radius = 10.0
-    ..progressColor = CustomColors.orangeColor
+    ..progressColor = CustomColors.purpleColor
     ..backgroundColor = CustomColors.whiteColor
-    ..indicatorColor = CustomColors.orangeColor
-    ..textColor = CustomColors.orangeColor
+    ..indicatorColor = CustomColors.purpleColor
+    ..textColor = CustomColors.purpleColor
     ..maskColor = Colors.black.withOpacity(0.5)
     ..maskType = EasyLoadingMaskType.custom
     ..userInteractions = false
@@ -33,7 +35,8 @@ void main() {
   configLoading();
   runApp(
     MultiProvider(
-      providers: [ChangeNotifierProvider(create: (_) => AuthViewModel())],
+      providers: [ChangeNotifierProvider(create: (_) => AuthViewModel()),
+        ChangeNotifierProvider(create: (_) => DriverRegistrationViewModel())],
       child: MyApp(),
     ),
   );
@@ -57,14 +60,14 @@ class MyApp extends StatelessWidget {
       builder: (context, child) {
         return MaterialApp(
           theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+            colorScheme: ColorScheme.fromSeed(seedColor: CustomColors.purpleColor),
             useMaterial3: true,
             appBarTheme: const AppBarTheme(
               elevation: 0,
               backgroundColor: Colors.transparent,
             ),
             textSelectionTheme: const TextSelectionThemeData(
-              cursorColor: CustomColors.orangeColor, //<-- SEE HERE
+              cursorColor: CustomColors.purpleColor, //<-- SEE HERE
             ),
             inputDecorationTheme: InputDecorationTheme(
               isDense: true,
@@ -74,16 +77,19 @@ class MyApp extends StatelessWidget {
               enabledBorder: const OutlineInputBorder(
                   borderSide: BorderSide(color: Colors.transparent),
                   borderRadius: BorderRadius.all(Radius.circular(15))),
+              errorBorder: const OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.redAccent),
+                  borderRadius: BorderRadius.all(Radius.circular(15))),
               suffixIconColor: CustomColors.greyColor,
               prefixIconColor: CustomColors.greyColor,
-              focusColor: CustomColors.orangeColor,
+              focusColor: CustomColors.purpleColor,
               hintStyle: TextStyle(
                 fontFamily: 'CircularStd',
                 fontSize: 14.sp,
                 color: CustomColors.greyColor,
               ),
               focusedBorder: const OutlineInputBorder(
-                  borderSide: BorderSide(color: CustomColors.orangeColor),
+                  borderSide: BorderSide(color: CustomColors.purpleColor),
                   borderRadius: BorderRadius.all(Radius.circular(15))),
             ),
           ),

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:untitled_sample_app/views/driver_registration_stepper_screen.dart';
 import 'package:untitled_sample_app/views/login_screen.dart';
 import 'package:untitled_sample_app/views/splash_screen.dart';
 
 const String splashRoute = '/';
 const String loginRoute = '/login';
+const String registrationStepperRoute = '/registration-stepper';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -14,6 +16,8 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => const SplashScreen());
       case loginRoute:
         return MaterialPageRoute(builder: (_) => const LoginScreen());
+      case registrationStepperRoute:
+        return MaterialPageRoute(builder: (_) => const RegistrationStepperScreen());
 
       case '/tasting_details':
       /*return MaterialPageRoute(

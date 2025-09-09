@@ -16,3 +16,27 @@ Widget black14w500({required String data, bool? centre}) {
         fontWeight: FontWeight.w500),
   );
 }
+
+Widget black18w500({required String data, bool? centre}) {
+  return Text(
+    textAlign: centre != null  && centre == true? TextAlign.center : TextAlign.left,
+    data,
+    style: TextStyle(
+        fontFamily: 'CircularStd',
+        fontSize: 18.sp,
+        color: CustomColors.blackColor,
+        fontWeight: FontWeight.w500),
+  );
+}
+
+Widget grey14({required String data, bool? centre}) {
+  return Text(
+    textAlign: centre != null  && centre == true? TextAlign.center : TextAlign.left,
+    data,
+    style: TextStyle(
+      fontFamily: 'CircularStd',
+      fontSize: 14.sp,
+      color: CustomColors.greyColor,
+    ),
+  );
+}
