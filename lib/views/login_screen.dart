@@ -60,8 +60,18 @@ class _LoginScreenState extends State<LoginScreen> {
                     return SizedBox(
                       height: 56,
                       child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.pushNamed(context, registrationStepperRoute);
+                        onPressed: () async {
+                          final success = await authViewModel.sendOtp();
+                          if (success && mounted) {
+                            Navigator.pushNamed(context, otpRoute);
+                          } else if (mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(authViewModel.errorMessage ?? 'Failed to send OTP'),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+                          }
                         },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue.shade600,

@@ -28,7 +28,8 @@ enum RegExpPattern {
     r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
     'Please enter a valid email address.',
   ),
-  name(r'^[a-zA-Z]{3,}$', 'Enter valid name');
+  name(r'^[a-zA-Z]{3,}$', 'Enter valid name'),
+  phone(r'^\+61[2-9]\d{8}$', 'Please enter a valid Australian phone number');
 
   const RegExpPattern(this.pattern, this.errorMessage);
 

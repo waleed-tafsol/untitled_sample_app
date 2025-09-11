@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import '../services/auth_service.dart';
 
@@ -121,6 +122,8 @@ class AuthViewModel extends ChangeNotifier {
     try {
       await _authService.resendOtp(_phoneNumber);
       _setLoading(false);
+      // Start timer after successful resend
+      startOtpTimer();
       return true;
     } catch (e) {
       _setError(e.toString());
@@ -134,6 +137,11 @@ class AuthViewModel extends ChangeNotifier {
   bool get isOtpValid => _isOtpValid;
   String _otp = '';
   String get otp => _otp;
+
+  // OTP Timer functionality
+  Timer? _otpTimer;
+  int _otpTimerSeconds = 0;
+  int get otpTimerSeconds => _otpTimerSeconds;
 
   void updateOtp(String otp) {
     _otp = otp;
@@ -157,6 +165,27 @@ class AuthViewModel extends ChangeNotifier {
     return _phoneNumber;
   }
 
+  // Start OTP Timer (2 minutes = 120 seconds)
+  void startOtpTimer() {
+    _stopOtpTimer(); // Stop any existing timer
+    _otpTimerSeconds = 120; // 2 minutes
+    notifyListeners();
+    
+    _otpTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      _otpTimerSeconds--;
+      if (_otpTimerSeconds <= 0) {
+        _stopOtpTimer();
+      }
+      notifyListeners();
+    });
+  }
+
+  // Stop OTP Timer
+  void _stopOtpTimer() {
+    _otpTimer?.cancel();
+    _otpTimer = null;
+  }
+
   // Reset all state
   void resetState() {
     _phoneNumber = '';
@@ -164,6 +193,15 @@ class AuthViewModel extends ChangeNotifier {
     _errorMessage = null;
     _isPhoneValid = false;
     _phoneController.clear();
+    _stopOtpTimer();
+    _otpTimerSeconds = 0;
     notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    _stopOtpTimer();
+    _phoneController.dispose();
+    super.dispose();
   }
 }
