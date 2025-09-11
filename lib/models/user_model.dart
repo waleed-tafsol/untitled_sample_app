@@ -40,3 +40,4 @@ class UserModel {
     return phoneNumber.hashCode ^ otp.hashCode ^ isVerified.hashCode;
   }
 }
+

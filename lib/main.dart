@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -7,7 +8,10 @@ import 'package:untitled_sample_app/route_generator.dart';
 import 'package:untitled_sample_app/utils/custom_colors.dart';
 import 'package:untitled_sample_app/view_models/auth_view_model.dart';
 import 'package:untitled_sample_app/view_models/driver_registration_view_model.dart';
+import 'package:untitled_sample_app/view_models/universal_view_model.dart';
 
+import 'app_init.dart';
+import 'firebase_options.dart';
 
 void configLoading() {
   EasyLoading.instance
@@ -20,7 +24,7 @@ void configLoading() {
     ..backgroundColor = CustomColors.whiteColor
     ..indicatorColor = CustomColors.purpleColor
     ..textColor = CustomColors.purpleColor
-    ..maskColor = Colors.black.withOpacity(0.5)
+    ..maskColor = Colors.black.withValues(alpha: 0.5)
     ..maskType = EasyLoadingMaskType.custom
     ..userInteractions = false
     ..toastPosition = EasyLoadingToastPosition.bottom
@@ -28,80 +32,18 @@ void configLoading() {
   // ..customAnimation = CustomAnimation();
 }
 
-final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
-final RouteObserver<ModalRoute> routeObserver = RouteObserver<ModalRoute>();
-
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   configLoading();
   runApp(
     MultiProvider(
-      providers: [ChangeNotifierProvider(create: (_) => AuthViewModel()),
-        ChangeNotifierProvider(create: (_) => DriverRegistrationViewModel())],
-      child: MyApp(),
+      providers: [
+        ChangeNotifierProvider(create: (_) => AuthViewModel()),
+        ChangeNotifierProvider(create: (_) => DriverRegistrationViewModel()),
+        ChangeNotifierProvider(create: (_) => UniversalViewModel()),
+      ],
+      child: AppInit(),
     ),
   );
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-    ]);
-    return ScreenUtilInit(
-
-      designSize: const Size(375, 812),
-      //useInheritedMediaQuery: true,
-      minTextAdapt: true,
-      splitScreenMode: true,
-      builder: (context, child) {
-        return MaterialApp(
-          theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(seedColor: CustomColors.purpleColor),
-            useMaterial3: true,
-            appBarTheme: const AppBarTheme(
-              elevation: 0,
-              backgroundColor: Colors.transparent,
-            ),
-            textSelectionTheme: const TextSelectionThemeData(
-              cursorColor: CustomColors.purpleColor, //<-- SEE HERE
-            ),
-            inputDecorationTheme: InputDecorationTheme(
-              isDense: true,
-              contentPadding: EdgeInsets.zero,
-              fillColor: CustomColors.lightGreyColor,
-              filled: true,
-              enabledBorder: const OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.transparent),
-                  borderRadius: BorderRadius.all(Radius.circular(15))),
-              errorBorder: const OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.redAccent),
-                  borderRadius: BorderRadius.all(Radius.circular(15))),
-              suffixIconColor: CustomColors.greyColor,
-              prefixIconColor: CustomColors.greyColor,
-              focusColor: CustomColors.purpleColor,
-              hintStyle: TextStyle(
-                fontFamily: 'CircularStd',
-                fontSize: 14.sp,
-                color: CustomColors.greyColor,
-              ),
-              focusedBorder: const OutlineInputBorder(
-                  borderSide: BorderSide(color: CustomColors.purpleColor),
-                  borderRadius: BorderRadius.all(Radius.circular(15))),
-            ),
-          ),
-          debugShowCheckedModeBanner: false,
-          title: 'Bruno\'s Kitchen',
-          navigatorObservers: [routeObserver],
-          initialRoute: '/login',
-          navigatorKey: navigatorKey,
-          onGenerateRoute: RouteGenerator.generateRoute,
-          builder: EasyLoading.init(),
-        );
-      },
-    );
-  }
 }

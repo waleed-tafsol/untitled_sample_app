@@ -7,6 +7,8 @@ import 'package:provider/provider.dart';
 import 'package:untitled_sample_app/view_models/auth_view_model.dart';
 import '../utils/custom_colors.dart';
 import '../utils/custom_font_style.dart';
+import '../utils/enums.dart';
+import '../utils/validators.dart';
 import '../view_models/driver_registration_view_model.dart';
 import '../widgets/user_form_fields_widget.dart';
 
@@ -43,12 +45,7 @@ class _DriverPersonalInfoScreenState extends State<DriverPersonalInfoScreen> {
                               child: TextFormField(
                                 controller: driverRegistrationViewModel
                                     .getFirstNameController,
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Please enter your first name';
-                                  }
-                                  return null;
-                                },
+                                validator: validateFirstName,
                                 decoration: InputDecoration(
                                   labelText: 'First Name',
                                   hintText: 'John',
@@ -66,7 +63,7 @@ class _DriverPersonalInfoScreenState extends State<DriverPersonalInfoScreen> {
                                     .getLastNameController,
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
-                                    return 'Please enter your last name';
+                                    return 'Last Name is required';
                                   }
                                   return null;
                                 },
