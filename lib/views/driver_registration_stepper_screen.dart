@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-import 'package:untitled_sample_app/main.dart';
 import 'package:untitled_sample_app/view_models/driver_registration_view_model.dart';
 import '../utils/custom_colors.dart';
 import 'driver_personal_info_screen.dart';
@@ -28,7 +27,7 @@ class _RegistrationStepperScreenState extends State<RegistrationStepperScreen> {
   final Map<String, bool> _documents = {};
   final Map<String, String> _vehicleInfo = {};
   final Map<String, String> _paymentInfo = {};
-  Map<String, dynamic> _stripeInfo = {};
+  final Map<String, dynamic> _stripeInfo = {};
   final Map<String, String> _shiftInfo = {};
   
 

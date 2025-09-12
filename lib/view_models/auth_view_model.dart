@@ -6,74 +6,64 @@ class AuthViewModel extends ChangeNotifier {
   final AuthService _authService = AuthService();
   String _countryCode = '+61';
   final TextEditingController _phoneController = TextEditingController();
-  
-  // State variables
+
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  GlobalKey<FormState> get getFormKey => _formKey;
+
   bool _isLoading = false;
   String? _errorMessage;
-  String _phoneNumber = '';
 
-  // Getters
   TextEditingController get getPhoneController => _phoneController;
   String get getCountryCode => _countryCode;
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
-  String get phoneNumber => _phoneNumber;
 
-  // Phone number validation
-  bool _isPhoneValid = false;
-  bool get isPhoneValid => _isPhoneValid;
+  bool _isOtpValid = false;
+  bool get isOtpValid => _isOtpValid;
+  String _otp = '';
+  String get otp => _otp;
+
+  Timer? _otpTimer;
+  int _otpTimerSeconds = 0;
+  int get otpTimerSeconds => _otpTimerSeconds;
 
   void setCountryCode(String value) {
     _countryCode = value;
-    _validatePhoneNumber();
     notifyListeners();
   }
 
-  void updatePhoneNumber(String phoneNumber) {
-    _phoneNumber = phoneNumber;
-    _validatePhoneNumber();
-    _clearError();
-    notifyListeners();
+  bool validateFormKey() {
+    if (_formKey.currentState!.validate()) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
-  // Validate Australian phone number
-  void _validatePhoneNumber() {
-    // Australian phone number validation
-    // Format: +61 X XXXX XXXX or +61 XXX XXX XXX
-    final australianPhoneRegex = RegExp(r'^\+61[2-9]\d{8}$');
-    _isPhoneValid = australianPhoneRegex.hasMatch(_phoneNumber);
-  }
 
-  // Clear error message
   void _clearError() {
     if (_errorMessage != null) {
       _errorMessage = null;
     }
   }
 
-  // Set error message
   void _setError(String message) {
     _errorMessage = message;
     notifyListeners();
   }
 
-  // Set loading state
   void _setLoading(bool loading) {
     _isLoading = loading;
     notifyListeners();
   }
 
-  // Send OTP
   Future<bool> sendOtp() async {
-    if (!_isPhoneValid) {
-      _setError('Please enter a valid Australian phone number');
-      return false;
-    }
 
     _setLoading(true);
 
     try {
-      await _authService.sendOtp(_phoneNumber);
+      await _authService.sendOtp(_countryCode+_phoneController.text);
       _setLoading(false);
       return true;
     } catch (e) {
@@ -83,7 +73,6 @@ class AuthViewModel extends ChangeNotifier {
     }
   }
 
-  // Verify OTP
   Future<bool> verifyOtp() async {
     if (!_isOtpValid) {
       _setError('Please enter a valid 6-digit OTP');
@@ -93,7 +82,7 @@ class AuthViewModel extends ChangeNotifier {
     _setLoading(true);
 
     try {
-      final isVerified = await _authService.verifyOtp(_phoneNumber, _otp);
+      final isVerified = await _authService.verifyOtp(_phoneController.text, _otp);
       
       if (isVerified) {
         _setLoading(false);
@@ -110,9 +99,8 @@ class AuthViewModel extends ChangeNotifier {
     }
   }
 
-  // Resend OTP
   Future<bool> resendOtp() async {
-    if (_phoneNumber.isEmpty) {
+    if ((_countryCode+_phoneController.text).isEmpty) {
       _setError('Phone number is required');
       return false;
     }
@@ -120,9 +108,8 @@ class AuthViewModel extends ChangeNotifier {
     _setLoading(true);
 
     try {
-      await _authService.resendOtp(_phoneNumber);
+      await _authService.resendOtp(_countryCode+_phoneController.text);
       _setLoading(false);
-      // Start timer after successful resend
       startOtpTimer();
       return true;
     } catch (e) {
@@ -132,17 +119,6 @@ class AuthViewModel extends ChangeNotifier {
     }
   }
 
-  // OTP validation
-  bool _isOtpValid = false;
-  bool get isOtpValid => _isOtpValid;
-  String _otp = '';
-  String get otp => _otp;
-
-  // OTP Timer functionality
-  Timer? _otpTimer;
-  int _otpTimerSeconds = 0;
-  int get otpTimerSeconds => _otpTimerSeconds;
-
   void updateOtp(String otp) {
     _otp = otp;
     _validateOtp();
@@ -151,24 +127,21 @@ class AuthViewModel extends ChangeNotifier {
   }
 
   void _validateOtp() {
-    // OTP should be 6 digits
     _isOtpValid = _otp.length == 6 && RegExp(r'^\d{6}$').hasMatch(_otp);
   }
 
-  // Get formatted phone number for display
   String get formattedPhoneNumber {
-    if (_phoneNumber.isEmpty) return '';
+    if ((_countryCode+_phoneController.text).isEmpty) return '';
     // Format: +61 X XXXX XXXX
-    if (_phoneNumber.length >= 10) {
-      return '${_phoneNumber.substring(0, 3)} ${_phoneNumber.substring(3, 4)} ${_phoneNumber.substring(4, 8)} ${_phoneNumber.substring(8)}';
+    if ((_countryCode+_phoneController.text).length >= 10) {
+      return '${_countryCode+_phoneController.text.substring(0, 3)} ${_phoneController.text.substring(3, 4)} ${_phoneController.text.substring(4, 8)} ${_phoneController.text.substring(8)}';
     }
-    return _phoneNumber;
+    return _countryCode+_phoneController.text;
   }
 
-  // Start OTP Timer (2 minutes = 120 seconds)
   void startOtpTimer() {
-    _stopOtpTimer(); // Stop any existing timer
-    _otpTimerSeconds = 120; // 2 minutes
+    _stopOtpTimer();
+    _otpTimerSeconds = 120;
     notifyListeners();
     
     _otpTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
@@ -180,18 +153,14 @@ class AuthViewModel extends ChangeNotifier {
     });
   }
 
-  // Stop OTP Timer
   void _stopOtpTimer() {
     _otpTimer?.cancel();
     _otpTimer = null;
   }
 
-  // Reset all state
   void resetState() {
-    _phoneNumber = '';
     _isLoading = false;
     _errorMessage = null;
-    _isPhoneValid = false;
     _phoneController.clear();
     _stopOtpTimer();
     _otpTimerSeconds = 0;

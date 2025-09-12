@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 class DriverRegistrationViewModel extends ChangeNotifier {
-  TextEditingController _firstNameController = TextEditingController();
-  TextEditingController _lastNameController = TextEditingController();
-  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final TextEditingController _firstNameController = TextEditingController();
+  final TextEditingController _lastNameController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   TextEditingController get getFirstNameController => _firstNameController;
 

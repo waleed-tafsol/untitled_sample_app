@@ -1,8 +1,5 @@
 
 
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:image_cropper/image_cropper.dart';
-import 'package:provider/provider.dart';
 
 
 // class FirebaseUploadImageService {

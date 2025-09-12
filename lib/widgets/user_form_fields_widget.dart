@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:provider/provider.dart';
+import 'package:untitled_sample_app/utils/validators.dart';
 
 import '../utils/custom_colors.dart';
 import '../view_models/auth_view_model.dart';
@@ -11,22 +12,15 @@ Widget phoneFieldWidget({bool? viewOnly}) {
   return Consumer<AuthViewModel>(
     builder: (_, authViewModel, __) {
       return TextFormField(
-        readOnly: viewOnly == true? true : false,
+        readOnly: viewOnly == true ? true : false,
         controller: authViewModel.getPhoneController,
         onChanged: (text) {
-          // Combine country code with phone number
-          final fullPhoneNumber = '${authViewModel.getCountryCode}$text';
-          authViewModel.updatePhoneNumber(fullPhoneNumber);
+       /*   final fullPhoneNumber = '${authViewModel.getCountryCode}$text';
+          authViewModel.updatePhoneNumber(fullPhoneNumber);*/
         },
         keyboardType: TextInputType.phone,
         validator: (value) {
-          if (value == null || value.isEmpty) {
-            return 'Please enter your phone number';
-          }
-          if (!authViewModel.isPhoneValid) {
-            return 'Please enter a valid Australian phone number';
-          }
-          return null;
+          return validatePhoneNumber(authViewModel.getCountryCode+value!);
         },
         decoration: InputDecoration(
           hintText: 'Phone Number',
