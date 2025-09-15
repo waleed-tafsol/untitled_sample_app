@@ -5,12 +5,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:untitled_sample_app/route_generator.dart';
 import 'package:untitled_sample_app/utils/custom_colors.dart';
 
-
-
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 final RouteObserver<ModalRoute> routeObserver = RouteObserver<ModalRoute>();
-
-
 
 class AppInit extends StatelessWidget {
   const AppInit({super.key});
@@ -33,6 +29,7 @@ class AppInit extends StatelessWidget {
               seedColor: CustomColors.purpleColor,
             ),
             useMaterial3: true,
+            scaffoldBackgroundColor: CustomColors.whiteColor,
             appBarTheme: const AppBarTheme(
               elevation: 0,
               backgroundColor: Colors.transparent,
@@ -47,6 +44,10 @@ class AppInit extends StatelessWidget {
               filled: true,
               enabledBorder: const OutlineInputBorder(
                 borderSide: BorderSide(color: Colors.transparent),
+                borderRadius: BorderRadius.all(Radius.circular(15)),
+              ),
+              focusedErrorBorder: const OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.redAccent),
                 borderRadius: BorderRadius.all(Radius.circular(15)),
               ),
               errorBorder: const OutlineInputBorder(
@@ -70,7 +71,7 @@ class AppInit extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           title: 'Bruno\'s Kitchen',
           navigatorObservers: [routeObserver],
-          initialRoute: '/login',
+          initialRoute: homeRoute,
           navigatorKey: navigatorKey,
           onGenerateRoute: RouteGenerator.generateRoute,
           builder: EasyLoading.init(),

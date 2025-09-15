@@ -1,9 +1,20 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import '../services/auth_service.dart';
 
 class AuthViewModel extends ChangeNotifier {
   final AuthService _authService = AuthService();
+
+  bool _isTermsAccepted = false;
+
+  bool get getIsTermsAccepted => _isTermsAccepted;
+
+  set isTermsAccepted(bool value) {
+    _isTermsAccepted = value;
+    notifyListeners();
+  }
+
   String _countryCode = '+61';
   final TextEditingController _phoneController = TextEditingController();
 
@@ -11,21 +22,20 @@ class AuthViewModel extends ChangeNotifier {
 
   GlobalKey<FormState> get getFormKey => _formKey;
 
-  bool _isLoading = false;
-  String? _errorMessage;
-
   TextEditingController get getPhoneController => _phoneController;
+
   String get getCountryCode => _countryCode;
-  bool get isLoading => _isLoading;
-  String? get errorMessage => _errorMessage;
 
   bool _isOtpValid = false;
+
   bool get isOtpValid => _isOtpValid;
   String _otp = '';
+
   String get otp => _otp;
 
   Timer? _otpTimer;
   int _otpTimerSeconds = 0;
+
   int get otpTimerSeconds => _otpTimerSeconds;
 
   void setCountryCode(String value) {
@@ -41,80 +51,60 @@ class AuthViewModel extends ChangeNotifier {
     }
   }
 
-
-  void _clearError() {
-    if (_errorMessage != null) {
-      _errorMessage = null;
-    }
-  }
-
-  void _setError(String message) {
-    _errorMessage = message;
-    notifyListeners();
-  }
-
-  void _setLoading(bool loading) {
-    _isLoading = loading;
-    notifyListeners();
-  }
-
   Future<bool> sendOtp() async {
-
-    _setLoading(true);
-
+    EasyLoading.show(status: 'Send OTP');
     try {
-      await _authService.sendOtp(_countryCode+_phoneController.text);
-      _setLoading(false);
+      await _authService.sendOtp(_countryCode + _phoneController.text);
+      EasyLoading.dismiss();
       return true;
     } catch (e) {
-      _setError(e.toString());
-      _setLoading(false);
+      EasyLoading.showError(e.toString());
       return false;
     }
   }
 
   Future<bool> verifyOtp() async {
     if (!_isOtpValid) {
-      _setError('Please enter a valid 6-digit OTP');
+      EasyLoading.showError('Please enter a valid 6-digit OTP');
       return false;
     }
 
-    _setLoading(true);
+    EasyLoading.show(status: 'Send OTP');
 
     try {
-      final isVerified = await _authService.verifyOtp(_phoneController.text, _otp);
-      
+      final isVerified = await _authService.verifyOtp(
+        _phoneController.text,
+        _otp,
+      );
+
       if (isVerified) {
-        _setLoading(false);
+        EasyLoading.dismiss();
         return true;
       } else {
-        _setError('Invalid OTP. Please try again.');
-        _setLoading(false);
+        EasyLoading.showError('Invalid OTP. Please try again.');
         return false;
       }
     } catch (e) {
-      _setError(e.toString());
-      _setLoading(false);
+      EasyLoading.showError(e.toString());
       return false;
     }
   }
 
   Future<bool> resendOtp() async {
-    if ((_countryCode+_phoneController.text).isEmpty) {
-      _setError('Phone number is required');
+    if ((_countryCode + _phoneController.text).isEmpty) {
+      EasyLoading.showError('Phone number is required');
       return false;
     }
 
-    _setLoading(true);
+    EasyLoading.show(status: 'Send Otp..');
 
     try {
-      await _authService.resendOtp(_countryCode+_phoneController.text);
-      _setLoading(false);
+      await _authService.resendOtp(_countryCode + _phoneController.text);
+      EasyLoading.dismiss();
       startOtpTimer();
       return true;
     } catch (e) {
-      _setError(e.toString());
-      _setLoading(false);
+      EasyLoading.showError(e.toString());
       return false;
     }
   }
@@ -122,7 +112,6 @@ class AuthViewModel extends ChangeNotifier {
   void updateOtp(String otp) {
     _otp = otp;
     _validateOtp();
-    _clearError();
     notifyListeners();
   }
 
@@ -131,19 +120,19 @@ class AuthViewModel extends ChangeNotifier {
   }
 
   String get formattedPhoneNumber {
-    if ((_countryCode+_phoneController.text).isEmpty) return '';
+    if ((_countryCode + _phoneController.text).isEmpty) return '';
     // Format: +61 X XXXX XXXX
-    if ((_countryCode+_phoneController.text).length >= 10) {
-      return '${_countryCode+_phoneController.text.substring(0, 3)} ${_phoneController.text.substring(3, 4)} ${_phoneController.text.substring(4, 8)} ${_phoneController.text.substring(8)}';
+    if ((_countryCode + _phoneController.text).length >= 10) {
+      return '${_countryCode + _phoneController.text.substring(0, 3)} ${_phoneController.text.substring(3, 4)} ${_phoneController.text.substring(4, 8)} ${_phoneController.text.substring(8)}';
     }
-    return _countryCode+_phoneController.text;
+    return _countryCode + _phoneController.text;
   }
 
   void startOtpTimer() {
     _stopOtpTimer();
     _otpTimerSeconds = 120;
     notifyListeners();
-    
+
     _otpTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
       _otpTimerSeconds--;
       if (_otpTimerSeconds <= 0) {
@@ -159,8 +148,6 @@ class AuthViewModel extends ChangeNotifier {
   }
 
   void resetState() {
-    _isLoading = false;
-    _errorMessage = null;
     _phoneController.clear();
     _stopOtpTimer();
     _otpTimerSeconds = 0;

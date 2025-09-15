@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:provider/provider.dart';
 import 'package:untitled_sample_app/widgets/user_form_fields_widget.dart';
+import '../utils/custom_buttons.dart';
 import '../utils/custom_colors.dart';
 import '../utils/validators.dart';
 import '../view_models/auth_view_model.dart';
@@ -22,7 +23,6 @@ class _LoginScreenState extends State<LoginScreen> {
     return Consumer<AuthViewModel>(
       builder: (_, authViewModel, _) {
         return Scaffold(
-          backgroundColor: Colors.white,
           body: SafeArea(
             child: Padding(
               padding: const EdgeInsets.all(24.0),
@@ -57,48 +57,40 @@ class _LoginScreenState extends State<LoginScreen> {
 
                     // Error message
                     const Spacer(),
-                    Consumer<AuthViewModel>(
-                      builder: (context, authViewModel, child) {
-                        return SizedBox(
-                          height: 56,
-                          child: ElevatedButton(
-                            onPressed: () async {
-                              if (authViewModel.validateFormKey()) {
-                                await authViewModel.sendOtp().then((value) {
-                                  if (value) {
-                                    Navigator.pushNamed(context, otpRoute);
-                                  }
-                                });
-                              }
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.blue.shade600,
-                              foregroundColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              elevation: 2,
-                            ),
-                            child: const Text(
-                              'Send OTP',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                        );
+                    customButton(
+                      text: 'Send OTP',
+                      onTap: () async {
+                        if (authViewModel.validateFormKey()) {
+                          await authViewModel.sendOtp().then((value) {
+                            if (value) {
+                              Navigator.pushNamed(context, otpRoute);
+                            }
+                          });
+                        }
                       },
+                      colored: true,
                     ),
 
                     const SizedBox(height: 20),
-
-                    Text(
-                      'By continuing, you agree to our Terms of Service and Privacy Policy',
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Colors.grey.shade500,
-                      ),
-                      textAlign: TextAlign.center,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Checkbox(
+                          value: authViewModel.getIsTermsAccepted,
+                          onChanged: (value) {
+                            authViewModel.isTermsAccepted = value ?? false;
+                          },
+                          activeColor: Theme.of(context).primaryColor,
+                        ),
+                        Expanded(
+                          child: Text(
+                            'By continuing, you agree to our Terms of Service and Privacy Policy',
+                            style: Theme.of(context).textTheme.bodySmall
+                                ?.copyWith(color: Colors.grey.shade500),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
