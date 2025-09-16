@@ -1,24 +1,34 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:untitled_sample_app/utils/enums.dart';
 import '../services/auth_service.dart';
 
 class AuthViewModel extends ChangeNotifier {
   final AuthService _authService = AuthService();
-
-  bool _isTermsAccepted = false;
-
-  bool get getIsTermsAccepted => _isTermsAccepted;
-
-  set isTermsAccepted(bool value) {
-    _isTermsAccepted = value;
-    notifyListeners();
-  }
-
-  String _countryCode = '+61';
   final TextEditingController _phoneController = TextEditingController();
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  String _loginWith = LoginWith.phone.value;
+
+  String get getLoginWith => _loginWith;
+
+  set setLoginWith(String value) {
+    _loginWith = value;
+  }
+
+  String _countryCode = '+61';
+
+  bool _isTermsAccepted = false;
+
+
+  bool get getIsTermsAccepted => _isTermsAccepted;
+
+  set setIsTermsAccepted(bool value) {
+    _isTermsAccepted = value;
+    notifyListeners();
+  }
 
   GlobalKey<FormState> get getFormKey => _formKey;
 
@@ -26,17 +36,6 @@ class AuthViewModel extends ChangeNotifier {
 
   String get getCountryCode => _countryCode;
 
-  bool _isOtpValid = false;
-
-  bool get isOtpValid => _isOtpValid;
-  String _otp = '';
-
-  String get otp => _otp;
-
-  Timer? _otpTimer;
-  int _otpTimerSeconds = 0;
-
-  int get otpTimerSeconds => _otpTimerSeconds;
 
   void setCountryCode(String value) {
     _countryCode = value;
@@ -63,100 +62,12 @@ class AuthViewModel extends ChangeNotifier {
     }
   }
 
-  Future<bool> verifyOtp() async {
-    if (!_isOtpValid) {
-      EasyLoading.showError('Please enter a valid 6-digit OTP');
-      return false;
-    }
 
-    EasyLoading.show(status: 'Send OTP');
 
-    try {
-      final isVerified = await _authService.verifyOtp(
-        _phoneController.text,
-        _otp,
-      );
-
-      if (isVerified) {
-        EasyLoading.dismiss();
-        return true;
-      } else {
-        EasyLoading.showError('Invalid OTP. Please try again.');
-        return false;
-      }
-    } catch (e) {
-      EasyLoading.showError(e.toString());
-      return false;
-    }
-  }
-
-  Future<bool> resendOtp() async {
-    if ((_countryCode + _phoneController.text).isEmpty) {
-      EasyLoading.showError('Phone number is required');
-      return false;
-    }
-
-    EasyLoading.show(status: 'Send Otp..');
-
-    try {
-      await _authService.resendOtp(_countryCode + _phoneController.text);
-      EasyLoading.dismiss();
-      startOtpTimer();
-      return true;
-    } catch (e) {
-      EasyLoading.showError(e.toString());
-      return false;
-    }
-  }
-
-  void updateOtp(String otp) {
-    _otp = otp;
-    _validateOtp();
-    notifyListeners();
-  }
-
-  void _validateOtp() {
-    _isOtpValid = _otp.length == 6 && RegExp(r'^\d{6}$').hasMatch(_otp);
-  }
-
-  String get formattedPhoneNumber {
-    if ((_countryCode + _phoneController.text).isEmpty) return '';
-    // Format: +61 X XXXX XXXX
-    if ((_countryCode + _phoneController.text).length >= 10) {
-      return '${_countryCode + _phoneController.text.substring(0, 3)} ${_phoneController.text.substring(3, 4)} ${_phoneController.text.substring(4, 8)} ${_phoneController.text.substring(8)}';
-    }
-    return _countryCode + _phoneController.text;
-  }
-
-  void startOtpTimer() {
-    _stopOtpTimer();
-    _otpTimerSeconds = 120;
-    notifyListeners();
-
-    _otpTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      _otpTimerSeconds--;
-      if (_otpTimerSeconds <= 0) {
-        _stopOtpTimer();
-      }
-      notifyListeners();
-    });
-  }
-
-  void _stopOtpTimer() {
-    _otpTimer?.cancel();
-    _otpTimer = null;
-  }
-
-  void resetState() {
-    _phoneController.clear();
-    _stopOtpTimer();
-    _otpTimerSeconds = 0;
-    notifyListeners();
-  }
 
   @override
   void dispose() {
-    _stopOtpTimer();
+    print('authprovider is disposed');
     _phoneController.dispose();
     super.dispose();
   }

@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:untitled_sample_app/utils/custom_colors.dart';
 import 'package:untitled_sample_app/view_models/auth_view_model.dart';
 import 'package:untitled_sample_app/view_models/driver_registration_view_model.dart';
+import 'package:untitled_sample_app/view_models/otp_view_model.dart';
 import 'package:untitled_sample_app/view_models/universal_view_model.dart';
 
 import 'app_init.dart';
@@ -36,9 +37,10 @@ Future<void> main() async {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => AuthViewModel()),
-        ChangeNotifierProvider(create: (_) => DriverRegistrationViewModel()),
-        ChangeNotifierProvider(create: (_) => UniversalViewModel()),
+        ChangeNotifierProvider(create: (context) => AuthViewModel()),
+        ChangeNotifierProvider(create: (context) => OtpViewModel()),
+        ChangeNotifierProvider(create: (context) => DriverRegistrationViewModel()),
+        ChangeNotifierProvider(create: (context) => UniversalViewModel()),
       ],
       child: AppInit(),
     ),

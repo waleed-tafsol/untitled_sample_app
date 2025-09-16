@@ -71,7 +71,7 @@ class AppInit extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           title: 'Bruno\'s Kitchen',
           navigatorObservers: [routeObserver],
-          initialRoute: homeRoute,
+          initialRoute: loginRoute,
           navigatorKey: navigatorKey,
           onGenerateRoute: RouteGenerator.generateRoute,
           builder: EasyLoading.init(),

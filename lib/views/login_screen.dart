@@ -21,7 +21,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Consumer<AuthViewModel>(
-      builder: (_, authViewModel, _) {
+      builder: (context, authViewModel, child) {
         return Scaffold(
           body: SafeArea(
             child: Padding(
@@ -78,7 +78,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         Checkbox(
                           value: authViewModel.getIsTermsAccepted,
                           onChanged: (value) {
-                            authViewModel.isTermsAccepted = value ?? false;
+                            authViewModel.setIsTermsAccepted = value ?? false;
                           },
                           activeColor: Theme.of(context).primaryColor,
                         ),

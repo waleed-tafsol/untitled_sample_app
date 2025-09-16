@@ -45,4 +45,11 @@ enum EndPoints {
   const EndPoints(this.url);
 }
 
+enum LoginWith {
+  email('email'),
+  phone('phone');
 
+  final String value;
+
+  const LoginWith(this.value);
+}
