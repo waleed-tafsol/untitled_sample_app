@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:provider/provider.dart';
+import 'package:untitled_sample_app/view_models/otp_view_model.dart';
 import 'package:untitled_sample_app/widgets/user_form_fields_widget.dart';
 import '../utils/custom_buttons.dart';
 import '../utils/custom_colors.dart';
@@ -61,7 +62,12 @@ class _LoginScreenState extends State<LoginScreen> {
                       text: 'Send OTP',
                       onTap: () async {
                         if (authViewModel.validateFormKey()) {
-                          await authViewModel.sendOtp().then((value) {
+                          context.read<OtpViewModel>().setPhoneNumber =
+                              (authViewModel.getCountryCode +
+                              authViewModel.getPhoneController.text);
+                          await context.read<OtpViewModel>().sendOtp().then((
+                            value,
+                          ) {
                             if (value) {
                               Navigator.pushNamed(context, otpRoute);
                             }

@@ -11,19 +11,24 @@ class OtpViewModel extends ChangeNotifier {
   Timer? _otpTimer;
   int _otpTimerSeconds = 0;
   String _phoneNumber = '';
-  String _countryCode = '+61';
 
-  // Getters
+  final List<TextEditingController> _otpControllers = List.generate(6, (index) => TextEditingController());
+  final List<FocusNode> _focusNodes = List.generate(6, (index) => FocusNode());
+
   bool get isOtpValid => _isOtpValid;
   String get otp => _otp;
   int get otpTimerSeconds => _otpTimerSeconds;
-  String get phoneNumber => _phoneNumber;
-  String get countryCode => _countryCode;
+  String get getPhoneNumber => _phoneNumber;
 
-  // Initialize with phone number and country code
+  set setPhoneNumber(String value){
+    _phoneNumber = value;
+  }
+  List<TextEditingController> get otpControllers => _otpControllers;
+  List<FocusNode> get focusNodes => _focusNodes;
+
   void initializeOtp(String phoneNumber, String countryCode) {
     _phoneNumber = phoneNumber;
-    _countryCode = countryCode;
+ //   _countryCode = countryCode;
     startOtpTimer();
   }
 
@@ -50,18 +55,11 @@ class OtpViewModel extends ChangeNotifier {
     }
   }
 
-  Future<bool> resendOtp() async {
-    if (_phoneNumber.isEmpty) {
-      EasyLoading.showError('Phone number is required');
-      return false;
-    }
-
-    EasyLoading.show(status: 'Sending OTP...');
-
+  Future<bool> sendOtp() async {
+    EasyLoading.show(status: 'Send OTP');
     try {
-      await _authService.resendOtp(_countryCode + _phoneNumber);
+      await _authService.sendOtp(_phoneNumber);
       EasyLoading.dismiss();
-      startOtpTimer();
       return true;
     } catch (e) {
       EasyLoading.showError(e.toString());
@@ -73,6 +71,20 @@ class OtpViewModel extends ChangeNotifier {
     _otp = otp;
     _validateOtp();
     notifyListeners();
+  }
+
+  void onOtpChanged(int index, String value) {
+    if (value.length == 1 && index < 5) {
+      _focusNodes[index + 1].requestFocus();
+    } else if (value.isEmpty && index > 0) {
+      _focusNodes[index - 1].requestFocus();
+    }
+    _updateOtpFromControllers();
+  }
+
+  void _updateOtpFromControllers() {
+    String otp = _otpControllers.map((c) => c.text).join();
+    updateOtp(otp);
   }
 
   void _validateOtp() {
@@ -111,6 +123,13 @@ class OtpViewModel extends ChangeNotifier {
   void dispose() {
     print('otp provider is disposed');
     _stopOtpTimer();
+    for (var controller in _otpControllers) {
+      controller.dispose();
+    }
+    for (var focusNode in _focusNodes) {
+      focusNode.dispose();
+    }
     super.dispose();
   }
+
 }

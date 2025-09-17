@@ -6,20 +6,12 @@ import '../view_models/auth_view_model.dart';
 import '../view_models/otp_view_model.dart';
 import '../route_generator.dart';
 
-class OtpScreen extends StatefulWidget {
+class OtpScreen extends StatelessWidget {
   const OtpScreen({super.key});
 
   @override
-  State<OtpScreen> createState() => _OtpScreenState();
-}
-
-class _OtpScreenState extends State<OtpScreen> {
-  final List<TextEditingController> _otpControllers = List.generate(6, (index) => TextEditingController());
-  final List<FocusNode> _focusNodes = List.generate(6, (index) => FocusNode());
-
-  @override
-  void initState() {
-    super.initState();
+  Widget build(BuildContext context) {
+    // Initialize OTP when screen is built
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final authViewModel = context.read<AuthViewModel>();
       final otpViewModel = context.read<OtpViewModel>();
@@ -28,39 +20,10 @@ class _OtpScreenState extends State<OtpScreen> {
         authViewModel.getCountryCode,
       );
     });
-  }
-
-  @override
-  void dispose() {
-    for (var controller in _otpControllers) {
-      controller.dispose();
-    }
-    for (var focusNode in _focusNodes) {
-      focusNode.dispose();
-    }
-    super.dispose();
-  }
-
-  void _onOtpChanged(int index, String value) {
-    if (value.length == 1 && index < 5) {
-      _focusNodes[index + 1].requestFocus();
-    } else if (value.isEmpty && index > 0) {
-      _focusNodes[index - 1].requestFocus();
-    }
-    _updateOtp();
-  }
-
-  void _updateOtp() {
-    String otp = _otpControllers.map((c) => c.text).join();
-    context.read<OtpViewModel>().updateOtp(otp);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Selector<OtpViewModel, ({String countryCode, String phoneNumber, int otpTimerSeconds, bool isOtpValid})>(
+    return Selector<OtpViewModel, ({ String phoneNumber, int otpTimerSeconds, bool isOtpValid})>(
       selector: (context, otpViewModel) => (
-        countryCode: otpViewModel.countryCode,
-        phoneNumber: otpViewModel.phoneNumber,
+     //   countryCode: otpViewModel.countryCode,
+        phoneNumber: otpViewModel.getPhoneNumber,
         otpTimerSeconds: otpViewModel.otpTimerSeconds,
         isOtpValid: otpViewModel.isOtpValid,
       ),
@@ -104,7 +67,7 @@ class _OtpScreenState extends State<OtpScreen> {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'We sent a 6-digit code to ${formattedPhoneNumber(countryCode: data.countryCode, phoneNumber: data.phoneNumber)}',
+                  'We sent a 6-digit code to ${formattedPhoneNumber(phoneNumber: data.phoneNumber)}',
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Colors.grey.shade600),
                   textAlign: TextAlign.center,
                 ),
@@ -118,16 +81,16 @@ class _OtpScreenState extends State<OtpScreen> {
                       width: 50,
                       height: 60,
                       decoration: BoxDecoration(
-                        color: _focusNodes[index].hasFocus ? CustomColors.purpleColorTint : Colors.grey.shade100,
+                        color: otpViewModel.focusNodes[index].hasFocus ? CustomColors.purpleColorTint : Colors.grey.shade100,
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
-                          color: _focusNodes[index].hasFocus ? CustomColors.purpleColor : Colors.grey.shade300,
+                          color: otpViewModel.focusNodes[index].hasFocus ? CustomColors.purpleColor : Colors.grey.shade300,
                           width: 2,
                         ),
                       ),
                       child: TextFormField(
-                        controller: _otpControllers[index],
-                        focusNode: _focusNodes[index],
+                        controller: otpViewModel.otpControllers[index],
+                        focusNode: otpViewModel.focusNodes[index],
                         textAlign: TextAlign.center,
                         keyboardType: TextInputType.number,
                         maxLength: 1,
@@ -137,7 +100,7 @@ class _OtpScreenState extends State<OtpScreen> {
                           border: InputBorder.none,
                           contentPadding: EdgeInsets.zero,
                         ),
-                        onChanged: (value) => _onOtpChanged(index, value),
+                        onChanged: (value) => otpViewModel.onOtpChanged(index, value),
                       ),
                     );
                   }),
@@ -154,8 +117,8 @@ class _OtpScreenState extends State<OtpScreen> {
                 else
                   TextButton(
                     onPressed: () async {
-                      final success = await otpViewModel.resendOtp();
-                      if (success && mounted) {
+                      final success = await otpViewModel.sendOtp();
+                      if (success) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(content: Text('OTP sent successfully'), backgroundColor: Colors.green),
                         );
@@ -170,7 +133,7 @@ class _OtpScreenState extends State<OtpScreen> {
                   onPressed: data.isOtpValid
                       ? () async {
                           final success = await otpViewModel.verifyOtp();
-                          if (success && mounted) {
+                          if (success) {
                             Navigator.pushReplacementNamed(context, registrationStepperRoute);
                           }
                         }

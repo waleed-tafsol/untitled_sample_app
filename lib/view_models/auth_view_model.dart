@@ -8,6 +8,8 @@ class AuthViewModel extends ChangeNotifier {
   final AuthService _authService = AuthService();
   final TextEditingController _phoneController = TextEditingController();
 
+  final TextEditingController _emailController = TextEditingController();
+
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   String _loginWith = LoginWith.phone.value;
@@ -33,6 +35,7 @@ class AuthViewModel extends ChangeNotifier {
   GlobalKey<FormState> get getFormKey => _formKey;
 
   TextEditingController get getPhoneController => _phoneController;
+  TextEditingController get getEmailController => _emailController;
 
   String get getCountryCode => _countryCode;
 
@@ -50,17 +53,7 @@ class AuthViewModel extends ChangeNotifier {
     }
   }
 
-  Future<bool> sendOtp() async {
-    EasyLoading.show(status: 'Send OTP');
-    try {
-      await _authService.sendOtp(_countryCode + _phoneController.text);
-      EasyLoading.dismiss();
-      return true;
-    } catch (e) {
-      EasyLoading.showError(e.toString());
-      return false;
-    }
-  }
+
 
 
 
