@@ -180,7 +180,7 @@ class _DriverVehicleScreenState extends State<DriverVehicleScreen> {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12.r),
-              borderSide: BorderSide(color: CustomColors.purpleColor),
+              borderSide: BorderSide(color: CustomColors.primaryColor),
             ),
           ),
         ),
@@ -237,16 +237,16 @@ class _DriverVehicleScreenState extends State<DriverVehicleScreen> {
         padding: EdgeInsets.all(16.w),
         decoration: BoxDecoration(
           border: Border.all(
-            color: isSelected ? CustomColors.purpleColor : Colors.grey.shade300,
+            color: isSelected ? CustomColors.primaryColor : Colors.grey.shade300,
           ),
           borderRadius: BorderRadius.circular(12.r),
-          color: isSelected ? CustomColors.purpleColor.withOpacity(0.1) : Colors.white,
+          color: isSelected ? CustomColors.primaryColor.withOpacity(0.1) : Colors.white,
         ),
         child: Column(
           children: [
             Icon(
               icon,
-              color: isSelected ? CustomColors.purpleColor : Colors.grey.shade600,
+              color: isSelected ? CustomColors.primaryColor : Colors.grey.shade600,
               size: 32.w,
             ),
             SizedBox(height: 8.h),
@@ -255,7 +255,7 @@ class _DriverVehicleScreenState extends State<DriverVehicleScreen> {
               style: TextStyle(
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w500,
-                color: isSelected ? CustomColors.purpleColor : Colors.black87,
+                color: isSelected ? CustomColors.primaryColor : Colors.black87,
               ),
             ),
           ],
@@ -297,7 +297,7 @@ class _DriverVehicleScreenState extends State<DriverVehicleScreen> {
             onChanged: (value) {
               // Handle feature selection
             },
-            activeColor: CustomColors.purpleColor,
+            activeColor: CustomColors.primaryColor,
           ),
           Text(
             title,

@@ -1,12 +1,15 @@
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:provider/provider.dart';
+import 'package:untitled_sample_app/utils/enums.dart';
 import 'package:untitled_sample_app/view_models/otp_view_model.dart';
 import 'package:untitled_sample_app/widgets/user_form_fields_widget.dart';
 import '../utils/custom_buttons.dart';
 import '../utils/custom_colors.dart';
+import '../utils/custom_font_style.dart';
 import '../utils/validators.dart';
 import '../view_models/auth_view_model.dart';
 import '../route_generator.dart';
@@ -26,13 +29,13 @@ class _LoginScreenState extends State<LoginScreen> {
         return Scaffold(
           body: SafeArea(
             child: Padding(
-              padding: const EdgeInsets.all(24.0),
+              padding: const EdgeInsets.all(24.0).w,
               child: Form(
                 key: authViewModel.getFormKey,
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const SizedBox(height: 60),
+                    SizedBox(height: 60.h),
                     Text(
                       'Welcome Back',
                       style: Theme.of(context).textTheme.headlineMedium
@@ -43,7 +46,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       textAlign: TextAlign.center,
                     ),
 
-                    const SizedBox(height: 8),
+                    SizedBox(height: 8.h),
                     Text(
                       'Enter your Australian phone number to continue',
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
@@ -52,32 +55,33 @@ class _LoginScreenState extends State<LoginScreen> {
                       textAlign: TextAlign.center,
                     ),
 
-                    const SizedBox(height: 40),
-                    phoneFieldWidget(),
-                    const SizedBox(height: 24),
+                    SizedBox(height: 40.h),
+                    authViewModel.getLoginWith == LoginWith.phone.value
+                        ? phoneFieldWidget()
+                        : emailFieldWidget(),
+                    SizedBox(height: 20.h),
+                    grey14(data: 'Or'),
+                    SizedBox(height: 10.h),
+                    TextButton(
+                      onPressed: () {
+                        if (authViewModel.getLoginWith ==
+                            LoginWith.phone.value) {
+                          authViewModel.setLoginWith = LoginWith.email.value;
+                        } else {
+                          authViewModel.setLoginWith = LoginWith.phone.value;
+                        }
+                      },
+                      child: primary14w500(
+                        data:
+                            'Login with ${authViewModel.getLoginWith == LoginWith.phone.value ? LoginWith.email.value : LoginWith.phone.value}',
+                      ),
+                    ),
+
+                    SizedBox(height: 24.h),
 
                     // Error message
                     const Spacer(),
-                    customButton(
-                      text: 'Send OTP',
-                      onTap: () async {
-                        if (authViewModel.validateFormKey()) {
-                          context.read<OtpViewModel>().setPhoneNumber =
-                              (authViewModel.getCountryCode +
-                              authViewModel.getPhoneController.text);
-                          await context.read<OtpViewModel>().sendOtp().then((
-                            value,
-                          ) {
-                            if (value) {
-                              Navigator.pushNamed(context, otpRoute);
-                            }
-                          });
-                        }
-                      },
-                      colored: true,
-                    ),
 
-                    const SizedBox(height: 20),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -97,6 +101,34 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                       ],
+                    ),
+
+                    SizedBox(height: 20.h),
+
+                    customButton(
+                      text: 'Send OTP',
+                      onTap: () async {
+                        final navigator = Navigator.of(context);
+
+                        if (authViewModel.validateFormKey()) {
+                          context.read<OtpViewModel>().setPhoneNumber =
+                              (authViewModel.getCountryCode +
+                              authViewModel.getPhoneController.text);
+                          if (authViewModel.getIsTermsAccepted) {
+                            await context.read<OtpViewModel>().sendOtp().then((
+                              value,
+                            ) {
+                              if (value) {
+                                navigator.pushNamed(otpRoute);
+                              }
+                            });
+                          }
+                          else{
+                            EasyLoading.showError('Kindly accept terms and services');
+                          }
+                        }
+                      },
+                      colored: true,
                     ),
                   ],
                 ),

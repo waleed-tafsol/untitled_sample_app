@@ -12,12 +12,12 @@ Widget customButton(
     child: ElevatedButton(
       style: ElevatedButton.styleFrom(
           elevation: 0,
-          backgroundColor: colored ? CustomColors.purpleColor : CustomColors
+          backgroundColor: colored ? CustomColors.primaryColor : CustomColors
               .whiteColor,
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12.0),
               side: const BorderSide(width: 1.0,color: CustomColors.
-              purpleColor)),
+              primaryColor)),
     ),
     onPressed: (){
       FocusScope.of(navigatorKey.currentContext!).unfocus();
@@ -30,7 +30,7 @@ Widget customButton(
           padding: const EdgeInsets.symmetric(horizontal: 5),
           child: Icon(icon,
             color: colored ? CustomColors.whiteColor : CustomColors
-                .purpleColor,),
+                .primaryColor,),
         ) : Container(),
         Text(text,
             style: TextStyle(
@@ -38,14 +38,14 @@ Widget customButton(
               fontSize: 14.sp,
               fontWeight: FontWeight.w500,
               color: colored ? CustomColors.whiteColor : CustomColors
-                  .purpleColor,)),
+                  .primaryColor,)),
         boldText != null ? Text(boldText,
             style: TextStyle(
               fontFamily: 'CircularStd',
               fontSize: 14.sp,
               fontWeight: FontWeight.w900,
               color: colored ? CustomColors.whiteColor : CustomColors
-                  .purpleColor,)) : const SizedBox()
+                  .primaryColor,)) : const SizedBox()
       ],
     ),
   ),);

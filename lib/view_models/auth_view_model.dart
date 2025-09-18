@@ -14,16 +14,19 @@ class AuthViewModel extends ChangeNotifier {
 
   String _loginWith = LoginWith.phone.value;
 
-  String get getLoginWith => _loginWith;
-
-  set setLoginWith(String value) {
-    _loginWith = value;
-  }
-
   String _countryCode = '+61';
 
   bool _isTermsAccepted = false;
 
+  String get getLoginWith => _loginWith;
+
+  set setLoginWith(String value) {
+    _loginWith = value;
+    _formKey.currentState!.reset();
+    _phoneController.clear();
+    _emailController.clear();
+    notifyListeners();
+  }
 
   bool get getIsTermsAccepted => _isTermsAccepted;
 
@@ -35,10 +38,10 @@ class AuthViewModel extends ChangeNotifier {
   GlobalKey<FormState> get getFormKey => _formKey;
 
   TextEditingController get getPhoneController => _phoneController;
+
   TextEditingController get getEmailController => _emailController;
 
   String get getCountryCode => _countryCode;
-
 
   void setCountryCode(String value) {
     _countryCode = value;
@@ -53,15 +56,12 @@ class AuthViewModel extends ChangeNotifier {
     }
   }
 
-
-
-
-
-
   @override
   void dispose() {
     print('authprovider is disposed');
     _phoneController.dispose();
+    _emailController.dispose();
+    _formKey.currentState!.reset();
     super.dispose();
   }
 }

@@ -108,7 +108,7 @@ class _RegistrationStepperScreenState extends State<RegistrationStepperScreen> {
                               height: 4.h,
                               decoration: BoxDecoration(
                                 color: index <= _currentStep
-                                    ? CustomColors.purpleColor
+                                    ? CustomColors.primaryColor
                                     : Colors.grey.shade300,
                                 borderRadius: BorderRadius.circular(2.r),
                               ),
@@ -178,7 +178,7 @@ class _RegistrationStepperScreenState extends State<RegistrationStepperScreen> {
                     child: OutlinedButton(
                       onPressed: _previousStep,
                       style: OutlinedButton.styleFrom(
-                        side: BorderSide(color: CustomColors.purpleColor),
+                        side: BorderSide(color: CustomColors.primaryColor),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12.r),
                         ),
@@ -187,7 +187,7 @@ class _RegistrationStepperScreenState extends State<RegistrationStepperScreen> {
                       child: Text(
                         'Previous',
                         style: TextStyle(
-                          color: CustomColors.purpleColor,
+                          color: CustomColors.primaryColor,
                           fontSize: 16.sp,
                           fontWeight: FontWeight.w600,
                         ),
@@ -203,7 +203,7 @@ class _RegistrationStepperScreenState extends State<RegistrationStepperScreen> {
                       }
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: CustomColors.purpleColor,
+                      backgroundColor: CustomColors.primaryColor,
                       foregroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12.r),

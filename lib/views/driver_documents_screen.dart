@@ -99,12 +99,12 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
             Container(
               padding: EdgeInsets.all(8.w),
               decoration: BoxDecoration(
-                color: isUploaded ? Colors.green : CustomColors.purpleColor.withOpacity(0.1),
+                color: isUploaded ? Colors.green : CustomColors.primaryColor.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(8.r),
               ),
               child: Icon(
                 isUploaded ? Icons.check : icon,
-                color: isUploaded ? Colors.white : CustomColors.purpleColor,
+                color: isUploaded ? Colors.white : CustomColors.primaryColor,
                 size: 24.w,
               ),
             ),

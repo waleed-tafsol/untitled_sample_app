@@ -6,7 +6,6 @@ import 'package:untitled_sample_app/utils/custom_colors.dart';
 import 'package:untitled_sample_app/view_models/auth_view_model.dart';
 import 'package:untitled_sample_app/view_models/driver_registration_view_model.dart';
 import 'package:untitled_sample_app/view_models/otp_view_model.dart';
-import 'package:untitled_sample_app/view_models/universal_view_model.dart';
 
 import 'app_init.dart';
 import 'firebase_options.dart';
@@ -18,10 +17,10 @@ void configLoading() {
     ..loadingStyle = EasyLoadingStyle.custom
     ..indicatorSize = 45.0
     ..radius = 10.0
-    ..progressColor = CustomColors.purpleColor
+    ..progressColor = CustomColors.primaryColor
     ..backgroundColor = CustomColors.whiteColor
-    ..indicatorColor = CustomColors.purpleColor
-    ..textColor = CustomColors.purpleColor
+    ..indicatorColor = CustomColors.primaryColor
+    ..textColor = CustomColors.primaryColor
     ..maskColor = Colors.black.withValues(alpha: 0.5)
     ..maskType = EasyLoadingMaskType.custom
     ..userInteractions = false
@@ -40,7 +39,6 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (context) => AuthViewModel()),
         ChangeNotifierProvider(create: (context) => OtpViewModel()),
         ChangeNotifierProvider(create: (context) => DriverRegistrationViewModel()),
-        ChangeNotifierProvider(create: (context) => UniversalViewModel()),
       ],
       child: AppInit(),
     ),

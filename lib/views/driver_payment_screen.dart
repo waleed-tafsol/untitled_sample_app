@@ -92,17 +92,17 @@ class _DriverPaymentScreenState extends State<DriverPaymentScreen> {
         padding: EdgeInsets.all(16.w),
         decoration: BoxDecoration(
           border: Border.all(
-            color: isSelected ? CustomColors.purpleColor : Colors.grey.shade300,
+            color: isSelected ? CustomColors.primaryColor : Colors.grey.shade300,
           ),
           borderRadius: BorderRadius.circular(12.r),
-          color: isSelected ? CustomColors.purpleColor.withOpacity(0.1) : Colors.white,
+          color: isSelected ? CustomColors.primaryColor.withOpacity(0.1) : Colors.white,
         ),
         child: Row(
           children: [
             Container(
               padding: EdgeInsets.all(8.w),
               decoration: BoxDecoration(
-                color: isSelected ? CustomColors.purpleColor : Colors.grey.shade100,
+                color: isSelected ? CustomColors.primaryColor : Colors.grey.shade100,
                 borderRadius: BorderRadius.circular(8.r),
               ),
               child: Icon(
@@ -121,7 +121,7 @@ class _DriverPaymentScreenState extends State<DriverPaymentScreen> {
                     style: TextStyle(
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w600,
-                      color: isSelected ? CustomColors.purpleColor : Colors.black87,
+                      color: isSelected ? CustomColors.primaryColor : Colors.black87,
                     ),
                   ),
                   Text(
@@ -137,7 +137,7 @@ class _DriverPaymentScreenState extends State<DriverPaymentScreen> {
             if (isSelected)
               Icon(
                 Icons.check_circle,
-                color: CustomColors.purpleColor,
+                color: CustomColors.primaryColor,
                 size: 20.w,
               ),
           ],
@@ -357,7 +357,7 @@ class _DriverPaymentScreenState extends State<DriverPaymentScreen> {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12.r),
-              borderSide: BorderSide(color: CustomColors.purpleColor),
+              borderSide: BorderSide(color: CustomColors.primaryColor),
             ),
           ),
         ),

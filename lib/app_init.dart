@@ -26,7 +26,7 @@ class AppInit extends StatelessWidget {
         return MaterialApp(
           theme: ThemeData(
             colorScheme: ColorScheme.fromSeed(
-              seedColor: CustomColors.purpleColor,
+              seedColor: CustomColors.primaryColor,
             ),
             useMaterial3: true,
             scaffoldBackgroundColor: CustomColors.whiteColor,
@@ -35,7 +35,7 @@ class AppInit extends StatelessWidget {
               backgroundColor: Colors.transparent,
             ),
             textSelectionTheme: const TextSelectionThemeData(
-              cursorColor: CustomColors.purpleColor, //<-- SEE HERE
+              cursorColor: CustomColors.primaryColor, //<-- SEE HERE
             ),
             inputDecorationTheme: InputDecorationTheme(
               isDense: true,
@@ -56,14 +56,14 @@ class AppInit extends StatelessWidget {
               ),
               suffixIconColor: CustomColors.greyColor,
               prefixIconColor: CustomColors.greyColor,
-              focusColor: CustomColors.purpleColor,
+              focusColor: CustomColors.primaryColor,
               hintStyle: TextStyle(
                 fontFamily: 'CircularStd',
                 fontSize: 14.sp,
                 color: CustomColors.greyColor,
               ),
               focusedBorder: const OutlineInputBorder(
-                borderSide: BorderSide(color: CustomColors.purpleColor),
+                borderSide: BorderSide(color: CustomColors.primaryColor),
                 borderRadius: BorderRadius.all(Radius.circular(15)),
               ),
             ),

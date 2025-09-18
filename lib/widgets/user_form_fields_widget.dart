@@ -14,10 +14,6 @@ Widget phoneFieldWidget({bool? viewOnly}) {
       return TextFormField(
         readOnly: viewOnly == true ? true : false,
         controller: authViewModel.getPhoneController,
-        onChanged: (text) {
-          /*   final fullPhoneNumber = '${authViewModel.getCountryCode}$text';
-          authViewModel.updatePhoneNumber(fullPhoneNumber);*/
-        },
         keyboardType: TextInputType.phone,
         validator: (value) {
           return validatePhoneNumber(authViewModel.getCountryCode + value!);
@@ -66,31 +62,24 @@ Widget phoneFieldWidget({bool? viewOnly}) {
   );
 }
 
-class EmailFieldWidget extends StatelessWidget {
-  const EmailFieldWidget({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Consumer<AuthViewModel>(
-      builder: (_, authViewModel, __) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            TextField(
-              controller: authViewModel.getEmailController,
-              onChanged: (text) {},
-              keyboardType: TextInputType.emailAddress,
-              decoration: InputDecoration(
-                hintText: 'Email Address',
-                prefixIcon: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Icon(Iconsax.sms),
-                ),
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
+Widget emailFieldWidget() {
+  return Consumer<AuthViewModel>(
+    builder: (_, authViewModel, __) {
+      return TextFormField(
+        controller: authViewModel.getEmailController,
+        keyboardType: TextInputType.emailAddress,
+        validator: (value) {
+          return validateEmail(value!);
+        },
+        decoration: InputDecoration(
+          contentPadding: EdgeInsets.symmetric(vertical: 13.5.h),
+          hintText: 'Email Address',
+          prefixIcon: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Icon(Iconsax.sms),
+          ),
+        ),
+      );
+    },
+  );
 }

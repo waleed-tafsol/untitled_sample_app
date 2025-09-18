@@ -34,7 +34,7 @@ class OtpScreen extends StatelessWidget {
             backgroundColor: Colors.transparent,
             elevation: 0,
             leading: IconButton(
-              icon: const Icon(Icons.arrow_back, color: CustomColors.purpleColor),
+              icon: const Icon(Icons.arrow_back, color: CustomColors.primaryColor),
               onPressed: () => Navigator.pop(context),
             ),
           ),
@@ -52,7 +52,7 @@ class OtpScreen extends StatelessWidget {
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       gradient: const LinearGradient(
-                        colors: [CustomColors.purpleColorTint, CustomColors.purpleColor],
+                        colors: [CustomColors.primaryColorTint, CustomColors.primaryColor],
                       ),
                     ),
                     child: const Icon(Icons.lock_outline, size: 40, color: Colors.white),
@@ -81,10 +81,10 @@ class OtpScreen extends StatelessWidget {
                       width: 50,
                       height: 60,
                       decoration: BoxDecoration(
-                        color: otpViewModel.focusNodes[index].hasFocus ? CustomColors.purpleColorTint : Colors.grey.shade100,
+                        color: otpViewModel.focusNodes[index].hasFocus ? CustomColors.primaryColorTint : Colors.grey.shade100,
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
-                          color: otpViewModel.focusNodes[index].hasFocus ? CustomColors.purpleColor : Colors.grey.shade300,
+                          color: otpViewModel.focusNodes[index].hasFocus ? CustomColors.primaryColor : Colors.grey.shade300,
                           width: 2,
                         ),
                       ),
@@ -111,7 +111,7 @@ class OtpScreen extends StatelessWidget {
                 if (data.otpTimerSeconds > 0)
                   Text(
                     'Resend code in ${data.otpTimerSeconds}s',
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: CustomColors.purpleColor),
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: CustomColors.primaryColor),
                     textAlign: TextAlign.center,
                   )
                 else
@@ -139,7 +139,7 @@ class OtpScreen extends StatelessWidget {
                         }
                       : null,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: CustomColors.purpleColor,
+                    backgroundColor: CustomColors.primaryColor,
                     foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),

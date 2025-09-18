@@ -22,3 +22,22 @@ String? validatePhoneNumber(String? value){
   }
   return null;
 }
+
+
+String? validateEmail(String? value) {
+  if (value == null || value.isEmpty) {
+    return 'Email is required';
+  }
+
+  // Regular expression for email validation
+  final emailRegex = RegExp(
+    r'^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+',
+    caseSensitive: false,
+  );
+
+  if (!emailRegex.hasMatch(value)) {
+    return 'Please enter a valid email address';
+  }
+
+  return null;
+}

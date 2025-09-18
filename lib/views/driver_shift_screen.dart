@@ -102,16 +102,16 @@ class _DriverShiftScreenState extends State<DriverShiftScreen> {
         padding: EdgeInsets.all(16.w),
         decoration: BoxDecoration(
           border: Border.all(
-            color: isSelected ? CustomColors.purpleColor : Colors.grey.shade300,
+            color: isSelected ? CustomColors.primaryColor : Colors.grey.shade300,
           ),
           borderRadius: BorderRadius.circular(12.r),
-          color: isSelected ? CustomColors.purpleColor.withOpacity(0.1) : Colors.white,
+          color: isSelected ? CustomColors.primaryColor.withOpacity(0.1) : Colors.white,
         ),
         child: Row(
           children: [
             Icon(
               icon,
-              color: isSelected ? CustomColors.purpleColor : Colors.grey.shade600,
+              color: isSelected ? CustomColors.primaryColor : Colors.grey.shade600,
               size: 24.w,
             ),
             SizedBox(width: 12.w),
@@ -124,7 +124,7 @@ class _DriverShiftScreenState extends State<DriverShiftScreen> {
                     style: TextStyle(
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w600,
-                      color: isSelected ? CustomColors.purpleColor : Colors.black87,
+                      color: isSelected ? CustomColors.primaryColor : Colors.black87,
                     ),
                   ),
                   Text(
@@ -140,7 +140,7 @@ class _DriverShiftScreenState extends State<DriverShiftScreen> {
             if (isSelected)
               Icon(
                 Icons.check_circle,
-                color: CustomColors.purpleColor,
+                color: CustomColors.primaryColor,
                 size: 20.w,
               ),
           ],
@@ -295,10 +295,10 @@ class _DriverShiftScreenState extends State<DriverShiftScreen> {
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
                 decoration: BoxDecoration(
-                  color: isSelected ? CustomColors.purpleColor : Colors.grey.shade100,
+                  color: isSelected ? CustomColors.primaryColor : Colors.grey.shade100,
                   borderRadius: BorderRadius.circular(20.r),
                   border: Border.all(
-                    color: isSelected ? CustomColors.purpleColor : Colors.grey.shade300,
+                    color: isSelected ? CustomColors.primaryColor : Colors.grey.shade300,
                   ),
                 ),
                 child: Text(
@@ -320,7 +320,7 @@ class _DriverShiftScreenState extends State<DriverShiftScreen> {
               child: OutlinedButton(
                 onPressed: _selectAllDays,
                 style: OutlinedButton.styleFrom(
-                  side: BorderSide(color: CustomColors.purpleColor),
+                  side: BorderSide(color: CustomColors.primaryColor),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8.r),
                   ),
@@ -328,7 +328,7 @@ class _DriverShiftScreenState extends State<DriverShiftScreen> {
                 child: Text(
                   'Select All',
                   style: TextStyle(
-                    color: CustomColors.purpleColor,
+                    color: CustomColors.primaryColor,
                     fontSize: 12.sp,
                   ),
                 ),
@@ -405,7 +405,7 @@ class _DriverShiftScreenState extends State<DriverShiftScreen> {
             onChanged: (value) {
               // Handle availability option selection
             },
-            activeColor: CustomColors.purpleColor,
+            activeColor: CustomColors.primaryColor,
           ),
           SizedBox(width: 8.w),
           Icon(

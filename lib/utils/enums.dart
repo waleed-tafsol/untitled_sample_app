@@ -46,8 +46,8 @@ enum EndPoints {
 }
 
 enum LoginWith {
-  email('email'),
-  phone('phone');
+  email('Email'),
+  phone('Phone');
 
   final String value;
 
