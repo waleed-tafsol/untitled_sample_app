@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:provider/provider.dart';
 import 'package:untitled_sample_app/view_models/driver_registration_view_model.dart';
 import '../utils/custom_colors.dart';
@@ -27,7 +28,6 @@ class _RegistrationStepperScreenState extends State<RegistrationStepperScreen> {
   final Map<String, bool> _documents = {};
   final Map<String, String> _vehicleInfo = {};
   final Map<String, String> _paymentInfo = {};
-  final Map<String, dynamic> _stripeInfo = {};
   final Map<String, String> _shiftInfo = {};
   
 
@@ -35,55 +35,60 @@ class _RegistrationStepperScreenState extends State<RegistrationStepperScreen> {
     StepData(
       title: 'Personal Information',
       subtitle: 'Enter your personal details',
-      icon: Icons.person,
+      icon: Iconsax.user,
     ),
     StepData(
       title: 'Documents',
       subtitle: 'Upload required documents',
-      icon: Icons.description,
+      icon: Iconsax.document_text,
     ),
     StepData(
       title: 'Review',
       subtitle: 'Review your information',
-      icon: Icons.rate_review,
+      icon: Iconsax.tick_circle,
     ),
     StepData(
       title: 'Vehicle',
       subtitle: 'Add your vehicle details',
-      icon: Icons.directions_car,
+      icon: Iconsax.car,
     ),
     StepData(
       title: 'Payment',
       subtitle: 'Set up payment method',
-      icon: Icons.payment,
+      icon: Iconsax.card,
     ),
     StepData(
       title: 'Stripe',
       subtitle: 'Connect with Stripe',
-      icon: Icons.account_balance_wallet,
+      icon: Iconsax.wallet_3,
     ),
     StepData(
       title: 'Shift',
       subtitle: 'Set your working hours',
-      icon: Icons.schedule,
+      icon: Iconsax.clock,
     ),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: CustomColors.whiteColor,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: CustomColors.whiteColor,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: Icon(
+            Iconsax.arrow_left_2,
+            color: CustomColors.blackColor,
+            size: 24.sp,
+          ),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
           'Driver Registration',
           style: TextStyle(
-            color: Colors.black,
+            fontFamily: 'CircularStd',
+            color: CustomColors.blackColor,
             fontSize: 18.sp,
             fontWeight: FontWeight.w600,
           ),
@@ -109,7 +114,7 @@ class _RegistrationStepperScreenState extends State<RegistrationStepperScreen> {
                               decoration: BoxDecoration(
                                 color: index <= _currentStep
                                     ? CustomColors.primaryColor
-                                    : Colors.grey.shade300,
+                                    : CustomColors.blackColor.withValues(alpha: 0.2),
                                 borderRadius: BorderRadius.circular(2.r),
                               ),
                             ),
@@ -126,8 +131,9 @@ class _RegistrationStepperScreenState extends State<RegistrationStepperScreen> {
                 Text(
                   'Step ${_currentStep + 1} of ${_steps.length}',
                   style: TextStyle(
+                    fontFamily: 'CircularStd',
                     fontSize: 14.sp,
-                    color: Colors.grey.shade600,
+                    color: CustomColors.blackColor.withValues(alpha: 0.6),
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -135,17 +141,19 @@ class _RegistrationStepperScreenState extends State<RegistrationStepperScreen> {
                 Text(
                   _steps[_currentStep].title,
                   style: TextStyle(
+                    fontFamily: 'CircularStd',
                     fontSize: 20.sp,
                     fontWeight: FontWeight.bold,
-                    color: Colors.black87,
+                    color: CustomColors.blackColor,
                   ),
                 ),
                 SizedBox(height: 4.h),
                 Text(
                   _steps[_currentStep].subtitle,
                   style: TextStyle(
+                    fontFamily: 'CircularStd',
                     fontSize: 14.sp,
-                    color: Colors.grey.shade600,
+                    color: CustomColors.blackColor.withValues(alpha: 0.6),
                   ),
                 ),
               ],
@@ -175,46 +183,88 @@ class _RegistrationStepperScreenState extends State<RegistrationStepperScreen> {
               children: [
                 if (_currentStep > 0)
                   Expanded(
-                    child: OutlinedButton(
-                      onPressed: _previousStep,
-                      style: OutlinedButton.styleFrom(
-                        side: BorderSide(color: CustomColors.primaryColor),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12.r),
-                        ),
-                        padding: EdgeInsets.symmetric(vertical: 16.h),
-                      ),
-                      child: Text(
-                        'Previous',
-                        style: TextStyle(
+                    child: Container(
+                      height: 56.h,
+                      decoration: BoxDecoration(
+                        color: CustomColors.whiteColor,
+                        borderRadius: BorderRadius.circular(16.r),
+                        border: Border.all(
                           color: CustomColors.primaryColor,
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.w600,
+                          width: 1.5,
+                        ),
+                      ),
+                      child: Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(16.r),
+                          onTap: _previousStep,
+                          child: Center(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Iconsax.arrow_left_2,
+                                  color: CustomColors.primaryColor,
+                                  size: 20.sp,
+                                ),
+                                SizedBox(width: 8.w),
+                                Text(
+                                  'Previous',
+                                  style: TextStyle(
+                                    fontFamily: 'CircularStd',
+                                    color: CustomColors.primaryColor,
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                       ),
                     ),
                   ),
                 if (_currentStep > 0) SizedBox(width: 16.w),
                 Expanded(
-                  child: ElevatedButton(
-                    onPressed: (){
-                      if(context.read<DriverRegistrationViewModel>().validateFormKey()) {
-                        _currentStep < _steps.length - 1 ? _nextStep : _completeRegistration;
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: CustomColors.primaryColor,
-                      foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12.r),
-                      ),
-                      padding: EdgeInsets.symmetric(vertical: 16.h),
+                  child: Container(
+                    height: 56.h,
+                    decoration: BoxDecoration(
+                      color: CustomColors.primaryColor,
+                      borderRadius: BorderRadius.circular(16.r),
                     ),
-                    child: Text(
-                      _currentStep < _steps.length - 1 ? 'Next' : 'Complete',
-                      style: TextStyle(
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w600,
+                    child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(16.r),
+                        onTap: (){
+                          if(context.read<DriverRegistrationViewModel>().validateFormKey()) {
+                            _currentStep < _steps.length - 1 ? _nextStep : _completeRegistration;
+                          }
+                        },
+                        child: Center(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                _currentStep < _steps.length - 1 ? 'Next' : 'Complete',
+                                style: TextStyle(
+                                  fontFamily: 'CircularStd',
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w600,
+                                  color: CustomColors.whiteColor,
+                                ),
+                              ),
+                              SizedBox(width: 8.w),
+                              Icon(
+                                _currentStep < _steps.length - 1 
+                                    ? Iconsax.arrow_right_3 
+                                    : Iconsax.tick_circle,
+                                color: CustomColors.whiteColor,
+                                size: 20.sp,
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     ),
                   ),
@@ -278,15 +328,66 @@ class _RegistrationStepperScreenState extends State<RegistrationStepperScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Registration Complete!'),
-        content: const Text('Your driver registration has been submitted successfully.'),
+        backgroundColor: CustomColors.whiteColor,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.r),
+        ),
+        title: Row(
+          children: [
+            Icon(
+              Iconsax.tick_circle,
+              color: CustomColors.primaryColor,
+              size: 24.sp,
+            ),
+            SizedBox(width: 8.w),
+            Text(
+              'Registration Complete!',
+              style: TextStyle(
+                fontFamily: 'CircularStd',
+                color: CustomColors.blackColor,
+                fontSize: 18.sp,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+        content: Text(
+          'Your driver registration has been submitted successfully.',
+          style: TextStyle(
+            fontFamily: 'CircularStd',
+            color: CustomColors.blackColor.withValues(alpha: 0.7),
+            fontSize: 14.sp,
+          ),
+        ),
         actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context); // Close dialog
-              Navigator.pop(context); // Go back to login
-            },
-            child: const Text('OK'),
+          Container(
+            width: double.infinity,
+            height: 48.h,
+            decoration: BoxDecoration(
+              color: CustomColors.primaryColor,
+              borderRadius: BorderRadius.circular(12.r),
+            ),
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                borderRadius: BorderRadius.circular(12.r),
+                        onTap: () {
+                          Navigator.pop(context); // Close dialog
+                          Navigator.pop(context); // Go back to login
+                        },
+                child: Center(
+                  child: Text(
+                    'OK',
+                    style: TextStyle(
+                      fontFamily: 'CircularStd',
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w600,
+                      color: CustomColors.whiteColor,
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ),
         ],
       ),

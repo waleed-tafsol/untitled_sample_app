@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:provider/provider.dart';
-import '../utils/custom_font_style.dart';
+import 'package:untitled_sample_app/utils/enums.dart';
+import 'package:untitled_sample_app/view_models/auth_view_model.dart';
+import '../utils/custom_colors.dart';
 import '../utils/validators.dart';
 import '../view_models/driver_registration_view_model.dart';
 import '../widgets/user_form_fields_widget.dart';
@@ -22,61 +25,109 @@ class _DriverPersonalInfoScreenState extends State<DriverPersonalInfoScreen> {
         return Form(
           key: driverRegistrationViewModel.getFormKey,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0).w,
+            padding: EdgeInsets.symmetric(horizontal: 20.w),
             child: Column(
               children: [
-                Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(10.0).w,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        black18w500(data: 'Personal Detail'),
-                        SizedBox(height: 20.h),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: TextFormField(
-                                controller: driverRegistrationViewModel
-                                    .getFirstNameController,
-                                validator: validateFirstName,
-                                decoration: InputDecoration(
-                                  labelText: 'First Name',
-                                  hintText: 'John',
-                                  contentPadding: EdgeInsets.symmetric(
-                                    vertical: 10.0,
-                                    horizontal: 10,
-                                  ).w,
-                                ),
-                              ),
-                            ),
-                            SizedBox(width: 10.w),
-                            Expanded(
-                              child: TextFormField(
-                                controller: driverRegistrationViewModel
-                                    .getLastNameController,
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Last Name is required';
-                                  }
-                                  return null;
-                                },
-                                decoration: InputDecoration(
-                                  labelText: 'Last Name',
-                                  hintText: 'Smith',
-                                  contentPadding: EdgeInsets.symmetric(
-                                    vertical: 14.0,
-                                    horizontal: 2,
-                                  ).w,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 10.h),
-                        phoneFieldWidget(viewOnly: true),
-                      ],
+                // Header Section
+                Container(
+                  padding: EdgeInsets.all(24.w),
+                  decoration: BoxDecoration(
+                    color: CustomColors.whiteColor,
+                    borderRadius: BorderRadius.circular(20.r),
+                    border: Border.all(
+                      color: CustomColors.primaryColor.withValues(alpha: 0.1),
+                      width: 1,
                     ),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(
+                            Iconsax.user,
+                            color: CustomColors.primaryColor,
+                            size: 24.sp,
+                          ),
+                          SizedBox(width: 12.w),
+                          Text(
+                            'Personal Details',
+                            style: TextStyle(
+                              fontFamily: 'CircularStd',
+                              fontSize: 18.sp,
+                              fontWeight: FontWeight.bold,
+                              color: CustomColors.blackColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 8.h),
+                      Text(
+                        'Please provide your personal information to complete registration',
+                        style: TextStyle(
+                          fontFamily: 'CircularStd',
+                          fontSize: 14.sp,
+                          color: CustomColors.blackColor.withValues(alpha: 0.6),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                
+                SizedBox(height: 24.h),
+                
+                // Form Section
+                Container(
+                  padding: EdgeInsets.all(24.w),
+                  decoration: BoxDecoration(
+                    color: CustomColors.whiteColor,
+                    borderRadius: BorderRadius.circular(20.r),
+                    border: Border.all(
+                      color: CustomColors.primaryColor.withValues(alpha: 0.1),
+                      width: 1,
+                    ),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Name Fields
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _buildInputField(
+                              'First Name',
+                              'John',
+                              driverRegistrationViewModel.getFirstNameController,
+                              validator: validateFirstName,
+                              icon: Iconsax.user,
+                            ),
+                          ),
+                          SizedBox(width: 12.w),
+                          Expanded(
+                            child: _buildInputField(
+                              'Last Name',
+                              'Smith',
+                              driverRegistrationViewModel.getLastNameController,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Last Name is required';
+                                }
+                                return null;
+                              },
+                              icon: Iconsax.user,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 20.h),
+                      
+                      // Phone Field
+                      phoneFieldWidget(viewOnly: context.read<AuthViewModel>().getLoginWith == LoginWith.phone.value),
+                      SizedBox(height: 20.h),
+                      
+                      // Email Field
+                      emailFieldWidget(viewOnly: context.read<AuthViewModel>().getLoginWith == LoginWith.email.value),
+                    ],
                   ),
                 ),
               ],
@@ -84,6 +135,91 @@ class _DriverPersonalInfoScreenState extends State<DriverPersonalInfoScreen> {
           ),
         );
       },
+    );
+  }
+
+  Widget _buildInputField(
+    String label,
+    String hint,
+    TextEditingController controller, {
+    String? Function(String?)? validator,
+    IconData? icon,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: TextStyle(
+            fontFamily: 'CircularStd',
+            fontSize: 14.sp,
+            fontWeight: FontWeight.w600,
+            color: CustomColors.blackColor,
+          ),
+        ),
+        SizedBox(height: 8.h),
+        TextFormField(
+          controller: controller,
+          validator: validator,
+          style: TextStyle(
+            fontFamily: 'CircularStd',
+            fontSize: 16.sp,
+            color: CustomColors.blackColor,
+            fontWeight: FontWeight.w500,
+          ),
+          decoration: InputDecoration(
+            hintText: hint,
+            hintStyle: TextStyle(
+              fontFamily: 'CircularStd',
+              fontSize: 16.sp,
+              color: CustomColors.blackColor.withValues(alpha: 0.5),
+              fontWeight: FontWeight.w400,
+            ),
+            filled: true,
+            fillColor: CustomColors.whiteColor,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12.r),
+              borderSide: BorderSide.none,
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12.r),
+              borderSide: BorderSide.none,
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12.r),
+              borderSide: BorderSide(
+                color: CustomColors.primaryColor,
+                width: 2.0,
+              ),
+            ),
+            errorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12.r),
+              borderSide: BorderSide(
+                color: Colors.red.shade400,
+                width: 1.5,
+              ),
+            ),
+            focusedErrorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12.r),
+              borderSide: BorderSide(
+                color: Colors.red.shade400,
+                width: 2.0,
+              ),
+            ),
+            contentPadding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 18.h),
+            prefixIcon: icon != null
+                ? Padding(
+                    padding: EdgeInsets.all(16.w),
+                    child: Icon(
+                      icon,
+                      color: CustomColors.primaryColor,
+                      size: 20.sp,
+                    ),
+                  )
+                : null,
+          ),
+        ),
+      ],
     );
   }
 }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:iconsax/iconsax.dart';
+import '../utils/custom_colors.dart';
 
 class DriverInfoReviewScreen extends StatelessWidget {
   final Map<String, String> personalInfo;
@@ -25,28 +27,58 @@ class DriverInfoReviewScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Review Your Information',
-              style: TextStyle(
-                fontSize: 18.sp,
-                fontWeight: FontWeight.w600,
-                color: Colors.black87,
+            // Header Section
+            Container(
+              padding: EdgeInsets.all(24.w),
+              decoration: BoxDecoration(
+                color: CustomColors.whiteColor,
+                borderRadius: BorderRadius.circular(20.r),
+                border: Border.all(
+                  color: CustomColors.primaryColor.withValues(alpha: 0.1),
+                  width: 1,
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Icon(
+                        Iconsax.tick_circle,
+                        color: CustomColors.primaryColor,
+                        size: 24.sp,
+                      ),
+                      SizedBox(width: 12.w),
+                      Text(
+                        'Review Your Information',
+                        style: TextStyle(
+                          fontFamily: 'CircularStd',
+                          fontSize: 18.sp,
+                          fontWeight: FontWeight.bold,
+                          color: CustomColors.blackColor,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 8.h),
+                  Text(
+                    'Please review all your information before submitting',
+                    style: TextStyle(
+                      fontFamily: 'CircularStd',
+                      fontSize: 14.sp,
+                      color: CustomColors.blackColor.withValues(alpha: 0.6),
+                    ),
+                  ),
+                ],
               ),
             ),
-            SizedBox(height: 8.h),
-            Text(
-              'Please review all your information before submitting',
-              style: TextStyle(
-                fontSize: 14.sp,
-                color: Colors.grey.shade600,
-              ),
-            ),
+            
             SizedBox(height: 24.h),
             
             // Personal Information Section
             _buildSection(
               'Personal Information',
-              Icons.person,
+              Iconsax.user,
               [
                 _buildReviewItem('Full Name', personalInfo['fullName'] ?? 'Not provided'),
                 _buildReviewItem('Email', personalInfo['email'] ?? 'Not provided'),
@@ -61,7 +93,7 @@ class DriverInfoReviewScreen extends StatelessWidget {
             // Documents Section
             _buildSection(
               'Documents',
-              Icons.description,
+              Iconsax.document_text,
               [
                 _buildReviewItem('Driver License', documents['driverLicense'] == true ? 'Uploaded' : 'Not uploaded'),
                 _buildReviewItem('Vehicle Registration', documents['vehicleRegistration'] == true ? 'Uploaded' : 'Not uploaded'),
@@ -75,7 +107,7 @@ class DriverInfoReviewScreen extends StatelessWidget {
             // Vehicle Information Section
             _buildSection(
               'Vehicle Information',
-              Icons.directions_car,
+              Iconsax.car,
               [
                 _buildReviewItem('Make', vehicleInfo['make'] ?? 'Not provided'),
                 _buildReviewItem('Model', vehicleInfo['model'] ?? 'Not provided'),
@@ -91,7 +123,7 @@ class DriverInfoReviewScreen extends StatelessWidget {
             // Payment Information Section
             _buildSection(
               'Payment Information',
-              Icons.payment,
+              Iconsax.card,
               [
                 _buildReviewItem('Payment Method', paymentInfo['method'] ?? 'Not selected'),
                 _buildReviewItem('Account Details', paymentInfo['accountDetails'] ?? 'Not provided'),
@@ -103,7 +135,7 @@ class DriverInfoReviewScreen extends StatelessWidget {
             // Shift Information Section
             _buildSection(
               'Working Schedule',
-              Icons.schedule,
+              Iconsax.clock,
               [
                 _buildReviewItem('Start Time', shiftInfo['startTime'] ?? 'Not set'),
                 _buildReviewItem('End Time', shiftInfo['endTime'] ?? 'Not set'),
@@ -115,11 +147,14 @@ class DriverInfoReviewScreen extends StatelessWidget {
             
             // Terms and Conditions
             Container(
-              padding: EdgeInsets.all(16.w),
+              padding: EdgeInsets.all(20.w),
               decoration: BoxDecoration(
-                color: Colors.blue.shade50,
-                borderRadius: BorderRadius.circular(12.r),
-                border: Border.all(color: Colors.blue.shade200),
+                color: CustomColors.primaryColor.withValues(alpha: 0.05),
+                borderRadius: BorderRadius.circular(16.r),
+                border: Border.all(
+                  color: CustomColors.primaryColor.withValues(alpha: 0.2),
+                  width: 1,
+                ),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -127,17 +162,18 @@ class DriverInfoReviewScreen extends StatelessWidget {
                   Row(
                     children: [
                       Icon(
-                        Icons.info_outline,
-                        color: Colors.blue.shade600,
+                        Iconsax.info_circle,
+                        color: CustomColors.primaryColor,
                         size: 20.w,
                       ),
                       SizedBox(width: 8.w),
                       Text(
                         'Terms and Conditions',
                         style: TextStyle(
+                          fontFamily: 'CircularStd',
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w600,
-                          color: Colors.blue.shade800,
+                          color: CustomColors.blackColor,
                         ),
                       ),
                     ],
@@ -146,8 +182,9 @@ class DriverInfoReviewScreen extends StatelessWidget {
                   Text(
                     'By submitting this registration, you agree to our Terms of Service and Privacy Policy. You confirm that all information provided is accurate and complete.',
                     style: TextStyle(
+                      fontFamily: 'CircularStd',
                       fontSize: 12.sp,
-                      color: Colors.blue.shade700,
+                      color: CustomColors.blackColor.withValues(alpha: 0.6),
                       height: 1.4,
                     ),
                   ),
@@ -168,27 +205,31 @@ class DriverInfoReviewScreen extends StatelessWidget {
           children: [
             Icon(
               icon,
-              color: Colors.blue.shade600,
+              color: CustomColors.primaryColor,
               size: 20.w,
             ),
             SizedBox(width: 8.w),
             Text(
               title,
               style: TextStyle(
+                fontFamily: 'CircularStd',
                 fontSize: 16.sp,
                 fontWeight: FontWeight.w600,
-                color: Colors.black87,
+                color: CustomColors.blackColor,
               ),
             ),
           ],
         ),
         SizedBox(height: 12.h),
         Container(
-          padding: EdgeInsets.all(16.w),
+          padding: EdgeInsets.all(20.w),
           decoration: BoxDecoration(
-            color: Colors.grey.shade50,
-            borderRadius: BorderRadius.circular(12.r),
-            border: Border.all(color: Colors.grey.shade200),
+            color: CustomColors.whiteColor,
+            borderRadius: BorderRadius.circular(16.r),
+            border: Border.all(
+              color: CustomColors.primaryColor.withValues(alpha: 0.1),
+              width: 1,
+            ),
           ),
           child: Column(
             children: items,
@@ -200,7 +241,7 @@ class DriverInfoReviewScreen extends StatelessWidget {
 
   Widget _buildReviewItem(String label, String value) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 6.h),
+      padding: EdgeInsets.symmetric(vertical: 8.h),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -209,8 +250,9 @@ class DriverInfoReviewScreen extends StatelessWidget {
             child: Text(
               label,
               style: TextStyle(
+                fontFamily: 'CircularStd',
                 fontSize: 14.sp,
-                color: Colors.grey.shade600,
+                color: CustomColors.blackColor.withValues(alpha: 0.6),
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -220,9 +262,10 @@ class DriverInfoReviewScreen extends StatelessWidget {
             child: Text(
               value,
               style: TextStyle(
+                fontFamily: 'CircularStd',
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w500,
-                color: Colors.black87,
+                color: CustomColors.blackColor,
               ),
             ),
           ),

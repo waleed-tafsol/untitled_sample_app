@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:iconsax/iconsax.dart';
 import '../utils/custom_colors.dart';
 
 class DriverShiftScreen extends StatefulWidget {
@@ -14,6 +15,7 @@ class _DriverShiftScreenState extends State<DriverShiftScreen> {
   TimeOfDay _endTime = TimeOfDay(hour: 17, minute: 0);
   final Set<String> _selectedDays = {'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'};
   String _shiftType = 'full_time';
+  String _availabilityType = 'immediate';
 
   @override
   Widget build(BuildContext context) {
@@ -22,22 +24,52 @@ class _DriverShiftScreenState extends State<DriverShiftScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Working Schedule',
-            style: TextStyle(
-              fontSize: 18.sp,
-              fontWeight: FontWeight.w600,
-              color: Colors.black87,
+          // Header Section
+          Container(
+            padding: EdgeInsets.all(24.w),
+            decoration: BoxDecoration(
+              color: CustomColors.whiteColor,
+              borderRadius: BorderRadius.circular(20.r),
+              border: Border.all(
+                color: CustomColors.primaryColor.withValues(alpha: 0.1),
+                width: 1,
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(
+                      Iconsax.clock,
+                      color: CustomColors.primaryColor,
+                      size: 24.sp,
+                    ),
+                    SizedBox(width: 12.w),
+                    Text(
+                      'Working Schedule',
+                      style: TextStyle(
+                        fontFamily: 'CircularStd',
+                        fontSize: 18.sp,
+                        fontWeight: FontWeight.bold,
+                        color: CustomColors.blackColor,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 8.h),
+                Text(
+                  'Set your working hours and availability',
+                  style: TextStyle(
+                    fontFamily: 'CircularStd',
+                    fontSize: 14.sp,
+                    color: CustomColors.blackColor.withValues(alpha: 0.6),
+                  ),
+                ),
+              ],
             ),
           ),
-          SizedBox(height: 8.h),
-          Text(
-            'Set your working hours and availability',
-            style: TextStyle(
-              fontSize: 14.sp,
-              color: Colors.grey.shade600,
-            ),
-          ),
+          
           SizedBox(height: 24.h),
           
           // Shift Type Selection
@@ -60,32 +92,44 @@ class _DriverShiftScreenState extends State<DriverShiftScreen> {
   }
 
   Widget _buildShiftTypeSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Shift Type',
-          style: TextStyle(
-            fontSize: 16.sp,
-            fontWeight: FontWeight.w600,
-            color: Colors.black87,
+    return Container(
+      padding: EdgeInsets.all(24.w),
+      decoration: BoxDecoration(
+        color: CustomColors.whiteColor,
+        borderRadius: BorderRadius.circular(20.r),
+        border: Border.all(
+          color: CustomColors.primaryColor.withValues(alpha: 0.1),
+          width: 1,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Shift Type',
+            style: TextStyle(
+              fontFamily: 'CircularStd',
+              fontSize: 16.sp,
+              fontWeight: FontWeight.w600,
+              color: CustomColors.blackColor,
+            ),
           ),
-        ),
-        SizedBox(height: 12.h),
-        Row(
-          children: [
-            Expanded(
-              child: _buildShiftTypeOption('Full Time', '8+ hours per day', Icons.schedule, 'full_time'),
-            ),
-            SizedBox(width: 12.w),
-            Expanded(
-              child: _buildShiftTypeOption('Part Time', '4-7 hours per day', Icons.access_time, 'part_time'),
-            ),
-          ],
-        ),
-        SizedBox(height: 12.h),
-        _buildShiftTypeOption('Flexible', 'Variable hours', Icons.schedule_send, 'flexible'),
-      ],
+          SizedBox(height: 16.h),
+          Row(
+            children: [
+              Expanded(
+                child: _buildShiftTypeOption('Full Time', '8+ hours per day', Iconsax.clock, 'full_time'),
+              ),
+              SizedBox(width: 12.w),
+              Expanded(
+                child: _buildShiftTypeOption('Part Time', '4-7 hours per day', Iconsax.timer, 'part_time'),
+              ),
+            ],
+          ),
+          SizedBox(height: 12.h),
+          _buildShiftTypeOption('Flexible', 'Variable hours', Iconsax.clock_1, 'flexible'),
+        ],
+      ),
     );
   }
 
@@ -102,16 +146,23 @@ class _DriverShiftScreenState extends State<DriverShiftScreen> {
         padding: EdgeInsets.all(16.w),
         decoration: BoxDecoration(
           border: Border.all(
-            color: isSelected ? CustomColors.primaryColor : Colors.grey.shade300,
+            color: isSelected 
+                ? CustomColors.primaryColor 
+                : CustomColors.primaryColor.withValues(alpha: 0.2),
+            width: 1.5,
           ),
           borderRadius: BorderRadius.circular(12.r),
-          color: isSelected ? CustomColors.primaryColor.withOpacity(0.1) : Colors.white,
+          color: isSelected 
+              ? CustomColors.primaryColor.withValues(alpha: 0.1) 
+              : CustomColors.whiteColor,
         ),
         child: Row(
           children: [
             Icon(
               icon,
-              color: isSelected ? CustomColors.primaryColor : Colors.grey.shade600,
+              color: isSelected 
+                  ? CustomColors.primaryColor 
+                  : CustomColors.blackColor.withValues(alpha: 0.6),
               size: 24.w,
             ),
             SizedBox(width: 12.w),
@@ -122,16 +173,20 @@ class _DriverShiftScreenState extends State<DriverShiftScreen> {
                   Text(
                     title,
                     style: TextStyle(
+                      fontFamily: 'CircularStd',
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w600,
-                      color: isSelected ? CustomColors.primaryColor : Colors.black87,
+                      color: isSelected 
+                          ? CustomColors.primaryColor 
+                          : CustomColors.blackColor,
                     ),
                   ),
                   Text(
                     subtitle,
                     style: TextStyle(
+                      fontFamily: 'CircularStd',
                       fontSize: 12.sp,
-                      color: Colors.grey.shade600,
+                      color: CustomColors.blackColor.withValues(alpha: 0.6),
                     ),
                   ),
                 ],
@@ -139,7 +194,7 @@ class _DriverShiftScreenState extends State<DriverShiftScreen> {
             ),
             if (isSelected)
               Icon(
-                Icons.check_circle,
+                Iconsax.tick_circle,
                 color: CustomColors.primaryColor,
                 size: 20.w,
               ),
@@ -150,58 +205,74 @@ class _DriverShiftScreenState extends State<DriverShiftScreen> {
   }
 
   Widget _buildWorkingHoursSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Working Hours',
-          style: TextStyle(
-            fontSize: 16.sp,
-            fontWeight: FontWeight.w600,
-            color: Colors.black87,
-          ),
+    return Container(
+      padding: EdgeInsets.all(24.w),
+      decoration: BoxDecoration(
+        color: CustomColors.whiteColor,
+        borderRadius: BorderRadius.circular(20.r),
+        border: Border.all(
+          color: CustomColors.primaryColor.withValues(alpha: 0.1),
+          width: 1,
         ),
-        SizedBox(height: 16.h),
-        Row(
-          children: [
-            Expanded(
-              child: _buildTimeSelector('Start Time', _startTime, () => _selectStartTime()),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Working Hours',
+            style: TextStyle(
+              fontFamily: 'CircularStd',
+              fontSize: 16.sp,
+              fontWeight: FontWeight.w600,
+              color: CustomColors.blackColor,
             ),
-            SizedBox(width: 16.w),
-            Expanded(
-              child: _buildTimeSelector('End Time', _endTime, () => _selectEndTime()),
-            ),
-          ],
-        ),
-        SizedBox(height: 12.h),
-        Container(
-          padding: EdgeInsets.all(12.w),
-          decoration: BoxDecoration(
-            color: Colors.blue.shade50,
-            borderRadius: BorderRadius.circular(8.r),
-            border: Border.all(color: Colors.blue.shade200),
           ),
-          child: Row(
+          SizedBox(height: 20.h),
+          Row(
             children: [
-              Icon(
-                Icons.info_outline,
-                color: Colors.blue.shade600,
-                size: 16.w,
-              ),
-              SizedBox(width: 8.w),
               Expanded(
-                child: Text(
-                  'You can adjust your hours anytime in the app',
-                  style: TextStyle(
-                    fontSize: 12.sp,
-                    color: Colors.blue.shade700,
-                  ),
-                ),
+                child: _buildTimeSelector('Start Time', _startTime, () => _selectStartTime()),
+              ),
+              SizedBox(width: 16.w),
+              Expanded(
+                child: _buildTimeSelector('End Time', _endTime, () => _selectEndTime()),
               ),
             ],
           ),
-        ),
-      ],
+          SizedBox(height: 16.h),
+          Container(
+            padding: EdgeInsets.all(16.w),
+            decoration: BoxDecoration(
+              color: CustomColors.primaryColor.withValues(alpha: 0.05),
+              borderRadius: BorderRadius.circular(12.r),
+              border: Border.all(
+                color: CustomColors.primaryColor.withValues(alpha: 0.2),
+                width: 1,
+              ),
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  Iconsax.info_circle,
+                  color: CustomColors.primaryColor,
+                  size: 20.w,
+                ),
+                SizedBox(width: 12.w),
+                Expanded(
+                  child: Text(
+                    'You can adjust your hours anytime in the app',
+                    style: TextStyle(
+                      fontFamily: 'CircularStd',
+                      fontSize: 12.sp,
+                      color: CustomColors.blackColor.withValues(alpha: 0.7),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -212,39 +283,47 @@ class _DriverShiftScreenState extends State<DriverShiftScreen> {
         Text(
           label,
           style: TextStyle(
+            fontFamily: 'CircularStd',
             fontSize: 14.sp,
-            fontWeight: FontWeight.w500,
-            color: Colors.black87,
+            fontWeight: FontWeight.w600,
+            color: CustomColors.blackColor,
           ),
         ),
         SizedBox(height: 8.h),
         GestureDetector(
           onTap: onTap,
           child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
             decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey.shade300),
+              border: Border.all(
+                color: CustomColors.primaryColor.withValues(alpha: 0.2),
+                width: 1.5,
+              ),
               borderRadius: BorderRadius.circular(12.r),
+              color: CustomColors.whiteColor,
             ),
             child: Row(
               children: [
                 Icon(
-                  Icons.access_time,
-                  color: Colors.grey.shade600,
+                  Iconsax.clock,
+                  color: CustomColors.primaryColor,
                   size: 20.w,
                 ),
-                SizedBox(width: 8.w),
+                SizedBox(width: 12.w),
                 Text(
                   time.format(context),
                   style: TextStyle(
+                    fontFamily: 'CircularStd',
                     fontSize: 14.sp,
-                    color: Colors.black87,
+                    color: CustomColors.blackColor,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
                 const Spacer(),
                 Icon(
-                  Icons.arrow_drop_down,
-                  color: Colors.grey.shade600,
+                  Iconsax.arrow_down_2,
+                  color: CustomColors.blackColor.withValues(alpha: 0.4),
+                  size: 16.w,
                 ),
               ],
             ),
@@ -265,178 +344,247 @@ class _DriverShiftScreenState extends State<DriverShiftScreen> {
       {'name': 'Sunday', 'short': 'Sun'},
     ];
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Working Days',
-          style: TextStyle(
-            fontSize: 16.sp,
-            fontWeight: FontWeight.w600,
-            color: Colors.black87,
+    return Container(
+      padding: EdgeInsets.all(24.w),
+      decoration: BoxDecoration(
+        color: CustomColors.whiteColor,
+        borderRadius: BorderRadius.circular(20.r),
+        border: Border.all(
+          color: CustomColors.primaryColor.withValues(alpha: 0.1),
+          width: 1,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Working Days',
+            style: TextStyle(
+              fontFamily: 'CircularStd',
+              fontSize: 16.sp,
+              fontWeight: FontWeight.w600,
+              color: CustomColors.blackColor,
+            ),
           ),
-        ),
-        SizedBox(height: 12.h),
-        Wrap(
-          spacing: 8.w,
-          runSpacing: 8.h,
-          children: days.map((day) {
-            final isSelected = _selectedDays.contains(day['name']);
-            return GestureDetector(
-              onTap: () {
-                setState(() {
-                  if (isSelected) {
-                    _selectedDays.remove(day['name']);
-                  } else {
-                    _selectedDays.add(day['name']!);
-                  }
-                });
-              },
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-                decoration: BoxDecoration(
-                  color: isSelected ? CustomColors.primaryColor : Colors.grey.shade100,
-                  borderRadius: BorderRadius.circular(20.r),
-                  border: Border.all(
-                    color: isSelected ? CustomColors.primaryColor : Colors.grey.shade300,
+          SizedBox(height: 16.h),
+          Wrap(
+            spacing: 8.w,
+            runSpacing: 8.h,
+            children: days.map((day) {
+              final isSelected = _selectedDays.contains(day['name']);
+              return GestureDetector(
+                onTap: () {
+                  setState(() {
+                    if (isSelected) {
+                      _selectedDays.remove(day['name']);
+                    } else {
+                      _selectedDays.add(day['name']!);
+                    }
+                  });
+                },
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
+                  decoration: BoxDecoration(
+                    color: isSelected 
+                        ? CustomColors.primaryColor 
+                        : CustomColors.whiteColor,
+                    borderRadius: BorderRadius.circular(20.r),
+                    border: Border.all(
+                      color: isSelected 
+                          ? CustomColors.primaryColor 
+                          : CustomColors.primaryColor.withValues(alpha: 0.2),
+                      width: 1.5,
+                    ),
+                  ),
+                  child: Text(
+                    day['short']!,
+                    style: TextStyle(
+                      fontFamily: 'CircularStd',
+                      fontSize: 12.sp,
+                      fontWeight: FontWeight.w500,
+                      color: isSelected 
+                          ? CustomColors.whiteColor 
+                          : CustomColors.blackColor,
+                    ),
                   ),
                 ),
-                child: Text(
-                  day['short']!,
-                  style: TextStyle(
-                    fontSize: 12.sp,
-                    fontWeight: FontWeight.w500,
-                    color: isSelected ? Colors.white : Colors.black87,
+              );
+            }).toList(),
+          ),
+          SizedBox(height: 16.h),
+          Row(
+            children: [
+              Expanded(
+                child: Container(
+                  height: 40.h,
+                  decoration: BoxDecoration(
+                    color: CustomColors.whiteColor,
+                    borderRadius: BorderRadius.circular(12.r),
+                    border: Border.all(
+                      color: CustomColors.primaryColor,
+                      width: 1.5,
+                    ),
+                  ),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(12.r),
+                      onTap: _selectAllDays,
+                      child: Center(
+                        child: Text(
+                          'Select All',
+                          style: TextStyle(
+                            fontFamily: 'CircularStd',
+                            color: CustomColors.primaryColor,
+                            fontSize: 12.sp,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
                 ),
               ),
-            );
-          }).toList(),
-        ),
-        SizedBox(height: 12.h),
-        Row(
-          children: [
-            Expanded(
-              child: OutlinedButton(
-                onPressed: _selectAllDays,
-                style: OutlinedButton.styleFrom(
-                  side: BorderSide(color: CustomColors.primaryColor),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8.r),
+              SizedBox(width: 8.w),
+              Expanded(
+                child: Container(
+                  height: 40.h,
+                  decoration: BoxDecoration(
+                    color: CustomColors.whiteColor,
+                    borderRadius: BorderRadius.circular(12.r),
+                    border: Border.all(
+                      color: CustomColors.blackColor.withValues(alpha: 0.2),
+                      width: 1.5,
+                    ),
                   ),
-                ),
-                child: Text(
-                  'Select All',
-                  style: TextStyle(
-                    color: CustomColors.primaryColor,
-                    fontSize: 12.sp,
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(width: 8.w),
-            Expanded(
-              child: OutlinedButton(
-                onPressed: _clearAllDays,
-                style: OutlinedButton.styleFrom(
-                  side: BorderSide(color: Colors.grey.shade400),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8.r),
-                  ),
-                ),
-                child: Text(
-                  'Clear All',
-                  style: TextStyle(
-                    color: Colors.grey.shade600,
-                    fontSize: 12.sp,
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(12.r),
+                      onTap: _clearAllDays,
+                      child: Center(
+                        child: Text(
+                          'Clear All',
+                          style: TextStyle(
+                            fontFamily: 'CircularStd',
+                            color: CustomColors.blackColor.withValues(alpha: 0.6),
+                            fontSize: 12.sp,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
-        ),
-      ],
+            ],
+          ),
+        ],
+      ),
     );
   }
 
   Widget _buildAvailabilitySection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Availability Settings',
-          style: TextStyle(
-            fontSize: 16.sp,
-            fontWeight: FontWeight.w600,
-            color: Colors.black87,
+    return Container(
+      padding: EdgeInsets.all(24.w),
+      decoration: BoxDecoration(
+        color: CustomColors.whiteColor,
+        borderRadius: BorderRadius.circular(20.r),
+        border: Border.all(
+          color: CustomColors.primaryColor.withValues(alpha: 0.1),
+          width: 1,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Availability Settings',
+            style: TextStyle(
+              fontFamily: 'CircularStd',
+              fontSize: 16.sp,
+              fontWeight: FontWeight.w600,
+              color: CustomColors.blackColor,
+            ),
           ),
-        ),
-        SizedBox(height: 12.h),
-        _buildAvailabilityOption(
-          'Available for immediate bookings',
-          'Accept rides as soon as they come in',
-          Icons.flash_on,
-          true,
-        ),
-        _buildAvailabilityOption(
-          'Advance booking only',
-          'Only accept rides scheduled in advance',
-          Icons.schedule,
-          false,
-        ),
-        _buildAvailabilityOption(
-          'Peak hours only',
-          'Only work during high-demand periods',
-          Icons.trending_up,
-          false,
-        ),
-      ],
+          SizedBox(height: 16.h),
+          _buildAvailabilityOption(
+            'Available for immediate bookings',
+            'Accept rides as soon as they come in',
+            Iconsax.flash_1,
+            'immediate',
+          ),
+          _buildAvailabilityOption(
+            'Advance booking only',
+            'Only accept rides scheduled in advance',
+            Iconsax.clock,
+            'advance',
+          ),
+          _buildAvailabilityOption(
+            'Peak hours only',
+            'Only work during high-demand periods',
+            Iconsax.trend_up,
+            'peak',
+          ),
+        ],
+      ),
     );
   }
 
-  Widget _buildAvailabilityOption(String title, String subtitle, IconData icon, bool isSelected) {
+  Widget _buildAvailabilityOption(String title, String subtitle, IconData icon, String value) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 8.h),
-      child: Row(
-        children: [
-          Radio<bool>(
-            value: isSelected,
-            groupValue: true, // This would be managed by a state variable
-            onChanged: (value) {
-              // Handle availability option selection
-            },
-            activeColor: CustomColors.primaryColor,
-          ),
-          SizedBox(width: 8.w),
-          Icon(
-            icon,
-            color: Colors.grey.shade600,
-            size: 20.w,
-          ),
-          SizedBox(width: 8.w),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: TextStyle(
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.black87,
-                  ),
-                ),
-                Text(
-                  subtitle,
-                  style: TextStyle(
-                    fontSize: 12.sp,
-                    color: Colors.grey.shade600,
-                  ),
-                ),
-              ],
+      child: GestureDetector(
+        onTap: () {
+          setState(() {
+            _availabilityType = value;
+          });
+        },
+        child: Row(
+          children: [
+            Radio<String>(
+              value: value,
+              groupValue: _availabilityType,
+              onChanged: (value) {
+                setState(() {
+                  _availabilityType = value!;
+                });
+              },
+              activeColor: CustomColors.primaryColor,
             ),
-          ),
-        ],
+            SizedBox(width: 8.w),
+            Icon(
+              icon,
+              color: CustomColors.primaryColor,
+              size: 20.w,
+            ),
+            SizedBox(width: 8.w),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontFamily: 'CircularStd',
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w500,
+                      color: CustomColors.blackColor,
+                    ),
+                  ),
+                  Text(
+                    subtitle,
+                    style: TextStyle(
+                      fontFamily: 'CircularStd',
+                      fontSize: 12.sp,
+                      color: CustomColors.blackColor.withValues(alpha: 0.6),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -486,6 +634,7 @@ class _DriverShiftScreenState extends State<DriverShiftScreen> {
       'startTime': _startTime.format(context),
       'endTime': _endTime.format(context),
       'workingDays': _selectedDays.join(', '),
+      'availabilityType': _availabilityType,
     };
   }
 }

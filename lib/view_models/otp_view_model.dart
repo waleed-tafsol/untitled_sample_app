@@ -1,35 +1,83 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:http/http.dart';
+import 'package:untitled_sample_app/models/base_response_model.dart';
+import 'package:untitled_sample_app/services/firebase_service.dart';
+import 'package:untitled_sample_app/utils/enums.dart';
 import '../services/auth_service.dart';
 
 class OtpViewModel extends ChangeNotifier {
   final AuthService _authService = AuthService();
-  
+
+  final FirebaseService _firebaseService = FirebaseService();
   bool _isOtpValid = false;
   String _otp = '';
   Timer? _otpTimer;
   int _otpTimerSeconds = 0;
-  String _phoneNumber = '';
+  String _loginValue = '';
 
-  final List<TextEditingController> _otpControllers = List.generate(6, (index) => TextEditingController());
+  String _loginWith = LoginWith.phone.value;
+
+  final List<TextEditingController> _otpControllers = List.generate(
+    6,
+    (index) => TextEditingController(),
+  );
   final List<FocusNode> _focusNodes = List.generate(6, (index) => FocusNode());
 
   bool get isOtpValid => _isOtpValid;
-  String get otp => _otp;
-  int get otpTimerSeconds => _otpTimerSeconds;
-  String get getPhoneNumber => _phoneNumber;
 
-  set setPhoneNumber(String value){
-    _phoneNumber = value;
+  String get otp => _otp;
+
+  int get otpTimerSeconds => _otpTimerSeconds;
+
+  String get getLoginValue => _loginValue;
+
+  void setPhoneOrEmail({
+    required String phone,
+    required String email,
+    required loginType,
+  }) {
+    _loginWith = loginType;
+    if (_loginWith == LoginWith.phone.value) {
+      _loginValue = phone;
+    } else {
+      _loginValue = email;
+    }
   }
+
   List<TextEditingController> get otpControllers => _otpControllers;
+
   List<FocusNode> get focusNodes => _focusNodes;
 
-  void initializeOtp(String phoneNumber, String countryCode) {
-    _phoneNumber = phoneNumber;
- //   _countryCode = countryCode;
-    startOtpTimer();
+  Future<bool> sendOtp() async {
+    EasyLoading.show(status: 'Send OTP');
+
+    if (_loginWith == LoginWith.phone.value) {
+      try {
+        final BaseResponseModel response = await _firebaseService
+            .verifyPhoneNumber(_loginValue);
+        if (response.isSuccess!) {
+          EasyLoading.dismiss();
+          return true;
+        } else {
+          EasyLoading.showError(response.message!);
+          return false;
+        }
+      } catch (e) {
+        EasyLoading.showError(e.toString());
+        return false;
+      }
+    } else {
+      try {
+        await _authService.sendOtpEmail(_loginValue);
+        EasyLoading.dismiss();
+        return true;
+      } catch (e) {
+        EasyLoading.showError(e.toString());
+        return false;
+      }
+    }
   }
 
   Future<bool> verifyOtp() async {
@@ -39,31 +87,38 @@ class OtpViewModel extends ChangeNotifier {
     }
 
     EasyLoading.show(status: 'Verifying OTP...');
-
-    try {
-      final isVerified = await _authService.verifyOtp(_phoneNumber, _otp);
-      if (isVerified) {
-        EasyLoading.dismiss();
-        return true;
-      } else {
-        EasyLoading.showError('Invalid OTP. Please try again.');
+    if (_loginWith == LoginWith.phone.value) {
+      try {
+        final BaseResponseModel response = await _firebaseService.verifySmsCode(
+          _otp,
+        );
+        debugPrint(response.toString());
+        if (response.isSuccess!) {
+          EasyLoading.dismiss();
+          return true;
+        } else {
+          EasyLoading.showError('Invalid OTP. Please try again.');
+          return false;
+        }
+      } catch (e) {
+        EasyLoading.showError(e.toString());
         return false;
       }
-    } catch (e) {
-      EasyLoading.showError(e.toString());
-      return false;
-    }
-  }
-
-  Future<bool> sendOtp() async {
-    EasyLoading.show(status: 'Send OTP');
-    try {
-      await _authService.sendOtp(_phoneNumber);
-      EasyLoading.dismiss();
-      return true;
-    } catch (e) {
-      EasyLoading.showError(e.toString());
-      return false;
+    } else {
+      try {
+        final bool response = await _authService.verifyOtp(_loginValue, _otp);
+        debugPrint(response.toString());
+        if (response) {
+          EasyLoading.dismiss();
+          return true;
+        } else {
+          EasyLoading.showError('Invalid OTP. Please try again.');
+          return false;
+        }
+      } catch (e) {
+        EasyLoading.showError(e.toString());
+        return false;
+      }
     }
   }
 
@@ -131,5 +186,4 @@ class OtpViewModel extends ChangeNotifier {
     }
     super.dispose();
   }
-
 }

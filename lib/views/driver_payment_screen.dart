@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:iconsax/iconsax.dart';
 import '../utils/custom_colors.dart';
 
 class DriverPaymentScreen extends StatefulWidget {
@@ -22,47 +23,93 @@ class _DriverPaymentScreenState extends State<DriverPaymentScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Payment Method',
-            style: TextStyle(
-              fontSize: 18.sp,
-              fontWeight: FontWeight.w600,
-              color: Colors.black87,
+          // Header Section
+          Container(
+            padding: EdgeInsets.all(24.w),
+            decoration: BoxDecoration(
+              color: CustomColors.whiteColor,
+              borderRadius: BorderRadius.circular(20.r),
+              border: Border.all(
+                color: CustomColors.primaryColor.withValues(alpha: 0.1),
+                width: 1,
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(
+                      Iconsax.card,
+                      color: CustomColors.primaryColor,
+                      size: 24.sp,
+                    ),
+                    SizedBox(width: 12.w),
+                    Text(
+                      'Payment Method',
+                      style: TextStyle(
+                        fontFamily: 'CircularStd',
+                        fontSize: 18.sp,
+                        fontWeight: FontWeight.bold,
+                        color: CustomColors.blackColor,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 8.h),
+                Text(
+                  'Choose how you want to receive payments',
+                  style: TextStyle(
+                    fontFamily: 'CircularStd',
+                    fontSize: 14.sp,
+                    color: CustomColors.blackColor.withValues(alpha: 0.6),
+                  ),
+                ),
+              ],
             ),
           ),
-          SizedBox(height: 8.h),
-          Text(
-            'Choose how you want to receive payments',
-            style: TextStyle(
-              fontSize: 14.sp,
-              color: Colors.grey.shade600,
-            ),
-          ),
+          
           SizedBox(height: 24.h),
           
           // Payment Method Selection
-          _buildPaymentMethodOption(
-            'Bank Account',
-            'Direct deposit to your bank account',
-            Icons.account_balance,
-            'bank_account',
+          Container(
+            padding: EdgeInsets.all(24.w),
+            decoration: BoxDecoration(
+              color: CustomColors.whiteColor,
+              borderRadius: BorderRadius.circular(20.r),
+              border: Border.all(
+                color: CustomColors.primaryColor.withValues(alpha: 0.1),
+                width: 1,
+              ),
+            ),
+            child: Column(
+              children: [
+                _buildPaymentMethodOption(
+                  'Bank Account',
+                  'Direct deposit to your bank account',
+                  Iconsax.bank,
+                  'bank_account',
+                ),
+                SizedBox(height: 16.h),
+                
+                _buildPaymentMethodOption(
+                  'PayPal',
+                  'Receive payments via PayPal',
+                  Iconsax.card,
+                  'paypal',
+                ),
+                SizedBox(height: 16.h),
+                
+                _buildPaymentMethodOption(
+                  'Stripe',
+                  'Secure payment processing with Stripe',
+                  Iconsax.wallet_3,
+                  'stripe',
+                ),
+              ],
+            ),
           ),
-          SizedBox(height: 16.h),
           
-          _buildPaymentMethodOption(
-            'PayPal',
-            'Receive payments via PayPal',
-            Icons.payment,
-            'paypal',
-          ),
-          SizedBox(height: 16.h),
-          
-          _buildPaymentMethodOption(
-            'Stripe',
-            'Secure payment processing with Stripe',
-            Icons.account_balance_wallet,
-            'stripe',
-          ),
           SizedBox(height: 24.h),
           
           // Payment Details Form
@@ -92,22 +139,31 @@ class _DriverPaymentScreenState extends State<DriverPaymentScreen> {
         padding: EdgeInsets.all(16.w),
         decoration: BoxDecoration(
           border: Border.all(
-            color: isSelected ? CustomColors.primaryColor : Colors.grey.shade300,
+            color: isSelected 
+                ? CustomColors.primaryColor 
+                : CustomColors.primaryColor.withValues(alpha: 0.2),
+            width: 1.5,
           ),
           borderRadius: BorderRadius.circular(12.r),
-          color: isSelected ? CustomColors.primaryColor.withOpacity(0.1) : Colors.white,
+          color: isSelected 
+              ? CustomColors.primaryColor.withValues(alpha: 0.1) 
+              : CustomColors.whiteColor,
         ),
         child: Row(
           children: [
             Container(
               padding: EdgeInsets.all(8.w),
               decoration: BoxDecoration(
-                color: isSelected ? CustomColors.primaryColor : Colors.grey.shade100,
+                color: isSelected 
+                    ? CustomColors.primaryColor 
+                    : CustomColors.primaryColor.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(8.r),
               ),
               child: Icon(
                 icon,
-                color: isSelected ? Colors.white : Colors.grey.shade600,
+                color: isSelected 
+                    ? CustomColors.whiteColor 
+                    : CustomColors.primaryColor,
                 size: 24.w,
               ),
             ),
@@ -119,16 +175,20 @@ class _DriverPaymentScreenState extends State<DriverPaymentScreen> {
                   Text(
                     title,
                     style: TextStyle(
+                      fontFamily: 'CircularStd',
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w600,
-                      color: isSelected ? CustomColors.primaryColor : Colors.black87,
+                      color: isSelected 
+                          ? CustomColors.primaryColor 
+                          : CustomColors.blackColor,
                     ),
                   ),
                   Text(
                     subtitle,
                     style: TextStyle(
+                      fontFamily: 'CircularStd',
                       fontSize: 12.sp,
-                      color: Colors.grey.shade600,
+                      color: CustomColors.blackColor.withValues(alpha: 0.6),
                     ),
                   ),
                 ],
@@ -136,7 +196,7 @@ class _DriverPaymentScreenState extends State<DriverPaymentScreen> {
             ),
             if (isSelected)
               Icon(
-                Icons.check_circle,
+                Iconsax.tick_circle,
                 color: CustomColors.primaryColor,
                 size: 20.w,
               ),
@@ -147,180 +207,259 @@ class _DriverPaymentScreenState extends State<DriverPaymentScreen> {
   }
 
   Widget _buildBankAccountForm() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Bank Account Details',
-          style: TextStyle(
-            fontSize: 16.sp,
-            fontWeight: FontWeight.w600,
-            color: Colors.black87,
+    return Container(
+      padding: EdgeInsets.all(24.w),
+      decoration: BoxDecoration(
+        color: CustomColors.whiteColor,
+        borderRadius: BorderRadius.circular(20.r),
+        border: Border.all(
+          color: CustomColors.primaryColor.withValues(alpha: 0.1),
+          width: 1,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Bank Account Details',
+            style: TextStyle(
+              fontFamily: 'CircularStd',
+              fontSize: 16.sp,
+              fontWeight: FontWeight.w600,
+              color: CustomColors.blackColor,
+            ),
           ),
-        ),
-        SizedBox(height: 16.h),
-        _buildInputField(
-          'Account Holder Name',
-          'Enter account holder name',
-          _accountHolderNameController,
-        ),
-        SizedBox(height: 16.h),
-        _buildInputField(
-          'Account Number',
-          'Enter your account number',
-          _accountNumberController,
-          keyboardType: TextInputType.number,
-        ),
-        SizedBox(height: 16.h),
-        _buildInputField(
-          'Routing Number',
-          'Enter your routing number',
-          _routingNumberController,
-          keyboardType: TextInputType.number,
-        ),
-        SizedBox(height: 16.h),
-        Container(
-          padding: EdgeInsets.all(12.w),
-          decoration: BoxDecoration(
-            color: Colors.blue.shade50,
-            borderRadius: BorderRadius.circular(8.r),
-            border: Border.all(color: Colors.blue.shade200),
+          SizedBox(height: 20.h),
+          _buildInputField(
+            'Account Holder Name',
+            'Enter account holder name',
+            _accountHolderNameController,
+            icon: Iconsax.user,
           ),
-          child: Row(
-            children: [
-              Icon(
-                Icons.security,
-                color: Colors.blue.shade600,
-                size: 16.w,
+          SizedBox(height: 20.h),
+          _buildInputField(
+            'Account Number',
+            'Enter your account number',
+            _accountNumberController,
+            keyboardType: TextInputType.number,
+            icon: Iconsax.card,
+          ),
+          SizedBox(height: 20.h),
+          _buildInputField(
+            'Routing Number',
+            'Enter your routing number',
+            _routingNumberController,
+            keyboardType: TextInputType.number,
+            icon: Iconsax.bank,
+          ),
+          SizedBox(height: 20.h),
+          Container(
+            padding: EdgeInsets.all(16.w),
+            decoration: BoxDecoration(
+              color: CustomColors.primaryColor.withValues(alpha: 0.05),
+              borderRadius: BorderRadius.circular(12.r),
+              border: Border.all(
+                color: CustomColors.primaryColor.withValues(alpha: 0.2),
+                width: 1,
               ),
-              SizedBox(width: 8.w),
-              Expanded(
-                child: Text(
-                  'Your bank account information is encrypted and secure',
-                  style: TextStyle(
-                    fontSize: 12.sp,
-                    color: Colors.blue.shade700,
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  Iconsax.shield_tick,
+                  color: CustomColors.primaryColor,
+                  size: 20.w,
+                ),
+                SizedBox(width: 12.w),
+                Expanded(
+                  child: Text(
+                    'Your bank account information is encrypted and secure',
+                    style: TextStyle(
+                      fontFamily: 'CircularStd',
+                      fontSize: 12.sp,
+                      color: CustomColors.blackColor.withValues(alpha: 0.7),
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
   Widget _buildPayPalForm() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          padding: EdgeInsets.all(20.w),
-          decoration: BoxDecoration(
-            color: Colors.blue.shade50,
-            borderRadius: BorderRadius.circular(12.r),
-            border: Border.all(color: Colors.blue.shade200),
-          ),
-          child: Column(
-            children: [
-              Icon(
-                Icons.payment,
-                size: 48.w,
-                color: Colors.blue.shade600,
+    return Container(
+      padding: EdgeInsets.all(24.w),
+      decoration: BoxDecoration(
+        color: CustomColors.whiteColor,
+        borderRadius: BorderRadius.circular(20.r),
+        border: Border.all(
+          color: CustomColors.primaryColor.withValues(alpha: 0.1),
+          width: 1,
+        ),
+      ),
+      child: Column(
+        children: [
+          Container(
+            padding: EdgeInsets.all(20.w),
+            decoration: BoxDecoration(
+              color: CustomColors.primaryColor.withValues(alpha: 0.05),
+              borderRadius: BorderRadius.circular(16.r),
+              border: Border.all(
+                color: CustomColors.primaryColor.withValues(alpha: 0.2),
+                width: 1,
               ),
-              SizedBox(height: 16.h),
-              Text(
-                'PayPal Integration',
-                style: TextStyle(
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.blue.shade800,
+            ),
+            child: Column(
+              children: [
+                Icon(
+                  Iconsax.card,
+                  size: 48.w,
+                  color: CustomColors.primaryColor,
                 ),
-              ),
-              SizedBox(height: 8.h),
-              Text(
-                'You will be redirected to PayPal to connect your account securely',
-                style: TextStyle(
-                  fontSize: 14.sp,
-                  color: Colors.blue.shade700,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(height: 20.h),
-              ElevatedButton(
-                onPressed: () {
-                  // Handle PayPal connection
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue.shade600,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8.r),
+                SizedBox(height: 16.h),
+                Text(
+                  'PayPal Integration',
+                  style: TextStyle(
+                    fontFamily: 'CircularStd',
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w600,
+                    color: CustomColors.blackColor,
                   ),
                 ),
-                child: Text('Connect PayPal'),
-              ),
-            ],
+                SizedBox(height: 8.h),
+                Text(
+                  'You will be redirected to PayPal to connect your account securely',
+                  style: TextStyle(
+                    fontFamily: 'CircularStd',
+                    fontSize: 14.sp,
+                    color: CustomColors.blackColor.withValues(alpha: 0.6),
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 20.h),
+                Container(
+                  width: double.infinity,
+                  height: 48.h,
+                  decoration: BoxDecoration(
+                    color: CustomColors.primaryColor,
+                    borderRadius: BorderRadius.circular(12.r),
+                  ),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(12.r),
+                      onTap: () {
+                        // Handle PayPal connection
+                      },
+                      child: Center(
+                        child: Text(
+                          'Connect PayPal',
+                          style: TextStyle(
+                            fontFamily: 'CircularStd',
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w600,
+                            color: CustomColors.whiteColor,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
   Widget _buildStripeForm() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          padding: EdgeInsets.all(20.w),
-          decoration: BoxDecoration(
-            color: Colors.purple.shade50,
-            borderRadius: BorderRadius.circular(12.r),
-            border: Border.all(color: Colors.purple.shade200),
-          ),
-          child: Column(
-            children: [
-              Icon(
-                Icons.account_balance_wallet,
-                size: 48.w,
-                color: Colors.purple.shade600,
+    return Container(
+      padding: EdgeInsets.all(24.w),
+      decoration: BoxDecoration(
+        color: CustomColors.whiteColor,
+        borderRadius: BorderRadius.circular(20.r),
+        border: Border.all(
+          color: CustomColors.primaryColor.withValues(alpha: 0.1),
+          width: 1,
+        ),
+      ),
+      child: Column(
+        children: [
+          Container(
+            padding: EdgeInsets.all(20.w),
+            decoration: BoxDecoration(
+              color: CustomColors.primaryColor.withValues(alpha: 0.05),
+              borderRadius: BorderRadius.circular(16.r),
+              border: Border.all(
+                color: CustomColors.primaryColor.withValues(alpha: 0.2),
+                width: 1,
               ),
-              SizedBox(height: 16.h),
-              Text(
-                'Stripe Integration',
-                style: TextStyle(
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.purple.shade800,
+            ),
+            child: Column(
+              children: [
+                Icon(
+                  Iconsax.wallet_3,
+                  size: 48.w,
+                  color: CustomColors.primaryColor,
                 ),
-              ),
-              SizedBox(height: 8.h),
-              Text(
-                'Connect with Stripe for secure payment processing and instant payouts',
-                style: TextStyle(
-                  fontSize: 14.sp,
-                  color: Colors.purple.shade700,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(height: 20.h),
-              ElevatedButton(
-                onPressed: () {
-                  // Handle Stripe connection
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.purple.shade600,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8.r),
+                SizedBox(height: 16.h),
+                Text(
+                  'Stripe Integration',
+                  style: TextStyle(
+                    fontFamily: 'CircularStd',
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w600,
+                    color: CustomColors.blackColor,
                   ),
                 ),
-                child: Text('Connect Stripe'),
-              ),
-            ],
+                SizedBox(height: 8.h),
+                Text(
+                  'Connect with Stripe for secure payment processing and instant payouts',
+                  style: TextStyle(
+                    fontFamily: 'CircularStd',
+                    fontSize: 14.sp,
+                    color: CustomColors.blackColor.withValues(alpha: 0.6),
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 20.h),
+                Container(
+                  width: double.infinity,
+                  height: 48.h,
+                  decoration: BoxDecoration(
+                    color: CustomColors.primaryColor,
+                    borderRadius: BorderRadius.circular(12.r),
+                  ),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(12.r),
+                      onTap: () {
+                        // Handle Stripe connection
+                      },
+                      child: Center(
+                        child: Text(
+                          'Connect Stripe',
+                          style: TextStyle(
+                            fontFamily: 'CircularStd',
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w600,
+                            color: CustomColors.whiteColor,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -329,6 +468,7 @@ class _DriverPaymentScreenState extends State<DriverPaymentScreen> {
     String hint,
     TextEditingController controller, {
     TextInputType? keyboardType,
+    IconData? icon,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -336,29 +476,58 @@ class _DriverPaymentScreenState extends State<DriverPaymentScreen> {
         Text(
           label,
           style: TextStyle(
+            fontFamily: 'CircularStd',
             fontSize: 14.sp,
-            fontWeight: FontWeight.w500,
-            color: Colors.black87,
+            fontWeight: FontWeight.w600,
+            color: CustomColors.blackColor,
           ),
         ),
         SizedBox(height: 8.h),
         TextFormField(
           controller: controller,
           keyboardType: keyboardType,
+          style: TextStyle(
+            fontFamily: 'CircularStd',
+            fontSize: 16.sp,
+            color: CustomColors.blackColor,
+            fontWeight: FontWeight.w500,
+          ),
           decoration: InputDecoration(
             hintText: hint,
+            hintStyle: TextStyle(
+              fontFamily: 'CircularStd',
+              fontSize: 16.sp,
+              color: CustomColors.blackColor.withValues(alpha: 0.5),
+              fontWeight: FontWeight.w400,
+            ),
+            filled: true,
+            fillColor: CustomColors.whiteColor,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12.r),
-              borderSide: BorderSide(color: Colors.grey.shade300),
+              borderSide: BorderSide.none,
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12.r),
-              borderSide: BorderSide(color: Colors.grey.shade300),
+              borderSide: BorderSide.none,
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12.r),
-              borderSide: BorderSide(color: CustomColors.primaryColor),
+              borderSide: BorderSide(
+                color: CustomColors.primaryColor,
+                width: 2.0,
+              ),
             ),
+            contentPadding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 18.h),
+            prefixIcon: icon != null
+                ? Padding(
+                    padding: EdgeInsets.all(16.w),
+                    child: Icon(
+                      icon,
+                      color: CustomColors.primaryColor,
+                      size: 20.sp,
+                    ),
+                  )
+                : null,
           ),
         ),
       ],

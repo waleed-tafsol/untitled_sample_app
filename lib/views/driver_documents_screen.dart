@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:iconsax/iconsax.dart';
 import '../utils/custom_colors.dart';
 
 class DriverDocumentsScreen extends StatefulWidget {
@@ -24,51 +25,101 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Required Documents',
-            style: TextStyle(
-              fontSize: 18.sp,
-              fontWeight: FontWeight.w600,
-              color: Colors.black87,
+          // Header Section
+          Container(
+            padding: EdgeInsets.all(24.w),
+            decoration: BoxDecoration(
+              color: CustomColors.whiteColor,
+              borderRadius: BorderRadius.circular(20.r),
+              border: Border.all(
+                color: CustomColors.primaryColor.withValues(alpha: 0.1),
+                width: 1,
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(
+                      Iconsax.document_text,
+                      color: CustomColors.primaryColor,
+                      size: 24.sp,
+                    ),
+                    SizedBox(width: 12.w),
+                    Text(
+                      'Required Documents',
+                      style: TextStyle(
+                        fontFamily: 'CircularStd',
+                        fontSize: 18.sp,
+                        fontWeight: FontWeight.bold,
+                        color: CustomColors.blackColor,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 8.h),
+                Text(
+                  'Please upload all required documents to complete your registration',
+                  style: TextStyle(
+                    fontFamily: 'CircularStd',
+                    fontSize: 14.sp,
+                    color: CustomColors.blackColor.withValues(alpha: 0.6),
+                  ),
+                ),
+              ],
             ),
           ),
-          SizedBox(height: 8.h),
-          Text(
-            'Please upload all required documents to complete your registration',
-            style: TextStyle(
-              fontSize: 14.sp,
-              color: Colors.grey.shade600,
+          
+          SizedBox(height: 24.h),
+          
+          // Documents List
+          Container(
+            padding: EdgeInsets.all(24.w),
+            decoration: BoxDecoration(
+              color: CustomColors.whiteColor,
+              borderRadius: BorderRadius.circular(20.r),
+              border: Border.all(
+                color: CustomColors.primaryColor.withValues(alpha: 0.1),
+                width: 1,
+              ),
+            ),
+            child: Column(
+              children: [
+                _buildDocumentUpload(
+                  'Driver License',
+                  'Upload front and back of your driver license',
+                  'driverLicense',
+                  Iconsax.card,
+                ),
+                SizedBox(height: 16.h),
+                _buildDocumentUpload(
+                  'Vehicle Registration',
+                  'Upload your vehicle registration certificate',
+                  'vehicleRegistration',
+                  Iconsax.car,
+                ),
+                SizedBox(height: 16.h),
+                _buildDocumentUpload(
+                  'Insurance Certificate',
+                  'Upload your vehicle insurance certificate',
+                  'insuranceCertificate',
+                  Iconsax.shield_tick,
+                ),
+                SizedBox(height: 16.h),
+                _buildDocumentUpload(
+                  'Background Check',
+                  'Upload your background check certificate',
+                  'backgroundCheck',
+                  Iconsax.verify,
+                ),
+              ],
             ),
           ),
-          SizedBox(height: 20.h),
-          _buildDocumentUpload(
-            'Driver License',
-            'Upload front and back of your driver license',
-            'driverLicense',
-            Icons.credit_card,
-          ),
-          SizedBox(height: 16.h),
-          _buildDocumentUpload(
-            'Vehicle Registration',
-            'Upload your vehicle registration certificate',
-            'vehicleRegistration',
-            Icons.directions_car,
-          ),
-          SizedBox(height: 16.h),
-          _buildDocumentUpload(
-            'Insurance Certificate',
-            'Upload your vehicle insurance certificate',
-            'insuranceCertificate',
-            Icons.security,
-          ),
-          SizedBox(height: 16.h),
-          _buildDocumentUpload(
-            'Background Check',
-            'Upload your background check certificate',
-            'backgroundCheck',
-            Icons.verified_user,
-          ),
-          SizedBox(height: 20.h),
+          
+          SizedBox(height: 24.h),
+          
+          // Upload Progress
           _buildUploadProgress(),
         ],
       ),
@@ -89,22 +140,31 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
         padding: EdgeInsets.all(16.w),
         decoration: BoxDecoration(
           border: Border.all(
-            color: isUploaded ? Colors.green : Colors.grey.shade300,
+            color: isUploaded 
+                ? CustomColors.primaryColor 
+                : CustomColors.primaryColor.withValues(alpha: 0.2),
+            width: 1.5,
           ),
           borderRadius: BorderRadius.circular(12.r),
-          color: isUploaded ? Colors.green.withOpacity(0.1) : Colors.white,
+          color: isUploaded 
+              ? CustomColors.primaryColor.withValues(alpha: 0.1) 
+              : CustomColors.whiteColor,
         ),
         child: Row(
           children: [
             Container(
               padding: EdgeInsets.all(8.w),
               decoration: BoxDecoration(
-                color: isUploaded ? Colors.green : CustomColors.primaryColor.withOpacity(0.1),
+                color: isUploaded 
+                    ? CustomColors.primaryColor 
+                    : CustomColors.primaryColor.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(8.r),
               ),
               child: Icon(
-                isUploaded ? Icons.check : icon,
-                color: isUploaded ? Colors.white : CustomColors.primaryColor,
+                isUploaded ? Iconsax.tick_circle : icon,
+                color: isUploaded 
+                    ? CustomColors.whiteColor 
+                    : CustomColors.primaryColor,
                 size: 24.w,
               ),
             ),
@@ -116,17 +176,19 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
                   Text(
                     title,
                     style: TextStyle(
+                      fontFamily: 'CircularStd',
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w600,
-                      color: Colors.black87,
+                      color: CustomColors.blackColor,
                     ),
                   ),
                   SizedBox(height: 4.h),
                   Text(
                     subtitle,
                     style: TextStyle(
+                      fontFamily: 'CircularStd',
                       fontSize: 12.sp,
-                      color: Colors.grey.shade600,
+                      color: CustomColors.blackColor.withValues(alpha: 0.6),
                     ),
                   ),
                 ],
@@ -134,15 +196,15 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
             ),
             if (isUploaded)
               Icon(
-                Icons.check_circle,
-                color: Colors.green,
+                Iconsax.tick_circle,
+                color: CustomColors.primaryColor,
                 size: 20.w,
               )
             else
               Icon(
-                Icons.arrow_forward_ios,
+                Iconsax.arrow_right_3,
                 size: 16.w,
-                color: Colors.grey.shade400,
+                color: CustomColors.blackColor.withValues(alpha: 0.4),
               ),
           ],
         ),
@@ -156,37 +218,42 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
     final progress = uploadedCount / totalCount;
 
     return Container(
-      padding: EdgeInsets.all(16.w),
+      padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
-        color: Colors.blue.shade50,
-        borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(color: Colors.blue.shade200),
+        color: CustomColors.primaryColor.withValues(alpha: 0.05),
+        borderRadius: BorderRadius.circular(16.r),
+        border: Border.all(
+          color: CustomColors.primaryColor.withValues(alpha: 0.2),
+          width: 1,
+        ),
       ),
       child: Column(
         children: [
           Row(
             children: [
               Icon(
-                Icons.upload_file,
-                color: Colors.blue.shade600,
+                Iconsax.import,
+                color: CustomColors.primaryColor,
                 size: 20.w,
               ),
               SizedBox(width: 8.w),
               Text(
                 'Upload Progress',
                 style: TextStyle(
+                  fontFamily: 'CircularStd',
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w600,
-                  color: Colors.blue.shade800,
+                  color: CustomColors.blackColor,
                 ),
               ),
               const Spacer(),
               Text(
                 '$uploadedCount/$totalCount',
                 style: TextStyle(
+                  fontFamily: 'CircularStd',
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w600,
-                  color: Colors.blue.shade800,
+                  color: CustomColors.primaryColor,
                 ),
               ),
             ],
@@ -194,8 +261,8 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
           SizedBox(height: 12.h),
           LinearProgressIndicator(
             value: progress,
-            backgroundColor: Colors.blue.shade200,
-            valueColor: AlwaysStoppedAnimation<Color>(Colors.blue.shade600),
+            backgroundColor: CustomColors.primaryColor.withValues(alpha: 0.2),
+            valueColor: AlwaysStoppedAnimation<Color>(CustomColors.primaryColor),
             borderRadius: BorderRadius.circular(4.r),
           ),
           SizedBox(height: 8.h),
@@ -204,8 +271,9 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
                 ? 'All documents uploaded successfully!'
                 : 'Upload all documents to continue',
             style: TextStyle(
+              fontFamily: 'CircularStd',
               fontSize: 12.sp,
-              color: Colors.blue.shade700,
+              color: CustomColors.blackColor.withValues(alpha: 0.6),
             ),
           ),
         ],
@@ -218,26 +286,134 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Upload Document'),
-        content: const Text('Choose how you want to upload the document:'),
+        backgroundColor: CustomColors.whiteColor,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.r),
+        ),
+        title: Row(
+          children: [
+            Icon(
+              Iconsax.import,
+              color: CustomColors.primaryColor,
+              size: 24.sp,
+            ),
+            SizedBox(width: 8.w),
+            Text(
+              'Upload Document',
+              style: TextStyle(
+                fontFamily: 'CircularStd',
+                color: CustomColors.blackColor,
+                fontSize: 18.sp,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+        content: Text(
+          'Choose how you want to upload the document:',
+          style: TextStyle(
+            fontFamily: 'CircularStd',
+            color: CustomColors.blackColor.withValues(alpha: 0.7),
+            fontSize: 14.sp,
+          ),
+        ),
         actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              _simulateUpload(documentKey);
-            },
-            child: const Text('Camera'),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              _simulateUpload(documentKey);
-            },
-            child: const Text('Gallery'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
+          Row(
+            children: [
+              Expanded(
+                child: Container(
+                  height: 48.h,
+                  decoration: BoxDecoration(
+                    color: CustomColors.primaryColor,
+                    borderRadius: BorderRadius.circular(12.r),
+                  ),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(12.r),
+                      onTap: () {
+                        Navigator.pop(context);
+                        _simulateUpload(documentKey);
+                      },
+                      child: Center(
+                        child: Text(
+                          'Camera',
+                          style: TextStyle(
+                            fontFamily: 'CircularStd',
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w600,
+                            color: CustomColors.whiteColor,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(width: 8.w),
+              Expanded(
+                child: Container(
+                  height: 48.h,
+                  decoration: BoxDecoration(
+                    color: CustomColors.primaryColor,
+                    borderRadius: BorderRadius.circular(12.r),
+                  ),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(12.r),
+                      onTap: () {
+                        Navigator.pop(context);
+                        _simulateUpload(documentKey);
+                      },
+                      child: Center(
+                        child: Text(
+                          'Gallery',
+                          style: TextStyle(
+                            fontFamily: 'CircularStd',
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w600,
+                            color: CustomColors.whiteColor,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(width: 8.w),
+              Expanded(
+                child: Container(
+                  height: 48.h,
+                  decoration: BoxDecoration(
+                    color: CustomColors.whiteColor,
+                    borderRadius: BorderRadius.circular(12.r),
+                    border: Border.all(
+                      color: CustomColors.primaryColor,
+                      width: 1.5,
+                    ),
+                  ),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(12.r),
+                      onTap: () => Navigator.pop(context),
+                      child: Center(
+                        child: Text(
+                          'Cancel',
+                          style: TextStyle(
+                            fontFamily: 'CircularStd',
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w600,
+                            color: CustomColors.primaryColor,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -252,8 +428,18 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
     
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('Document uploaded successfully!'),
-        backgroundColor: Colors.green,
+        content: Text(
+          'Document uploaded successfully!',
+          style: TextStyle(
+            fontFamily: 'CircularStd',
+            color: CustomColors.whiteColor,
+          ),
+        ),
+        backgroundColor: CustomColors.primaryColor,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8.r),
+        ),
         duration: Duration(seconds: 2),
       ),
     );

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:iconsax/iconsax.dart';
+import '../utils/custom_colors.dart';
 
 class DriverStripeKycScreen extends StatefulWidget {
   const DriverStripeKycScreen({super.key});
@@ -19,22 +21,52 @@ class _DriverStripeKycScreenState extends State<DriverStripeKycScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Connect with Stripe',
-            style: TextStyle(
-              fontSize: 18.sp,
-              fontWeight: FontWeight.w600,
-              color: Colors.black87,
+          // Header Section
+          Container(
+            padding: EdgeInsets.all(24.w),
+            decoration: BoxDecoration(
+              color: CustomColors.whiteColor,
+              borderRadius: BorderRadius.circular(20.r),
+              border: Border.all(
+                color: CustomColors.primaryColor.withValues(alpha: 0.1),
+                width: 1,
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(
+                      Iconsax.wallet_3,
+                      color: CustomColors.primaryColor,
+                      size: 24.sp,
+                    ),
+                    SizedBox(width: 12.w),
+                    Text(
+                      'Connect with Stripe',
+                      style: TextStyle(
+                        fontFamily: 'CircularStd',
+                        fontSize: 18.sp,
+                        fontWeight: FontWeight.bold,
+                        color: CustomColors.blackColor,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 8.h),
+                Text(
+                  'Set up secure payment processing with Stripe',
+                  style: TextStyle(
+                    fontFamily: 'CircularStd',
+                    fontSize: 14.sp,
+                    color: CustomColors.blackColor.withValues(alpha: 0.6),
+                  ),
+                ),
+              ],
             ),
           ),
-          SizedBox(height: 8.h),
-          Text(
-            'Set up secure payment processing with Stripe',
-            style: TextStyle(
-              fontSize: 14.sp,
-              color: Colors.grey.shade600,
-            ),
-          ),
+          
           SizedBox(height: 24.h),
           
           if (!_isConnected) _buildStripeConnectionCard(),
@@ -58,95 +90,105 @@ class _DriverStripeKycScreenState extends State<DriverStripeKycScreen> {
     return Container(
       padding: EdgeInsets.all(24.w),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Colors.purple.shade50,
-            Colors.blue.shade50,
-          ],
+        color: CustomColors.whiteColor,
+        borderRadius: BorderRadius.circular(20.r),
+        border: Border.all(
+          color: CustomColors.primaryColor.withValues(alpha: 0.2),
+          width: 1,
         ),
-        borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(color: Colors.purple.shade200),
       ),
       child: Column(
         children: [
           Container(
             padding: EdgeInsets.all(16.w),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: CustomColors.primaryColor.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(50.r),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.purple.withOpacity(0.1),
-                  blurRadius: 10,
-                  offset: const Offset(0, 4),
-                ),
-              ],
             ),
             child: Icon(
-              Icons.account_balance_wallet,
+              Iconsax.wallet_3,
               size: 48.w,
-              color: Colors.purple.shade600,
+              color: CustomColors.primaryColor,
             ),
           ),
           SizedBox(height: 20.h),
           Text(
             'Stripe Payment Processing',
             style: TextStyle(
+              fontFamily: 'CircularStd',
               fontSize: 20.sp,
               fontWeight: FontWeight.bold,
-              color: Colors.purple.shade800,
+              color: CustomColors.blackColor,
             ),
           ),
           SizedBox(height: 8.h),
           Text(
             'Connect your Stripe account to receive payments securely and efficiently',
             style: TextStyle(
+              fontFamily: 'CircularStd',
               fontSize: 14.sp,
-              color: Colors.purple.shade700,
+              color: CustomColors.blackColor.withValues(alpha: 0.6),
             ),
             textAlign: TextAlign.center,
           ),
           SizedBox(height: 24.h),
           _buildFeatureList(),
           SizedBox(height: 24.h),
-          SizedBox(
+          Container(
             width: double.infinity,
-            child: ElevatedButton(
-              onPressed: _isConnecting ? null : _connectStripe,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.purple.shade600,
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12.r),
-                ),
-                padding: EdgeInsets.symmetric(vertical: 16.h),
-              ),
-              child: _isConnecting
-                  ? Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SizedBox(
-                          width: 20.w,
-                          height: 20.w,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                          ),
+            height: 56.h,
+            decoration: BoxDecoration(
+              color: CustomColors.primaryColor,
+              borderRadius: BorderRadius.circular(16.r),
+            ),
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                borderRadius: BorderRadius.circular(16.r),
+                onTap: _isConnecting ? null : _connectStripe,
+                child: Center(
+                  child: _isConnecting
+                      ? Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              width: 20.w,
+                              height: 20.w,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                valueColor: AlwaysStoppedAnimation<Color>(CustomColors.whiteColor),
+                              ),
+                            ),
+                            SizedBox(width: 12.w),
+                            Text(
+                              'Connecting...',
+                              style: TextStyle(
+                                fontFamily: 'CircularStd',
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.w600,
+                                color: CustomColors.whiteColor,
+                              ),
+                            ),
+                          ],
+                        )
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Iconsax.wallet_3, size: 20.sp, color: CustomColors.whiteColor),
+                            SizedBox(width: 8.w),
+                            Text(
+                              'Connect Stripe',
+                              style: TextStyle(
+                                fontFamily: 'CircularStd',
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.w600,
+                                color: CustomColors.whiteColor,
+                              ),
+                            ),
+                          ],
                         ),
-                        SizedBox(width: 12.w),
-                        Text('Connecting...'),
-                      ],
-                    )
-                  : Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.account_balance_wallet, size: 20.w),
-                        SizedBox(width: 8.w),
-                        Text('Connect Stripe'),
-                      ],
-                    ),
+                ),
+              ),
             ),
           ),
         ],
@@ -170,16 +212,17 @@ class _DriverStripeKycScreenState extends State<DriverStripeKycScreen> {
         child: Row(
           children: [
             Icon(
-              Icons.check_circle,
-              color: Colors.green.shade600,
+              Iconsax.tick_circle,
+              color: CustomColors.primaryColor,
               size: 16.w,
             ),
             SizedBox(width: 8.w),
             Text(
               feature,
               style: TextStyle(
+                fontFamily: 'CircularStd',
                 fontSize: 14.sp,
-                color: Colors.purple.shade700,
+                color: CustomColors.blackColor.withValues(alpha: 0.7),
               ),
             ),
           ],
@@ -192,32 +235,37 @@ class _DriverStripeKycScreenState extends State<DriverStripeKycScreen> {
     return Container(
       padding: EdgeInsets.all(24.w),
       decoration: BoxDecoration(
-        color: Colors.green.shade50,
-        borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(color: Colors.green.shade200),
+        color: CustomColors.whiteColor,
+        borderRadius: BorderRadius.circular(20.r),
+        border: Border.all(
+          color: CustomColors.primaryColor,
+          width: 1.5,
+        ),
       ),
       child: Column(
         children: [
           Icon(
-            Icons.check_circle,
+            Iconsax.tick_circle,
             size: 48.w,
-            color: Colors.green.shade600,
+            color: CustomColors.primaryColor,
           ),
           SizedBox(height: 16.h),
           Text(
             'Stripe Connected Successfully!',
             style: TextStyle(
+              fontFamily: 'CircularStd',
               fontSize: 18.sp,
               fontWeight: FontWeight.bold,
-              color: Colors.green.shade800,
+              color: CustomColors.blackColor,
             ),
           ),
           SizedBox(height: 8.h),
           Text(
             'Your Stripe account is now connected and ready to process payments',
             style: TextStyle(
+              fontFamily: 'CircularStd',
               fontSize: 14.sp,
-              color: Colors.green.shade700,
+              color: CustomColors.blackColor.withValues(alpha: 0.6),
             ),
             textAlign: TextAlign.center,
           ),
@@ -225,38 +273,68 @@ class _DriverStripeKycScreenState extends State<DriverStripeKycScreen> {
           Row(
             children: [
               Expanded(
-                child: OutlinedButton(
-                  onPressed: () {
-                    setState(() {
-                      _isConnected = false;
-                    });
-                  },
-                  style: OutlinedButton.styleFrom(
-                    side: BorderSide(color: Colors.red.shade400),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.r),
+                child: Container(
+                  height: 48.h,
+                  decoration: BoxDecoration(
+                    color: CustomColors.whiteColor,
+                    borderRadius: BorderRadius.circular(12.r),
+                    border: Border.all(
+                      color: Colors.red.shade400,
+                      width: 1.5,
                     ),
                   ),
-                  child: Text(
-                    'Disconnect',
-                    style: TextStyle(color: Colors.red.shade600),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(12.r),
+                      onTap: () {
+                        setState(() {
+                          _isConnected = false;
+                        });
+                      },
+                      child: Center(
+                        child: Text(
+                          'Disconnect',
+                          style: TextStyle(
+                            fontFamily: 'CircularStd',
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.red.shade600,
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
                 ),
               ),
               SizedBox(width: 12.w),
               Expanded(
-                child: ElevatedButton(
-                  onPressed: () {
-                    // Handle Stripe dashboard
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green.shade600,
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.r),
+                child: Container(
+                  height: 48.h,
+                  decoration: BoxDecoration(
+                    color: CustomColors.primaryColor,
+                    borderRadius: BorderRadius.circular(12.r),
+                  ),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(12.r),
+                      onTap: () {
+                        // Handle Stripe dashboard
+                      },
+                      child: Center(
+                        child: Text(
+                          'Dashboard',
+                          style: TextStyle(
+                            fontFamily: 'CircularStd',
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w600,
+                            color: CustomColors.whiteColor,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
-                  child: Text('Dashboard'),
                 ),
               ),
             ],
@@ -267,39 +345,51 @@ class _DriverStripeKycScreenState extends State<DriverStripeKycScreen> {
   }
 
   Widget _buildBenefitsSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Why Stripe?',
-          style: TextStyle(
-            fontSize: 16.sp,
-            fontWeight: FontWeight.w600,
-            color: Colors.black87,
+    return Container(
+      padding: EdgeInsets.all(24.w),
+      decoration: BoxDecoration(
+        color: CustomColors.whiteColor,
+        borderRadius: BorderRadius.circular(20.r),
+        border: Border.all(
+          color: CustomColors.primaryColor.withValues(alpha: 0.1),
+          width: 1,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Why Stripe?',
+            style: TextStyle(
+              fontFamily: 'CircularStd',
+              fontSize: 16.sp,
+              fontWeight: FontWeight.w600,
+              color: CustomColors.blackColor,
+            ),
           ),
-        ),
-        SizedBox(height: 12.h),
-        _buildBenefitItem(
-          'Fast Payouts',
-          'Get paid within 2 business days',
-          Icons.speed,
-        ),
-        _buildBenefitItem(
-          'Low Fees',
-          'Competitive rates starting at 2.9%',
-          Icons.attach_money,
-        ),
-        _buildBenefitItem(
-          'Global Reach',
-          'Accept payments from customers worldwide',
-          Icons.public,
-        ),
-        _buildBenefitItem(
-          'Security',
-          'Bank-level security and fraud protection',
-          Icons.security,
-        ),
-      ],
+          SizedBox(height: 16.h),
+          _buildBenefitItem(
+            'Fast Payouts',
+            'Get paid within 2 business days',
+            Iconsax.flash_1,
+          ),
+          _buildBenefitItem(
+            'Low Fees',
+            'Competitive rates starting at 2.9%',
+            Iconsax.dollar_circle,
+          ),
+          _buildBenefitItem(
+            'Global Reach',
+            'Accept payments from customers worldwide',
+            Iconsax.global,
+          ),
+          _buildBenefitItem(
+            'Security',
+            'Bank-level security and fraud protection',
+            Iconsax.shield_tick,
+          ),
+        ],
+      ),
     );
   }
 
@@ -311,12 +401,12 @@ class _DriverStripeKycScreenState extends State<DriverStripeKycScreen> {
           Container(
             padding: EdgeInsets.all(8.w),
             decoration: BoxDecoration(
-              color: Colors.blue.shade50,
+              color: CustomColors.primaryColor.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8.r),
             ),
             child: Icon(
               icon,
-              color: Colors.blue.shade600,
+              color: CustomColors.primaryColor,
               size: 20.w,
             ),
           ),
@@ -328,16 +418,18 @@ class _DriverStripeKycScreenState extends State<DriverStripeKycScreen> {
                 Text(
                   title,
                   style: TextStyle(
+                    fontFamily: 'CircularStd',
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w600,
-                    color: Colors.black87,
+                    color: CustomColors.blackColor,
                   ),
                 ),
                 Text(
                   description,
                   style: TextStyle(
+                    fontFamily: 'CircularStd',
                     fontSize: 12.sp,
-                    color: Colors.grey.shade600,
+                    color: CustomColors.blackColor.withValues(alpha: 0.6),
                   ),
                 ),
               ],
@@ -350,17 +442,20 @@ class _DriverStripeKycScreenState extends State<DriverStripeKycScreen> {
 
   Widget _buildSecurityInfo() {
     return Container(
-      padding: EdgeInsets.all(16.w),
+      padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
-        color: Colors.blue.shade50,
-        borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(color: Colors.blue.shade200),
+        color: CustomColors.primaryColor.withValues(alpha: 0.05),
+        borderRadius: BorderRadius.circular(16.r),
+        border: Border.all(
+          color: CustomColors.primaryColor.withValues(alpha: 0.2),
+          width: 1,
+        ),
       ),
       child: Row(
         children: [
           Icon(
-            Icons.security,
-            color: Colors.blue.shade600,
+            Iconsax.shield_tick,
+            color: CustomColors.primaryColor,
             size: 20.w,
           ),
           SizedBox(width: 12.w),
@@ -371,17 +466,19 @@ class _DriverStripeKycScreenState extends State<DriverStripeKycScreen> {
                 Text(
                   'Security & Compliance',
                   style: TextStyle(
+                    fontFamily: 'CircularStd',
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w600,
-                    color: Colors.blue.shade800,
+                    color: CustomColors.blackColor,
                   ),
                 ),
                 SizedBox(height: 4.h),
                 Text(
                   'Stripe is PCI DSS compliant and uses industry-standard encryption to protect your data',
                   style: TextStyle(
+                    fontFamily: 'CircularStd',
                     fontSize: 12.sp,
-                    color: Colors.blue.shade700,
+                    color: CustomColors.blackColor.withValues(alpha: 0.6),
                   ),
                 ),
               ],
@@ -407,8 +504,18 @@ class _DriverStripeKycScreenState extends State<DriverStripeKycScreen> {
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('Stripe connected successfully!'),
-        backgroundColor: Colors.green,
+        content: Text(
+          'Stripe connected successfully!',
+          style: TextStyle(
+            fontFamily: 'CircularStd',
+            color: CustomColors.whiteColor,
+          ),
+        ),
+        backgroundColor: CustomColors.primaryColor,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8.r),
+        ),
         duration: Duration(seconds: 3),
       ),
     );

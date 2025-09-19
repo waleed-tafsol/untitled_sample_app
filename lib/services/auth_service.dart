@@ -6,21 +6,18 @@ class AuthService {
 
   /// Sends OTP to the provided phone number
   /// In a real app, this would make an API call to your backend
-  Future<void> sendOtp(String phoneNumber) async {
+  Future<void> sendOtpPhone(String phoneNumber) async {
     await Future.delayed(_apiDelay);
-    
-    // Simulate potential errors
     if (phoneNumber.isEmpty) {
       throw Exception('Phone number cannot be empty');
     }
-    
-    // In a real app, you would:
-    // 1. Validate the phone number format
-    // 2. Make an API call to your backend
-    // 3. Backend would send SMS via a service like Twilio, AWS SNS, etc.
-    // 4. Return success/failure response
-    
-    // OTP sent successfully
+  }
+
+  Future<void> sendOtpEmail(String email) async {
+    await Future.delayed(_apiDelay);
+    if (email.isEmpty) {
+      throw Exception('Phone number cannot be empty');
+    }
   }
 
   /// Verifies the OTP for the given phone number
@@ -49,6 +46,6 @@ class AuthService {
 
   /// Resends OTP to the provided phone number
   Future<void> resendOtp(String phoneNumber) async {
-    await sendOtp(phoneNumber);
+    await sendOtpPhone(phoneNumber);
   }
 }
