@@ -203,8 +203,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           children: [
                             // Input Field
                             authViewModel.getLoginWith == LoginWith.phone.value
-                                ? phoneFieldWidget()
-                                : Container(
+                                ? Container(
                                     decoration: BoxDecoration(
                                       boxShadow: kElevationToShadow[3],
                                       color: CustomColors.whiteColor,
@@ -212,8 +211,17 @@ class _LoginScreenState extends State<LoginScreen> {
                                         Radius.circular(15.r),
                                       ),
                                     ),
-                                    child: emailFieldWidget(),
+                                    child: phoneFieldWidget(),
+                                  )
+                                : Container(
+                                decoration: BoxDecoration(
+                                  boxShadow: kElevationToShadow[3],
+                                  color: CustomColors.whiteColor,
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(15.r),
                                   ),
+                                ),
+                                child: emailFieldWidget()),
 
                             SizedBox(height: 30.h),
 

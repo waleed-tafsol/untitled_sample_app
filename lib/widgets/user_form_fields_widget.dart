@@ -4,16 +4,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:provider/provider.dart';
 import 'package:untitled_sample_app/utils/validators.dart';
-import 'package:untitled_sample_app/widgets/text_field_border.dart';
 
 import '../utils/custom_colors.dart';
 import '../view_models/auth_view_model.dart';
 
 Widget phoneFieldWidget({bool? viewOnly}) {
-  var textFieldBorder = TextFieldBorder(
-    borderSide: BorderSide.none,
-    borderRadius: BorderRadius.circular(15.r),
-  );
   return Consumer<AuthViewModel>(
     builder: (_, authViewModel, __) {
       return TextFormField(
@@ -30,10 +25,6 @@ Widget phoneFieldWidget({bool? viewOnly}) {
             horizontal: 10.w,
             vertical: 14.h,
           ),
-          border: textFieldBorder,
-          errorBorder: textFieldBorder,
-          focusedBorder: textFieldBorder,
-          enabledBorder: textFieldBorder,
           prefixIcon: Padding(
             padding: EdgeInsets.symmetric(horizontal: 10.w),
             child: IntrinsicHeight(
