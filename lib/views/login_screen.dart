@@ -8,10 +8,11 @@ import 'package:untitled_sample_app/utils/custom_buttons.dart';
 import 'package:untitled_sample_app/utils/enums.dart';
 import 'package:untitled_sample_app/view_models/otp_view_model.dart';
 import 'package:untitled_sample_app/widgets/user_form_fields_widget.dart';
+
+import '../route_generator.dart';
 import '../utils/custom_colors.dart';
 import '../utils/custom_font_style.dart';
 import '../view_models/auth_view_model.dart';
-import '../route_generator.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -202,7 +203,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           children: [
                             // Input Field
                             authViewModel.getLoginWith == LoginWith.phone.value
-                                ? Container(
+                                ? phoneFieldWidget()
+                                : Container(
                                     decoration: BoxDecoration(
                                       boxShadow: kElevationToShadow[3],
                                       color: CustomColors.whiteColor,
@@ -210,17 +212,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                         Radius.circular(15.r),
                                       ),
                                     ),
-                                    child: phoneFieldWidget(),
-                                  )
-                                : Container(
-                                decoration: BoxDecoration(
-                                  boxShadow: kElevationToShadow[3],
-                                  color: CustomColors.whiteColor,
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(15.r),
+                                    child: emailFieldWidget(),
                                   ),
-                                ),
-                                child: emailFieldWidget()),
 
                             SizedBox(height: 30.h),
 
