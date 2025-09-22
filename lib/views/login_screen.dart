@@ -3,10 +3,12 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:provider/provider.dart';
+import 'package:untitled_sample_app/utils/custom_buttons.dart';
 import 'package:untitled_sample_app/utils/enums.dart';
 import 'package:untitled_sample_app/view_models/otp_view_model.dart';
 import 'package:untitled_sample_app/widgets/user_form_fields_widget.dart';
 import '../utils/custom_colors.dart';
+import '../utils/custom_font_style.dart';
 import '../view_models/auth_view_model.dart';
 import '../route_generator.dart';
 
@@ -46,31 +48,13 @@ class LoginScreen extends StatelessWidget {
                     SizedBox(height: 40.h),
 
                     // Welcome Text
-                    Text(
-                      'Welcome Back!',
-                      style: TextStyle(
-                        fontFamily: 'CircularStd',
-                        fontSize: 32.sp,
-                        fontWeight: FontWeight.bold,
-                        color: CustomColors.blackColor,
-                        letterSpacing: -0.5,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-
+                    black24w600(data: 'Welcome Back!', centre: true),
                     SizedBox(height: 12.h),
-
-                    Text(
-                      'Enter your Australian phone number or email to continue',
-                      style: TextStyle(
-                        fontFamily: 'CircularStd',
-                        fontSize: 16.sp,
-                        color: CustomColors.blackColor.withValues(alpha: 0.6),
-                        height: 1.4,
-                      ),
-                      textAlign: TextAlign.center,
+                    grey14(
+                      data:
+                          'Enter your Australian phone number or email to continue',
+                      centre: true,
                     ),
-
                     SizedBox(height: 50.h),
 
                     // Login Method Toggle
@@ -80,7 +64,9 @@ class LoginScreen extends StatelessWidget {
                         color: CustomColors.whiteColor,
                         borderRadius: BorderRadius.circular(12.r),
                         border: Border.all(
-                          color: CustomColors.primaryColor.withValues(alpha: 0.2),
+                          color: CustomColors.primaryColor.withValues(
+                            alpha: 0.2,
+                          ),
                           width: 1,
                         ),
                       ),
@@ -89,12 +75,16 @@ class LoginScreen extends StatelessWidget {
                           Expanded(
                             child: GestureDetector(
                               onTap: () {
-                                authViewModel.setLoginWith = LoginWith.phone.value;
+                                FocusScope.of(context).unfocus();
+                                authViewModel.setLoginWith =
+                                    LoginWith.phone.value;
                               },
                               child: Container(
                                 padding: EdgeInsets.symmetric(vertical: 12.h),
                                 decoration: BoxDecoration(
-                                  color: authViewModel.getLoginWith == LoginWith.phone.value
+                                  color:
+                                      authViewModel.getLoginWith ==
+                                          LoginWith.phone.value
                                       ? CustomColors.primaryColor
                                       : Colors.transparent,
                                   borderRadius: BorderRadius.circular(8.r),
@@ -105,21 +95,18 @@ class LoginScreen extends StatelessWidget {
                                     Icon(
                                       Iconsax.mobile,
                                       size: 18.sp,
-                                      color: authViewModel.getLoginWith == LoginWith.phone.value
+                                      color:
+                                          authViewModel.getLoginWith ==
+                                              LoginWith.phone.value
                                           ? CustomColors.whiteColor
                                           : CustomColors.blackColor,
                                     ),
                                     SizedBox(width: 8.w),
-                                    Text(
-                                      'Phone',
-                                      style: TextStyle(
-                                        fontFamily: 'CircularStd',
-                                        fontSize: 14.sp,
-                                        fontWeight: FontWeight.w600,
-                                        color: authViewModel.getLoginWith == LoginWith.phone.value
-                                            ? CustomColors.whiteColor
-                                            : CustomColors.blackColor,
-                                      ),
+                                    blackWhite14w500(
+                                      data: 'Phone',
+                                      isWhite:
+                                          authViewModel.getLoginWith ==
+                                          LoginWith.phone.value,
                                     ),
                                   ],
                                 ),
@@ -129,12 +116,16 @@ class LoginScreen extends StatelessWidget {
                           Expanded(
                             child: GestureDetector(
                               onTap: () {
-                                authViewModel.setLoginWith = LoginWith.email.value;
+                                FocusScope.of(context).unfocus();
+                                authViewModel.setLoginWith =
+                                    LoginWith.email.value;
                               },
                               child: Container(
                                 padding: EdgeInsets.symmetric(vertical: 12.h),
                                 decoration: BoxDecoration(
-                                  color: authViewModel.getLoginWith == LoginWith.email.value
+                                  color:
+                                      authViewModel.getLoginWith ==
+                                          LoginWith.email.value
                                       ? CustomColors.primaryColor
                                       : Colors.transparent,
                                   borderRadius: BorderRadius.circular(8.r),
@@ -145,21 +136,18 @@ class LoginScreen extends StatelessWidget {
                                     Icon(
                                       Iconsax.sms,
                                       size: 18.sp,
-                                      color: authViewModel.getLoginWith == LoginWith.email.value
+                                      color:
+                                          authViewModel.getLoginWith ==
+                                              LoginWith.email.value
                                           ? CustomColors.whiteColor
                                           : CustomColors.blackColor,
                                     ),
                                     SizedBox(width: 8.w),
-                                    Text(
-                                      'Email',
-                                      style: TextStyle(
-                                        fontFamily: 'CircularStd',
-                                        fontSize: 14.sp,
-                                        fontWeight: FontWeight.w600,
-                                        color: authViewModel.getLoginWith == LoginWith.email.value
-                                            ? CustomColors.whiteColor
-                                            : CustomColors.blackColor,
-                                      ),
+                                    blackWhite14w500(
+                                      data: 'Email',
+                                      isWhite:
+                                          authViewModel.getLoginWith ==
+                                          LoginWith.email.value,
                                     ),
                                   ],
                                 ),
@@ -171,15 +159,15 @@ class LoginScreen extends StatelessWidget {
                     ),
 
                     SizedBox(height: 30.h),
-
-                    // Form Container
                     Container(
                       padding: EdgeInsets.all(24.w),
                       decoration: BoxDecoration(
                         color: CustomColors.whiteColor,
                         borderRadius: BorderRadius.circular(20.r),
                         border: Border.all(
-                          color: CustomColors.primaryColor.withValues(alpha: 0.1),
+                          color: CustomColors.primaryColor.withValues(
+                            alpha: 0.1,
+                          ),
                           width: 1,
                         ),
                       ),
@@ -188,18 +176,9 @@ class LoginScreen extends StatelessWidget {
                         child: Column(
                           children: [
                             // Input Field
-                            Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(12.r),
-                                border: Border.all(
-                                  color: CustomColors.primaryColor.withValues(alpha: 0.2),
-                                  width: 1.5,
-                                ),
-                              ),
-                              child: authViewModel.getLoginWith == LoginWith.phone.value
-                                  ? phoneFieldWidget()
-                                  : emailFieldWidget(),
-                            ),
+                            authViewModel.getLoginWith == LoginWith.phone.value
+                                ? phoneFieldWidget()
+                                : emailFieldWidget(),
 
                             SizedBox(height: 30.h),
 
@@ -210,7 +189,8 @@ class LoginScreen extends StatelessWidget {
                                 Checkbox(
                                   value: authViewModel.getIsTermsAccepted,
                                   onChanged: (value) {
-                                    authViewModel.setIsTermsAccepted = value ?? false;
+                                    authViewModel.setIsTermsAccepted =
+                                        value ?? false;
                                   },
                                   activeColor: CustomColors.primaryColor,
                                   shape: RoundedRectangleBorder(
@@ -224,16 +204,19 @@ class LoginScreen extends StatelessWidget {
                                       style: TextStyle(
                                         fontFamily: 'CircularStd',
                                         fontSize: 13.sp,
-                                        color: CustomColors.blackColor.withValues(alpha: 0.6),
+                                        color: CustomColors.greyColor,
                                         height: 1.4,
                                       ),
                                       children: [
-                                        const TextSpan(text: 'By continuing, you agree to our '),
+                                        const TextSpan(
+                                          text:
+                                              'By continuing, you agree to our ',
+                                        ),
                                         TextSpan(
                                           text: 'Terms of Service',
                                           style: TextStyle(
                                             color: CustomColors.primaryColor,
-                                            fontWeight: FontWeight.w600,
+                                            fontWeight: FontWeight.w500,
                                           ),
                                         ),
                                         const TextSpan(text: ' and '),
@@ -241,7 +224,7 @@ class LoginScreen extends StatelessWidget {
                                           text: 'Privacy Policy',
                                           style: TextStyle(
                                             color: CustomColors.primaryColor,
-                                            fontWeight: FontWeight.w600,
+                                            fontWeight: FontWeight.w500,
                                           ),
                                         ),
                                       ],
@@ -261,58 +244,41 @@ class LoginScreen extends StatelessWidget {
                                 color: CustomColors.primaryColor,
                                 borderRadius: BorderRadius.circular(16.r),
                               ),
-                              child: Material(
-                                color: Colors.transparent,
-                                child: InkWell(
-                                  borderRadius: BorderRadius.circular(16.r),
-                                  onTap: () async {
-                                    final navigator = Navigator.of(context);
-
-                                    if (authViewModel.validateFormKey()) {
-                                      context.read<OtpViewModel>().setPhoneOrEmail(
-                                        phone: authViewModel.getCountryCode +
-                                            authViewModel.getPhoneController.text,
-                                        loginType: authViewModel.getLoginWith,
-                                        email: authViewModel.getEmailController.text,
-                                      );
-                                      if (authViewModel.getIsTermsAccepted) {
-                                        await context.read<OtpViewModel>().sendOtp().then((
-                                          value,
-                                        ) {
-                                          if (value) {
-                                            navigator.pushNamed(otpRoute);
-                                          }
-                                        });
-                                      } else {
-                                        EasyLoading.showError(
-                                          'Kindly accept terms and services',
+                              child: customButton(
+                                text: 'Send Otp',
+                                onTap: () async {
+                                  final navigator = Navigator.of(context);
+                                  if (authViewModel.validateFormKey()) {
+                                    context
+                                        .read<OtpViewModel>()
+                                        .setPhoneOrEmail(
+                                          phone:
+                                              authViewModel.getCountryCode +
+                                              authViewModel
+                                                  .getPhoneController
+                                                  .text,
+                                          loginType: authViewModel.getLoginWith,
+                                          email: authViewModel
+                                              .getEmailController
+                                              .text,
                                         );
-                                      }
+                                    if (authViewModel.getIsTermsAccepted) {
+                                      await context
+                                          .read<OtpViewModel>()
+                                          .sendOtp()
+                                          .then((value) {
+                                            if (value) {
+                                              navigator.pushNamed(otpRoute);
+                                            }
+                                          });
+                                    } else {
+                                      EasyLoading.showError(
+                                        'Kindly accept terms and services',
+                                      );
                                     }
-                                  },
-                                  child: Center(
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          'Send OTP',
-                                          style: TextStyle(
-                                            fontFamily: 'CircularStd',
-                                            fontSize: 16.sp,
-                                            fontWeight: FontWeight.w600,
-                                            color: CustomColors.whiteColor,
-                                          ),
-                                        ),
-                                        SizedBox(width: 8.w),
-                                        Icon(
-                                          Iconsax.arrow_right_3,
-                                          size: 20.sp,
-                                          color: CustomColors.whiteColor,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
+                                  }
+                                },
+                                colored: true,
                               ),
                             ),
                           ],

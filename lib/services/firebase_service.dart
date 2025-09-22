@@ -8,8 +8,6 @@ class FirebaseService {
   String? _verificationId;
   int? _resendToken;
 
-  BaseResponseModel _baseResponseModel = BaseResponseModel();
-
   // Future<String> upLoadImageFile(
   //     {required CroppedFile mFileImage, required String fileName}) async {
   //   final Reference storageReference = FirebaseStorage.instance.ref().child(

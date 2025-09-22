@@ -42,29 +42,29 @@ class AppInit extends StatelessWidget {
               contentPadding: EdgeInsets.zero,
               fillColor: CustomColors.lightGreyColor,
               filled: true,
-              enabledBorder: const OutlineInputBorder(
+              enabledBorder:  OutlineInputBorder(
                 borderSide: BorderSide(color: Colors.transparent),
-                borderRadius: BorderRadius.all(Radius.circular(15)),
+                borderRadius: BorderRadius.all(Radius.circular(15.r)),
               ),
-              focusedErrorBorder: const OutlineInputBorder(
+              focusedErrorBorder:  OutlineInputBorder(
                 borderSide: BorderSide(color: Colors.redAccent),
-                borderRadius: BorderRadius.all(Radius.circular(15)),
+                borderRadius: BorderRadius.all(Radius.circular(15.r)),
               ),
-              errorBorder: const OutlineInputBorder(
+              errorBorder:  OutlineInputBorder(
                 borderSide: BorderSide(color: Colors.redAccent),
-                borderRadius: BorderRadius.all(Radius.circular(15)),
+                borderRadius: BorderRadius.all(Radius.circular(15.r)),
               ),
               suffixIconColor: CustomColors.greyColor,
               prefixIconColor: CustomColors.greyColor,
               focusColor: CustomColors.primaryColor,
               hintStyle: TextStyle(
                 fontFamily: 'CircularStd',
-                fontSize: 14.sp,
+                fontSize: 12.sp,
                 color: CustomColors.greyColor,
               ),
-              focusedBorder: const OutlineInputBorder(
+              focusedBorder:  OutlineInputBorder(
                 borderSide: BorderSide(color: CustomColors.primaryColor),
-                borderRadius: BorderRadius.all(Radius.circular(15)),
+                borderRadius: BorderRadius.all(Radius.circular(15.r)),
               ),
             ),
           ),

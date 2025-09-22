@@ -15,57 +15,17 @@ Widget phoneFieldWidget({bool? viewOnly}) {
         readOnly: viewOnly ?? false,
         controller: authViewModel.getPhoneController,
         keyboardType: TextInputType.phone,
-        style: TextStyle(
-          fontFamily: 'CircularStd',
-          fontSize: 16.sp,
-          color: CustomColors.blackColor,
-          fontWeight: FontWeight.w500,
-        ),
         validator: (value) {
           return validatePhoneNumber(authViewModel.getCountryCode + value!);
         },
         decoration: InputDecoration(
           hintText: 'Enter your phone number',
-          hintStyle: TextStyle(
-            fontFamily: 'CircularStd',
-            fontSize: 16.sp,
-            color: CustomColors.blackColor.withValues(alpha: 0.5),
-            fontWeight: FontWeight.w400,
+          contentPadding: EdgeInsets.symmetric(
+            horizontal: 10.w,
+            vertical: 10.h,
           ),
-          filled: true,
-          fillColor: CustomColors.whiteColor,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12.r),
-            borderSide: BorderSide.none,
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12.r),
-            borderSide: BorderSide.none,
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12.r),
-            borderSide: BorderSide(
-              color: CustomColors.blackColor,
-              width: 2.0,
-            ),
-          ),
-          errorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12.r),
-            borderSide: BorderSide(
-              color: Colors.red.shade400,
-              width: 1.5,
-            ),
-          ),
-          focusedErrorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12.r),
-            borderSide: BorderSide(
-              color: Colors.red.shade400,
-              width: 2.0,
-            ),
-          ),
-          contentPadding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 18.h),
           prefixIcon: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 4.h),
+            padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
             child: IntrinsicHeight(
               child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -75,7 +35,6 @@ Widget phoneFieldWidget({bool? viewOnly}) {
                     color: CustomColors.blackColor,
                     size: 20.sp,
                   ),
-                  SizedBox(width: 12.w),
                   CountryCodePicker(
                     enabled: viewOnly == true ? false : true,
                     padding: EdgeInsets.zero,
@@ -90,13 +49,13 @@ Widget phoneFieldWidget({bool? viewOnly}) {
                     alignLeft: false,
                     textStyle: TextStyle(
                       fontFamily: 'CircularStd',
-                      fontSize: 16.sp,
+                      fontSize: 14.sp,
                       color: CustomColors.blackColor,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.symmetric(vertical: 16.h),
+                    padding: EdgeInsets.symmetric(vertical: 10.h),
                     child: VerticalDivider(
                       color: CustomColors.blackColor.withValues(alpha: 0.3),
                       thickness: 1.5,
@@ -119,57 +78,17 @@ Widget emailFieldWidget({bool? viewOnly}) {
         readOnly: viewOnly ?? false,
         controller: authViewModel.getEmailController,
         keyboardType: TextInputType.emailAddress,
-        style: TextStyle(
-          fontFamily: 'CircularStd',
-          fontSize: 16.sp,
-          color: CustomColors.blackColor,
-          fontWeight: FontWeight.w500,
-        ),
         validator: (value) {
           return validateEmail(value!);
         },
         decoration: InputDecoration(
           hintText: 'Enter your email address',
-          hintStyle: TextStyle(
-            fontFamily: 'CircularStd',
-            fontSize: 16.sp,
-            color: CustomColors.blackColor.withValues(alpha: 0.5),
-            fontWeight: FontWeight.w400,
+          contentPadding: EdgeInsets.symmetric(
+            horizontal: 10.w,
+            vertical: 10.h,
           ),
-          filled: true,
-          fillColor: CustomColors.whiteColor,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12.r),
-            borderSide: BorderSide.none,
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12.r),
-            borderSide: BorderSide.none,
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12.r),
-            borderSide: BorderSide(
-              color: CustomColors.blackColor,
-              width: 2.0,
-            ),
-          ),
-          errorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12.r),
-            borderSide: BorderSide(
-              color: Colors.red.shade400,
-              width: 1.5,
-            ),
-          ),
-          focusedErrorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12.r),
-            borderSide: BorderSide(
-              color: Colors.red.shade400,
-              width: 2.0,
-            ),
-          ),
-          contentPadding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 18.h),
           prefixIcon: Padding(
-            padding: EdgeInsets.all(16.w),
+            padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 14.5.h),
             child: Icon(
               Iconsax.sms,
               color: CustomColors.blackColor,
