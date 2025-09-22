@@ -42,6 +42,7 @@ class AppInit extends StatelessWidget {
               contentPadding: EdgeInsets.zero,
               fillColor: CustomColors.lightGreyColor,
               filled: true,
+              errorStyle: TextStyle(height: 2.h),
               enabledBorder:  OutlineInputBorder(
                 borderSide: BorderSide(color: Colors.transparent),
                 borderRadius: BorderRadius.all(Radius.circular(15.r)),

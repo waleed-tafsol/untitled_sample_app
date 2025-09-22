@@ -10,7 +10,6 @@ import '../services/auth_service.dart';
 class AuthViewModel extends ChangeNotifier {
   AuthViewModel() {
     _callPackageInfo();
-    _navigateToLogin();
   }
 
   final AuthService _authService = AuthService();
@@ -68,6 +67,7 @@ class AuthViewModel extends ChangeNotifier {
     final packageInfo = await PackageInfo.fromPlatform();
     _version = packageInfo.version;
     _buildNumber = packageInfo.buildNumber;
+    _navigateToLogin();
     notifyListeners();
   }
 

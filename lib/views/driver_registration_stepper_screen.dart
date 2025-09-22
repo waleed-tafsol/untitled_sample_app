@@ -137,25 +137,6 @@ class _RegistrationStepperScreenState extends State<RegistrationStepperScreen> {
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                SizedBox(height: 8.h),
-                Text(
-                  _steps[_currentStep].title,
-                  style: TextStyle(
-                    fontFamily: 'CircularStd',
-                    fontSize: 20.sp,
-                    fontWeight: FontWeight.bold,
-                    color: CustomColors.blackColor,
-                  ),
-                ),
-                SizedBox(height: 4.h),
-                Text(
-                  _steps[_currentStep].subtitle,
-                  style: TextStyle(
-                    fontFamily: 'CircularStd',
-                    fontSize: 14.sp,
-                    color: CustomColors.blackColor.withValues(alpha: 0.6),
-                  ),
-                ),
               ],
             ),
           ),

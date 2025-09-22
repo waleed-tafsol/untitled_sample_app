@@ -19,13 +19,14 @@ Widget phoneFieldWidget({bool? viewOnly}) {
           return validatePhoneNumber(authViewModel.getCountryCode + value!);
         },
         decoration: InputDecoration(
+          labelText: 'Phone Number',
           hintText: 'Enter your phone number',
           contentPadding: EdgeInsets.symmetric(
             horizontal: 10.w,
-            vertical: 10.h,
+            vertical: 14.h,
           ),
           prefixIcon: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
+            padding: EdgeInsets.symmetric(horizontal: 10.w),
             child: IntrinsicHeight(
               child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -82,13 +83,14 @@ Widget emailFieldWidget({bool? viewOnly}) {
           return validateEmail(value!);
         },
         decoration: InputDecoration(
+          labelText: 'Email Address',
           hintText: 'Enter your email address',
           contentPadding: EdgeInsets.symmetric(
             horizontal: 10.w,
-            vertical: 10.h,
+            vertical: 14.h,
           ),
           prefixIcon: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 14.5.h),
+            padding: EdgeInsets.symmetric(horizontal: 10.w),
             child: Icon(
               Iconsax.sms,
               color: CustomColors.blackColor,

@@ -73,7 +73,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     // Welcome Text
                     black24w600(data: 'Welcome Back!', centre: true),
                     SizedBox(height: 12.h),
-                    grey14(
+                    grey12(
                       data:
                           'Enter your Australian phone number or email to continue',
                       centre: true,
@@ -86,6 +86,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       decoration: BoxDecoration(
                         color: CustomColors.whiteColor,
                         borderRadius: BorderRadius.circular(12.r),
+                        boxShadow: kElevationToShadow[9],
                         border: Border.all(
                           color: CustomColors.primaryColor.withValues(
                             alpha: 0.2,
@@ -185,6 +186,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     Container(
                       padding: EdgeInsets.all(24.w),
                       decoration: BoxDecoration(
+                        boxShadow: kElevationToShadow[9],
                         color: CustomColors.whiteColor,
                         borderRadius: BorderRadius.circular(20.r),
                         border: Border.all(
@@ -200,8 +202,25 @@ class _LoginScreenState extends State<LoginScreen> {
                           children: [
                             // Input Field
                             authViewModel.getLoginWith == LoginWith.phone.value
-                                ? phoneFieldWidget()
-                                : emailFieldWidget(),
+                                ? Container(
+                                    decoration: BoxDecoration(
+                                      boxShadow: kElevationToShadow[3],
+                                      color: CustomColors.whiteColor,
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(15.r),
+                                      ),
+                                    ),
+                                    child: phoneFieldWidget(),
+                                  )
+                                : Container(
+                                decoration: BoxDecoration(
+                                  boxShadow: kElevationToShadow[3],
+                                  color: CustomColors.whiteColor,
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(15.r),
+                                  ),
+                                ),
+                                child: emailFieldWidget()),
 
                             SizedBox(height: 30.h),
 
