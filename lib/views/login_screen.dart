@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:untitled_sample_app/utils/custom_buttons.dart';
 import 'package:untitled_sample_app/utils/enums.dart';
@@ -12,8 +13,30 @@ import '../utils/custom_font_style.dart';
 import '../view_models/auth_view_model.dart';
 import '../route_generator.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  String version = '';
+  String buildNumber = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _getPackageInfo();
+  }
+
+  Future<void> _getPackageInfo() async {
+    final packageInfo = await PackageInfo.fromPlatform();
+    setState(() {
+      version = packageInfo.version;
+      buildNumber = packageInfo.buildNumber;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -288,9 +311,11 @@ class LoginScreen extends StatelessWidget {
 
                     SizedBox(height: 40.h),
 
-                    // Footer Text
+                    // Version and Build Number
                     Text(
-                      'Secure • Fast • Reliable',
+                      version.isNotEmpty && buildNumber.isNotEmpty
+                          ? 'Version $version (Build $buildNumber)'
+                          : 'Loading...',
                       style: TextStyle(
                         fontFamily: 'CircularStd',
                         fontSize: 12.sp,

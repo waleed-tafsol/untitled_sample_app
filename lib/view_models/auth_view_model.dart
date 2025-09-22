@@ -1,11 +1,27 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:untitled_sample_app/app_init.dart';
 import 'package:untitled_sample_app/utils/enums.dart';
+import '../route_generator.dart';
 import '../services/auth_service.dart';
 
 class AuthViewModel extends ChangeNotifier {
+  AuthViewModel() {
+    _callPackageInfo();
+    _navigateToLogin();
+  }
+
   final AuthService _authService = AuthService();
+
+  String _version = '';
+
+  String get getVersion => _version;
+  String _buildNumber = '';
+
+  String get getBuildNumber => _buildNumber;
+
   final TextEditingController _phoneController = TextEditingController();
 
   final TextEditingController _emailController = TextEditingController();
@@ -46,6 +62,19 @@ class AuthViewModel extends ChangeNotifier {
   void setCountryCode(String value) {
     _countryCode = value;
     notifyListeners();
+  }
+
+  Future<void> _callPackageInfo() async {
+    final packageInfo = await PackageInfo.fromPlatform();
+    _version = packageInfo.version;
+    _buildNumber = packageInfo.buildNumber;
+    notifyListeners();
+  }
+
+  void _navigateToLogin() {
+    Timer(const Duration(seconds: 3), () {
+      Navigator.pushReplacementNamed(navigatorKey.currentContext!, loginRoute);
+    });
   }
 
   bool validateFormKey() {
