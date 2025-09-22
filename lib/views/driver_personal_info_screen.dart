@@ -26,14 +26,14 @@ class _DriverPersonalInfoScreenState extends State<DriverPersonalInfoScreen> {
         return Form(
           key: driverRegistrationViewModel.getFormKey,
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20.w),
+            padding: EdgeInsets.symmetric(horizontal: 10.w),
             child: Column(
               children: [
                 black24w600(data: 'Personal Information'),
                 grey12(data: 'Enter your personal details'),
                 SizedBox(height: 20.h),
                 Container(
-                  padding: EdgeInsets.all(24.w),
+                  padding: EdgeInsets.all(20.w),
                   decoration: BoxDecoration(
                     boxShadow: kElevationToShadow[9],
                     color: CustomColors.whiteColor,
@@ -116,10 +116,7 @@ class _DriverPersonalInfoScreenState extends State<DriverPersonalInfoScreen> {
                     ],
                   ),
                 ),
-
                 SizedBox(height: 24.h),
-
-                // Form Section
                 Container(
                   padding: EdgeInsets.all(24.w),
                   decoration: BoxDecoration(
@@ -134,7 +131,6 @@ class _DriverPersonalInfoScreenState extends State<DriverPersonalInfoScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Name Fields
                     ],
                   ),
                 ),
