@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 import '../utils/custom_colors.dart';
+import '../utils/custom_buttons.dart';
+import '../utils/custom_font_style.dart';
 
 class DriverDocumentsScreen extends StatefulWidget {
   const DriverDocumentsScreen({super.key});
@@ -11,158 +15,240 @@ class DriverDocumentsScreen extends StatefulWidget {
 }
 
 class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
-  final Map<String, bool> _uploadedDocuments = {
-    'driverLicense': false,
-    'vehicleRegistration': false,
-    'insuranceCertificate': false,
-    'backgroundCheck': false,
+  final ImagePicker _imagePicker = ImagePicker();
+  File? _identityVerificationImage;
+  final Map<String, File?> _documentImages = {
+    'driverLicenseFront': null,
+    'driverLicenseBack': null,
+    'drivingRecord': null,
+    'policeCheck': null,
+    'passport': null,
+    'vevoDetails': null,
+    'englishCertificate': null,
   };
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.all(20.w),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Header Section
-          Container(
-            padding: EdgeInsets.all(24.w),
-            decoration: BoxDecoration(
-              color: CustomColors.whiteColor,
-              borderRadius: BorderRadius.circular(20.r),
-              border: Border.all(
-                color: CustomColors.primaryColor.withValues(alpha: 0.1),
-                width: 1,
+    return SingleChildScrollView(
+      child: Padding(
+        padding: EdgeInsets.only(left: 10.w, right: 10.w, bottom: 20.h),
+        child: Column(
+          children: [
+            black24w600(data: 'Document Verification'),
+            grey12(data: 'Upload required documents for verification'),
+            SizedBox(height: 20.h),
+            
+            // Identity Verification Section
+            Container(
+              padding: EdgeInsets.all(20.w),
+              decoration: BoxDecoration(
+                boxShadow: kElevationToShadow[9],
+                color: CustomColors.whiteColor,
+                borderRadius: BorderRadius.circular(20.r),
+                border: Border.all(
+                  color: CustomColors.primaryColor.withValues(alpha: 0.1),
+                  width: 1,
+                ),
               ),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Icon(
-                      Iconsax.document_text,
-                      color: CustomColors.primaryColor,
-                      size: 24.sp,
-                    ),
-                    SizedBox(width: 12.w),
-                    Text(
-                      'Required Documents',
-                      style: TextStyle(
-                        fontFamily: 'CircularStd',
-                        fontSize: 18.sp,
-                        fontWeight: FontWeight.bold,
-                        color: CustomColors.blackColor,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Icon(
+                        Iconsax.scan,
+                        color: CustomColors.primaryColor,
+                        size: 24.sp,
+                      ),
+                      SizedBox(width: 12.w),
+                      black18w500(data: 'Identity Verification'),
+                    ],
+                  ),
+                  SizedBox(height: 8.h),
+                  grey12(
+                    data: 'Take a selfie for identity verification',
+                  ),
+                  SizedBox(height: 20.h),
+                  
+                  // Identity Image Display or Capture Button
+                  if (_identityVerificationImage != null)
+                    Container(
+                      width: double.infinity,
+                      height: 200.h,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12.r),
+                        border: Border.all(
+                          color: CustomColors.primaryColor.withValues(alpha: 0.2),
+                          width: 1,
+                        ),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(12.r),
+                        child: Image.file(
+                          _identityVerificationImage!,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    )
+                  else
+                    Container(
+                      width: double.infinity,
+                      height: 200.h,
+                      decoration: BoxDecoration(
+                        color: CustomColors.primaryColor.withValues(alpha: 0.05),
+                        borderRadius: BorderRadius.circular(12.r),
+                        border: Border.all(
+                          color: CustomColors.primaryColor.withValues(alpha: 0.2),
+                          width: 1,
+                        ),
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Iconsax.camera,
+                            size: 48.sp,
+                            color: CustomColors.primaryColor.withValues(alpha: 0.6),
+                          ),
+                          SizedBox(height: 12.h),
+                          grey12(
+                            data: 'No image captured yet',
+                            centre: true,
+                          ),
+                        ],
                       ),
                     ),
-                  ],
-                ),
-                SizedBox(height: 8.h),
-                Text(
-                  'Please upload all required documents to complete your registration',
-                  style: TextStyle(
-                    fontFamily: 'CircularStd',
-                    fontSize: 14.sp,
-                    color: CustomColors.blackColor.withValues(alpha: 0.6),
+                  
+                  SizedBox(height: 20.h),
+                  
+                  // Start Verification Button
+                  customButton(
+                    text: _identityVerificationImage != null ? 'Retake Photo' : 'Start Verification',
+                    onTap: _captureIdentityImage,
+                    colored: true,
+                    icon: Iconsax.camera,
+                    height: 50,
                   ),
-                ),
-              ],
-            ),
-          ),
-          
-          SizedBox(height: 24.h),
-          
-          // Documents List
-          Container(
-            padding: EdgeInsets.all(24.w),
-            decoration: BoxDecoration(
-              color: CustomColors.whiteColor,
-              borderRadius: BorderRadius.circular(20.r),
-              border: Border.all(
-                color: CustomColors.primaryColor.withValues(alpha: 0.1),
-                width: 1,
+                ],
               ),
             ),
-            child: Column(
-              children: [
-                _buildDocumentUpload(
-                  'Driver License',
-                  'Upload front and back of your driver license',
-                  'driverLicense',
-                  Iconsax.card,
+            
+            SizedBox(height: 24.h),
+            
+            // Required Documents Section
+            Container(
+              padding: EdgeInsets.all(20.w),
+              decoration: BoxDecoration(
+                boxShadow: kElevationToShadow[9],
+                color: CustomColors.whiteColor,
+                borderRadius: BorderRadius.circular(20.r),
+                border: Border.all(
+                  color: CustomColors.primaryColor.withValues(alpha: 0.1),
+                  width: 1,
                 ),
-                SizedBox(height: 16.h),
-                _buildDocumentUpload(
-                  'Vehicle Registration',
-                  'Upload your vehicle registration certificate',
-                  'vehicleRegistration',
-                  Iconsax.car,
-                ),
-                SizedBox(height: 16.h),
-                _buildDocumentUpload(
-                  'Insurance Certificate',
-                  'Upload your vehicle insurance certificate',
-                  'insuranceCertificate',
-                  Iconsax.shield_tick,
-                ),
-                SizedBox(height: 16.h),
-                _buildDocumentUpload(
-                  'Background Check',
-                  'Upload your background check certificate',
-                  'backgroundCheck',
-                  Iconsax.verify,
-                ),
-              ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Icon(
+                        Iconsax.document_text,
+                        color: CustomColors.primaryColor,
+                        size: 24.sp,
+                      ),
+                      SizedBox(width: 12.w),
+                      black18w500(data: 'Required Documents'),
+                    ],
+                  ),
+                  SizedBox(height: 8.h),
+                  grey12(
+                    data: 'Upload all required documents for verification',
+                  ),
+                  SizedBox(height: 20.h),
+                  
+                  // Document List
+                  _buildDocumentItem(
+                    'Driver License (Front)',
+                    'driverLicenseFront',
+                    Iconsax.card,
+                  ),
+                  SizedBox(height: 16.h),
+                  _buildDocumentItem(
+                    'Driver License (Back)',
+                    'driverLicenseBack',
+                    Iconsax.card,
+                  ),
+                  SizedBox(height: 16.h),
+                  _buildDocumentItem(
+                    'Driving Record (5 years)',
+                    'drivingRecord',
+                    Iconsax.document,
+                  ),
+                  SizedBox(height: 16.h),
+                  _buildDocumentItem(
+                    'Police Check (6 months)',
+                    'policeCheck',
+                    Iconsax.verify,
+                  ),
+                  SizedBox(height: 16.h),
+                  _buildDocumentItem(
+                    'Passport',
+                    'passport',
+                    Iconsax.card,
+                  ),
+                  SizedBox(height: 16.h),
+                  _buildDocumentItem(
+                    'VEVO Details',
+                    'vevoDetails',
+                    Iconsax.document_download,
+                  ),
+                  SizedBox(height: 16.h),
+                  _buildDocumentItem(
+                    'English Certificate',
+                    'englishCertificate',
+                    Iconsax.book,
+                  ),
+                ],
+              ),
             ),
-          ),
-          
-          SizedBox(height: 24.h),
-          
-          // Upload Progress
-          _buildUploadProgress(),
-        ],
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildDocumentUpload(
-    String title,
-    String subtitle,
-    String documentKey,
-    IconData icon,
-  ) {
-    final isUploaded = _uploadedDocuments[documentKey] ?? false;
+  Widget _buildDocumentItem(String title, String documentKey, IconData icon) {
+    final hasImage = _documentImages[documentKey] != null;
     
     return GestureDetector(
-      onTap: () => _uploadDocument(documentKey),
+      onTap: () => _showImageSourceBottomSheet(documentKey),
       child: Container(
         padding: EdgeInsets.all(16.w),
         decoration: BoxDecoration(
+          boxShadow: kElevationToShadow[3],
+          color: CustomColors.whiteColor,
+          borderRadius: BorderRadius.circular(15.r),
           border: Border.all(
-            color: isUploaded 
+            color: hasImage 
                 ? CustomColors.primaryColor 
                 : CustomColors.primaryColor.withValues(alpha: 0.2),
             width: 1.5,
           ),
-          borderRadius: BorderRadius.circular(12.r),
-          color: isUploaded 
-              ? CustomColors.primaryColor.withValues(alpha: 0.1) 
-              : CustomColors.whiteColor,
         ),
         child: Row(
           children: [
             Container(
               padding: EdgeInsets.all(8.w),
               decoration: BoxDecoration(
-                color: isUploaded 
+                color: hasImage 
                     ? CustomColors.primaryColor 
                     : CustomColors.primaryColor.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(8.r),
               ),
               child: Icon(
-                isUploaded ? Iconsax.tick_circle : icon,
-                color: isUploaded 
+                hasImage ? Iconsax.tick_circle : icon,
+                color: hasImage 
                     ? CustomColors.whiteColor 
                     : CustomColors.primaryColor,
                 size: 24.w,
@@ -173,28 +259,15 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    title,
-                    style: TextStyle(
-                      fontFamily: 'CircularStd',
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w600,
-                      color: CustomColors.blackColor,
-                    ),
-                  ),
+                  black14w500(data: title),
                   SizedBox(height: 4.h),
-                  Text(
-                    subtitle,
-                    style: TextStyle(
-                      fontFamily: 'CircularStd',
-                      fontSize: 12.sp,
-                      color: CustomColors.blackColor.withValues(alpha: 0.6),
-                    ),
+                  grey12(
+                    data: hasImage ? 'Document uploaded' : 'Tap to upload',
                   ),
                 ],
               ),
             ),
-            if (isUploaded)
+            if (hasImage)
               Icon(
                 Iconsax.tick_circle,
                 color: CustomColors.primaryColor,
@@ -212,245 +285,205 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
     );
   }
 
-  Widget _buildUploadProgress() {
-    final uploadedCount = _uploadedDocuments.values.where((uploaded) => uploaded).length;
-    final totalCount = _uploadedDocuments.length;
-    final progress = uploadedCount / totalCount;
-
-    return Container(
-      padding: EdgeInsets.all(20.w),
-      decoration: BoxDecoration(
-        color: CustomColors.primaryColor.withValues(alpha: 0.05),
-        borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(
-          color: CustomColors.primaryColor.withValues(alpha: 0.2),
-          width: 1,
-        ),
-      ),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Icon(
-                Iconsax.import,
-                color: CustomColors.primaryColor,
-                size: 20.w,
-              ),
-              SizedBox(width: 8.w),
-              Text(
-                'Upload Progress',
-                style: TextStyle(
-                  fontFamily: 'CircularStd',
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w600,
-                  color: CustomColors.blackColor,
-                ),
-              ),
-              const Spacer(),
-              Text(
-                '$uploadedCount/$totalCount',
-                style: TextStyle(
-                  fontFamily: 'CircularStd',
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w600,
-                  color: CustomColors.primaryColor,
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 12.h),
-          LinearProgressIndicator(
-            value: progress,
-            backgroundColor: CustomColors.primaryColor.withValues(alpha: 0.2),
-            valueColor: AlwaysStoppedAnimation<Color>(CustomColors.primaryColor),
-            borderRadius: BorderRadius.circular(4.r),
-          ),
-          SizedBox(height: 8.h),
-          Text(
-            progress == 1.0
-                ? 'All documents uploaded successfully!'
-                : 'Upload all documents to continue',
-            style: TextStyle(
-              fontFamily: 'CircularStd',
-              fontSize: 12.sp,
-              color: CustomColors.blackColor.withValues(alpha: 0.6),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _uploadDocument(String documentKey) {
-    // Simulate document upload
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: CustomColors.whiteColor,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20.r),
-        ),
-        title: Row(
-          children: [
-            Icon(
-              Iconsax.import,
-              color: CustomColors.primaryColor,
-              size: 24.sp,
-            ),
-            SizedBox(width: 8.w),
-            Text(
-              'Upload Document',
+  // Capture identity verification image
+  Future<void> _captureIdentityImage() async {
+    try {
+      final XFile? image = await _imagePicker.pickImage(
+        source: ImageSource.camera,
+        imageQuality: 80,
+      );
+      
+      if (image != null) {
+        setState(() {
+          _identityVerificationImage = File(image.path);
+        });
+        
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Identity verification photo captured!',
               style: TextStyle(
                 fontFamily: 'CircularStd',
-                color: CustomColors.blackColor,
-                fontSize: 18.sp,
-                fontWeight: FontWeight.bold,
+                color: CustomColors.whiteColor,
               ),
             ),
+            backgroundColor: CustomColors.primaryColor,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8.r),
+            ),
+          ),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Failed to capture image: $e',
+            style: TextStyle(
+              fontFamily: 'CircularStd',
+              color: CustomColors.whiteColor,
+            ),
+          ),
+          backgroundColor: Colors.red,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8.r),
+          ),
+        ),
+      );
+    }
+  }
+
+  // Show bottom sheet for image source selection
+  void _showImageSourceBottomSheet(String documentKey) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
+        padding: EdgeInsets.all(20.w),
+        decoration: BoxDecoration(
+          color: CustomColors.whiteColor,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(20.r),
+            topRight: Radius.circular(20.r),
+          ),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 40.w,
+              height: 4.h,
+              decoration: BoxDecoration(
+                color: CustomColors.primaryColor.withValues(alpha: 0.3),
+                borderRadius: BorderRadius.circular(2.r),
+              ),
+            ),
+            SizedBox(height: 20.h),
+            black18w500(data: 'Select Image Source'),
+            SizedBox(height: 20.h),
+            Row(
+              children: [
+                Expanded(
+                  child: _buildSourceOption(
+                    'Camera',
+                    Iconsax.camera,
+                    () {
+                      Navigator.pop(context);
+                      _pickImage(documentKey, ImageSource.camera);
+                    },
+                  ),
+                ),
+                SizedBox(width: 16.w),
+                Expanded(
+                  child: _buildSourceOption(
+                    'Gallery',
+                    Iconsax.gallery,
+                    () {
+                      Navigator.pop(context);
+                      _pickImage(documentKey, ImageSource.gallery);
+                    },
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 20.h),
           ],
         ),
-        content: Text(
-          'Choose how you want to upload the document:',
-          style: TextStyle(
-            fontFamily: 'CircularStd',
-            color: CustomColors.blackColor.withValues(alpha: 0.7),
-            fontSize: 14.sp,
-          ),
-        ),
-        actions: [
-          Row(
-            children: [
-              Expanded(
-                child: Container(
-                  height: 48.h,
-                  decoration: BoxDecoration(
-                    color: CustomColors.primaryColor,
-                    borderRadius: BorderRadius.circular(12.r),
-                  ),
-                  child: Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(12.r),
-                      onTap: () {
-                        Navigator.pop(context);
-                        _simulateUpload(documentKey);
-                      },
-                      child: Center(
-                        child: Text(
-                          'Camera',
-                          style: TextStyle(
-                            fontFamily: 'CircularStd',
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.w600,
-                            color: CustomColors.whiteColor,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(width: 8.w),
-              Expanded(
-                child: Container(
-                  height: 48.h,
-                  decoration: BoxDecoration(
-                    color: CustomColors.primaryColor,
-                    borderRadius: BorderRadius.circular(12.r),
-                  ),
-                  child: Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(12.r),
-                      onTap: () {
-                        Navigator.pop(context);
-                        _simulateUpload(documentKey);
-                      },
-                      child: Center(
-                        child: Text(
-                          'Gallery',
-                          style: TextStyle(
-                            fontFamily: 'CircularStd',
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.w600,
-                            color: CustomColors.whiteColor,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(width: 8.w),
-              Expanded(
-                child: Container(
-                  height: 48.h,
-                  decoration: BoxDecoration(
-                    color: CustomColors.whiteColor,
-                    borderRadius: BorderRadius.circular(12.r),
-                    border: Border.all(
-                      color: CustomColors.primaryColor,
-                      width: 1.5,
-                    ),
-                  ),
-                  child: Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(12.r),
-                      onTap: () => Navigator.pop(context),
-                      child: Center(
-                        child: Text(
-                          'Cancel',
-                          style: TextStyle(
-                            fontFamily: 'CircularStd',
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.w600,
-                            color: CustomColors.primaryColor,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
       ),
     );
   }
 
-  void _simulateUpload(String documentKey) {
-    // Simulate upload process
-    setState(() {
-      _uploadedDocuments[documentKey] = true;
-    });
-    
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          'Document uploaded successfully!',
-          style: TextStyle(
-            fontFamily: 'CircularStd',
-            color: CustomColors.whiteColor,
+  Widget _buildSourceOption(String title, IconData icon, VoidCallback onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: EdgeInsets.all(20.w),
+        decoration: BoxDecoration(
+          color: CustomColors.primaryColor.withValues(alpha: 0.05),
+          borderRadius: BorderRadius.circular(12.r),
+          border: Border.all(
+            color: CustomColors.primaryColor.withValues(alpha: 0.2),
+            width: 1,
           ),
         ),
-        backgroundColor: CustomColors.primaryColor,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8.r),
+        child: Column(
+          children: [
+            Icon(
+              icon,
+              size: 32.sp,
+              color: CustomColors.primaryColor,
+            ),
+            SizedBox(height: 8.h),
+            black14w500(data: title),
+          ],
         ),
-        duration: Duration(seconds: 2),
       ),
     );
+  }
+
+  // Pick image from camera or gallery
+  Future<void> _pickImage(String documentKey, ImageSource source) async {
+    try {
+      final XFile? image = await _imagePicker.pickImage(
+        source: source,
+        imageQuality: 80,
+      );
+      
+      if (image != null) {
+        setState(() {
+          _documentImages[documentKey] = File(image.path);
+        });
+        
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Document uploaded successfully!',
+              style: TextStyle(
+                fontFamily: 'CircularStd',
+                color: CustomColors.whiteColor,
+              ),
+            ),
+            backgroundColor: CustomColors.primaryColor,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8.r),
+            ),
+          ),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Failed to pick image: $e',
+            style: TextStyle(
+              fontFamily: 'CircularStd',
+              color: CustomColors.whiteColor,
+            ),
+          ),
+          backgroundColor: Colors.red,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8.r),
+          ),
+        ),
+      );
+    }
   }
 
   // Getters for accessing document status
-  Map<String, bool> getUploadedDocuments() {
-    return Map.from(_uploadedDocuments);
+  Map<String, File?> getDocumentImages() {
+    return Map.from(_documentImages);
+  }
+
+  File? getIdentityVerificationImage() {
+    return _identityVerificationImage;
   }
 
   bool areAllDocumentsUploaded() {
-    return _uploadedDocuments.values.every((uploaded) => uploaded);
+    return _documentImages.values.every((image) => image != null) && 
+           _identityVerificationImage != null;
   }
 }

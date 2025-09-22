@@ -58,6 +58,11 @@ class AppInit extends StatelessWidget {
               suffixIconColor: CustomColors.greyColor,
               prefixIconColor: CustomColors.greyColor,
               focusColor: CustomColors.primaryColor,
+              labelStyle: TextStyle(
+                fontFamily: 'CircularStd',
+                fontSize: 12.sp,
+                color: CustomColors.greyColor,
+              ),
               hintStyle: TextStyle(
                 fontFamily: 'CircularStd',
                 fontSize: 12.sp,
