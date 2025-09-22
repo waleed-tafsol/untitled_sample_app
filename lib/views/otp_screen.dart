@@ -3,6 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:provider/provider.dart';
 import 'package:untitled_sample_app/utils/custom_colors.dart';
+import 'package:untitled_sample_app/utils/custom_buttons.dart';
+import 'package:untitled_sample_app/utils/custom_font_style.dart';
 import 'package:untitled_sample_app/utils/enums.dart';
 import '../utils/phone_formator.dart';
 import '../view_models/auth_view_model.dart';
@@ -38,7 +40,7 @@ class OtpScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     SizedBox(height: 40.h),
-                    
+
                     // Logo/Icon Section
                     Container(
                       width: 100.w,
@@ -53,45 +55,33 @@ class OtpScreen extends StatelessWidget {
                         color: CustomColors.whiteColor,
                       ),
                     ),
-                    
+
                     SizedBox(height: 40.h),
-                    
+
                     // Header Text
-                    Text(
-                      'Enter Verification Code',
-                      style: TextStyle(
-                        fontFamily: 'CircularStd',
-                        fontSize: 28.sp,
-                        fontWeight: FontWeight.bold,
-                        color: CustomColors.blackColor,
-                        letterSpacing: -0.5,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    
+                    black24w600(data: 'Enter Verification Code', centre: true),
+
                     SizedBox(height: 12.h),
-                    
-                    Text(
-                      'We sent a 6-digit code to ${context.read<AuthViewModel>().getLoginWith == LoginWith.phone.value ? formattedPhoneNumber(phoneNumber: otpViewModel.getLoginValue) : otpViewModel.getLoginValue}',
-                      style: TextStyle(
-                        fontFamily: 'CircularStd',
-                        fontSize: 16.sp,
-                        color: CustomColors.blackColor.withValues(alpha: 0.6),
-                        height: 1.4,
-                      ),
-                      textAlign: TextAlign.center,
+
+                    grey12(
+                      data:
+                          'We sent a 6-digit code to ${context.read<AuthViewModel>().getLoginWith == LoginWith.phone.value ? formattedPhoneNumber(phoneNumber: otpViewModel.getLoginValue) : otpViewModel.getLoginValue}',
+                      centre: true,
                     ),
-                    
+
                     SizedBox(height: 50.h),
-                    
+
                     // OTP Input Fields Container
                     Container(
                       padding: EdgeInsets.all(20.w),
                       decoration: BoxDecoration(
+                        boxShadow: kElevationToShadow[9],
                         color: CustomColors.whiteColor,
                         borderRadius: BorderRadius.circular(20.r),
                         border: Border.all(
-                          color: CustomColors.primaryColor.withValues(alpha: 0.1),
+                          color: CustomColors.primaryColor.withValues(
+                            alpha: 0.1,
+                          ),
                           width: 1,
                         ),
                       ),
@@ -104,22 +94,16 @@ class OtpScreen extends StatelessWidget {
                               return Flexible(
                                 child: Container(
                                   width: 40.w,
-                                  height: 60.h,
-                                  margin: EdgeInsets.symmetric(horizontal: 2.w),
                                   decoration: BoxDecoration(
-                                    color: otpViewModel.focusNodes[index].hasFocus
-                                        ? CustomColors.primaryColor.withValues(alpha: 0.1)
-                                        : CustomColors.whiteColor,
-                                    borderRadius: BorderRadius.circular(12.r),
-                                    border: Border.all(
-                                      color: otpViewModel.focusNodes[index].hasFocus
-                                          ? CustomColors.primaryColor
-                                          : CustomColors.primaryColor.withValues(alpha: 0.2),
-                                      width: 2,
+                                    boxShadow: kElevationToShadow[3],
+                                    color: Colors.amber,
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(15.r),
                                     ),
                                   ),
                                   child: TextFormField(
-                                    controller: otpViewModel.otpControllers[index],
+                                    controller:
+                                        otpViewModel.otpControllers[index],
                                     focusNode: otpViewModel.focusNodes[index],
                                     textAlign: TextAlign.center,
                                     keyboardType: TextInputType.number,
@@ -133,7 +117,7 @@ class OtpScreen extends StatelessWidget {
                                     decoration: const InputDecoration(
                                       counterText: '',
                                       border: InputBorder.none,
-                                      contentPadding: EdgeInsets.zero,
+                                      contentPadding: EdgeInsets.all(5),
                                     ),
                                     onChanged: (value) =>
                                         otpViewModel.onOtpChanged(index, value),
@@ -142,20 +126,15 @@ class OtpScreen extends StatelessWidget {
                               );
                             }),
                           ),
-                          
+
                           SizedBox(height: 30.h),
-                          
+
                           // Timer and Resend
                           if (otpViewModel.otpTimerSeconds > 0)
-                            Text(
-                              'Resend code in ${otpViewModel.otpTimerSeconds}s',
-                              style: TextStyle(
-                                fontFamily: 'CircularStd',
-                                fontSize: 14.sp,
-                                color: CustomColors.primaryColor,
-                                fontWeight: FontWeight.w500,
-                              ),
-                              textAlign: TextAlign.center,
+                            primary14w500(
+                              data:
+                                  'Resend code in ${otpViewModel.otpTimerSeconds}s',
+                              centre: true,
                             )
                           else
                             TextButton(
@@ -171,94 +150,52 @@ class OtpScreen extends StatelessWidget {
                                           color: CustomColors.whiteColor,
                                         ),
                                       ),
-                                      backgroundColor: CustomColors.primaryColor,
+                                      backgroundColor:
+                                          CustomColors.primaryColor,
                                       behavior: SnackBarBehavior.floating,
                                       shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(8.r),
+                                        borderRadius: BorderRadius.circular(
+                                          8.r,
+                                        ),
                                       ),
                                     ),
                                   );
                                 }
                               },
-                              child: Text(
-                                'Resend Code',
-                                style: TextStyle(
-                                  fontFamily: 'CircularStd',
-                                  fontSize: 16.sp,
-                                  color: CustomColors.primaryColor,
-                                  fontWeight: FontWeight.w600,
-                                ),
+                              child: primary14w500(
+                                data: 'Resend Code',
+                                centre: false,
                               ),
                             ),
                         ],
                       ),
                     ),
-                    
+
                     SizedBox(height: 40.h),
-                    
+
                     // Verify Button
-                    Container(
-                      width: double.infinity,
-                      height: 56.h,
-                      decoration: BoxDecoration(
-                        color: otpViewModel.isOtpValid
-                            ? CustomColors.primaryColor
-                            : CustomColors.primaryColor.withValues(alpha: 0.3),
-                        borderRadius: BorderRadius.circular(16.r),
-                      ),
-                      child: Material(
-                        color: Colors.transparent,
-                        child: InkWell(
-                          borderRadius: BorderRadius.circular(16.r),
-                          onTap: otpViewModel.isOtpValid
-                              ? () async {
-                                  final success = await otpViewModel.verifyOtp();
-                                  if (success) {
-                                    Navigator.pushReplacementNamed(
-                                      context,
-                                      registrationStepperRoute,
-                                    );
-                                  }
-                                }
-                              : null,
-                          child: Center(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  'Verify OTP',
-                                  style: TextStyle(
-                                    fontFamily: 'CircularStd',
-                                    fontSize: 16.sp,
-                                    fontWeight: FontWeight.w600,
-                                    color: CustomColors.whiteColor,
-                                  ),
-                                ),
-                                SizedBox(width: 8.w),
-                                Icon(
-                                  Iconsax.arrow_right_3,
-                                  size: 20.sp,
-                                  color: CustomColors.whiteColor,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
+                    customButton(
+                      text: 'Verify OTP',
+                      onTap: otpViewModel.isOtpValid
+                          ? () async {
+                              final success = await otpViewModel.verifyOtp();
+                              if (success) {
+                                Navigator.pushReplacementNamed(
+                                  context,
+                                  registrationStepperRoute,
+                                );
+                              }
+                            }
+                          : () {},
+                      colored: otpViewModel.isOtpValid,
+                      icon: Iconsax.arrow_right_3,
+                      height: 56,
                     ),
-                    
+
                     SizedBox(height: 40.h),
-                    
+
                     // Footer Text
-                    Text(
-                      'Secure • Fast • Reliable',
-                      style: TextStyle(
-                        fontFamily: 'CircularStd',
-                        fontSize: 12.sp,
-                        color: CustomColors.blackColor.withValues(alpha: 0.5),
-                        letterSpacing: 0.5,
-                      ),
-                    ),
+                    grey12(data: 'Secure • Fast • Reliable', centre: true),
                   ],
                 ),
               ),

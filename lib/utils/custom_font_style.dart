@@ -82,7 +82,7 @@ Widget blackWhite14w500({
   );
 }
 
-Widget grey14({required String data, bool? centre}) {
+Widget grey12({required String data, bool? centre}) {
   return Text(
     textAlign: centre != null && centre == true
         ? TextAlign.center
@@ -90,7 +90,7 @@ Widget grey14({required String data, bool? centre}) {
     data,
     style: TextStyle(
       fontFamily: 'CircularStd',
-      fontSize: 14.sp,
+      fontSize: 12.sp,
       color: CustomColors.greyColor,
     ),
   );
