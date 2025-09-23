@@ -3,6 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:provider/provider.dart';
 import '../../utils/custom_colors.dart';
+import '../../utils/custom_buttons.dart';
+import '../../utils/custom_font_style.dart';
 import '../../view_models/driver_registration_view_model.dart';
 import 'driver_personal_info_screen.dart';
 import 'driver_documents_screen.dart';
@@ -11,55 +13,45 @@ import 'driver_stripe_kyc_screen.dart';
 import 'driver_shift_screen.dart';
 import 'driver_vehicle_screen.dart';
 
-class RegistrationStepperScreen extends StatefulWidget {
+class RegistrationStepperScreen extends StatelessWidget {
   const RegistrationStepperScreen({super.key});
 
-  @override
-  State<RegistrationStepperScreen> createState() => _RegistrationStepperScreenState();
-}
-
-class _RegistrationStepperScreenState extends State<RegistrationStepperScreen> {
-  int _currentStep = 0;
-  final PageController _pageController = PageController();
-  
-  // Data storage for each step
-  final Map<String, String> _personalInfo = {};
-  final Map<String, bool> _documents = {};
-  final Map<String, String> _vehicleInfo = {};
-  final Map<String, String> _paymentInfo = {};
-  final Map<String, String> _shiftInfo = {};
-  
-
-  final List<StepData> _steps = [
+  static final List<StepData> _steps = [
     StepData(
       title: 'Personal Information',
       subtitle: 'Enter your personal details',
       icon: Iconsax.user,
+      stepIndex: 0,
     ),
     StepData(
       title: 'Documents',
       subtitle: 'Upload required documents',
       icon: Iconsax.document_text,
-    ),
-    StepData(
-      title: 'Review',
-      subtitle: 'Review your information',
-      icon: Iconsax.tick_circle,
+      stepIndex: 1,
     ),
     StepData(
       title: 'Vehicle',
       subtitle: 'Add your vehicle details',
       icon: Iconsax.car,
+      stepIndex: 2,
     ),
     StepData(
       title: 'Shift',
       subtitle: 'Set your working hours',
       icon: Iconsax.clock,
+      stepIndex: 3,
+    ),
+    StepData(
+      title: 'Review',
+      subtitle: 'Review your information',
+      icon: Iconsax.tick_circle,
+      stepIndex: 4,
     ),
     StepData(
       title: 'Stripe',
       subtitle: 'Connect with Stripe',
       icon: Iconsax.wallet_3,
+      stepIndex: 5,
     ),
   ];
 
@@ -78,311 +70,151 @@ class _RegistrationStepperScreenState extends State<RegistrationStepperScreen> {
           ),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text(
-          'Driver Registration',
-          style: TextStyle(
-            fontFamily: 'CircularStd',
-            color: CustomColors.blackColor,
-            fontSize: 18.sp,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
+        title: black18w500(data: 'Driver Registration'),
         centerTitle: true,
       ),
-      body: Column(
+      body: Consumer<DriverRegistrationViewModel>(
+        builder: (context, viewModel, child) {
+          return Column(
+            children: [
+              // Progress indicator
+              _buildProgressIndicator(viewModel),
+              
+              // Content area
+              Expanded(
+                child: PageView.builder(
+                  controller: viewModel.getPageController,
+                  physics: const NeverScrollableScrollPhysics(),
+                  onPageChanged: (index) {
+                    viewModel.setCurrentStep(index);
+                  },
+                  itemCount: _steps.length,
+                  itemBuilder: (context, index) {
+                    return _buildStepContent(index);
+                  },
+                ),
+              ),
+              
+              // Navigation buttons
+              _buildNavigationButtons(context, viewModel),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildProgressIndicator(DriverRegistrationViewModel viewModel) {
+    return Container(
+      padding: EdgeInsets.all(20.w),
+      child: Column(
         children: [
-          // Progress indicator
-          Container(
-            padding: EdgeInsets.all(20.w),
-            child: Column(
-              children: [
-                // Step indicator
-                Row(
-                  children: List.generate(_steps.length, (index) {
-                    return Expanded(
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Container(
-                              height: 4.h,
-                              decoration: BoxDecoration(
-                                color: index <= _currentStep
-                                    ? CustomColors.primaryColor
-                                    : CustomColors.blackColor.withValues(alpha: 0.2),
-                                borderRadius: BorderRadius.circular(2.r),
-                              ),
-                            ),
-                          ),
-                          if (index < _steps.length - 1)
-                            SizedBox(width: 8.w),
-                        ],
-                      ),
-                    );
-                  }),
-                ),
-                SizedBox(height: 20.h),
-                // Current step info
-                Text(
-                  'Step ${_currentStep + 1} of ${_steps.length}',
-                  style: TextStyle(
-                    fontFamily: 'CircularStd',
-                    fontSize: 14.sp,
-                    color: CustomColors.blackColor.withValues(alpha: 0.6),
-                    fontWeight: FontWeight.w500,
+          Row(
+            children: List.generate(_steps.length, (index) => Expanded(
+              child: Row(children: [
+                Expanded(child: Container(
+                  height: 4.h,
+                  decoration: BoxDecoration(
+                    color: index <= viewModel.getCurrentStep ? CustomColors.primaryColor : CustomColors.blackColor.withValues(alpha: 0.2),
+                    borderRadius: BorderRadius.circular(2.r),
                   ),
-                ),
-              ],
-            ),
+                )),
+                if (index < _steps.length - 1) SizedBox(width: 8.w),
+              ]),
+            )),
           ),
-
-          // Content area
-          Expanded(
-            child: PageView.builder(
-              controller: _pageController,
-              physics: NeverScrollableScrollPhysics(), // Disable swiping/sliding
-              onPageChanged: (index) {
-                setState(() {
-                  _currentStep = index;
-                });
-              },
-              itemCount: _steps.length,
-              itemBuilder: (context, index) {
-                return _buildStepContent(index);
-              },
-            ),
-          ),
-
-          // Navigation buttons
-          Container(
-            padding: EdgeInsets.all(20.w),
-            child: Row(
-              children: [
-                if (_currentStep > 0)
-                  Expanded(
-                    child: Container(
-                      height: 56.h,
-                      decoration: BoxDecoration(
-                        color: CustomColors.whiteColor,
-                        borderRadius: BorderRadius.circular(16.r),
-                        border: Border.all(
-                          color: CustomColors.primaryColor,
-                          width: 1.5,
-                        ),
-                      ),
-                      child: Material(
-                        color: Colors.transparent,
-                        child: InkWell(
-                          borderRadius: BorderRadius.circular(16.r),
-                          onTap: _previousStep,
-                          child: Center(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Iconsax.arrow_left_2,
-                                  color: CustomColors.primaryColor,
-                                  size: 20.sp,
-                                ),
-                                SizedBox(width: 8.w),
-                                Text(
-                                  'Previous',
-                                  style: TextStyle(
-                                    fontFamily: 'CircularStd',
-                                    color: CustomColors.primaryColor,
-                                    fontSize: 16.sp,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                if (_currentStep > 0) SizedBox(width: 16.w),
-                Expanded(
-                  child: Container(
-                    height: 56.h,
-                    decoration: BoxDecoration(
-                      color: CustomColors.primaryColor,
-                      borderRadius: BorderRadius.circular(16.r),
-                    ),
-                    child: Material(
-                      color: Colors.transparent,
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(16.r),
-                        onTap: (){
-                          if(context.read<DriverRegistrationViewModel>().validateFormKey()) {
-                            _currentStep < _steps.length - 1 ? _nextStep() : _completeRegistration();
-                          }
-                        },
-                        child: Center(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                _currentStep < _steps.length - 1 ? 'Next' : 'Complete',
-                                style: TextStyle(
-                                  fontFamily: 'CircularStd',
-                                  fontSize: 16.sp,
-                                  fontWeight: FontWeight.w600,
-                                  color: CustomColors.whiteColor,
-                                ),
-                              ),
-                              SizedBox(width: 8.w),
-                              Icon(
-                                _currentStep < _steps.length - 1 
-                                    ? Iconsax.arrow_right_3 
-                                    : Iconsax.tick_circle,
-                                color: CustomColors.whiteColor,
-                                size: 20.sp,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+          SizedBox(height: 20.h),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              black14w500(data: 'Step ${viewModel.getCurrentStep + 1} of ${_steps.length}'),
+              grey12(data: _steps[viewModel.getCurrentStep].title),
+            ],
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildNavigationButtons(BuildContext context, DriverRegistrationViewModel viewModel) {
+    return Container(
+      padding: EdgeInsets.all(20.w),
+      child: Row(children: [
+        if (viewModel.canGoPrevious()) ...[
+          Expanded(child: customButton(onTap: viewModel.previousStep, text: 'Previous', colored: false)),
+          SizedBox(width: 16.w),
+        ],
+        Expanded(child: customButton(
+          onTap: () => _validateCurrentStep(viewModel) 
+            ? (viewModel.canGoNext() ? viewModel.nextStep() : _completeRegistration(context))
+            : null,
+          text: viewModel.isLastStep() ? 'Complete' : 'Next',
+          colored: true,
+        )),
+      ]),
     );
   }
 
   Widget _buildStepContent(int stepIndex) {
-    switch (stepIndex) {
-      case 0:
-        return DriverPersonalInfoScreen();
-      case 1:
-        return DriverDocumentsScreen();
-      case 2:
-        return DriverInfoReviewScreen(
-          personalInfo: _personalInfo,
-          documents: _documents,
-          vehicleInfo: _vehicleInfo,
-          paymentInfo: _paymentInfo,
-          shiftInfo: _shiftInfo,
-        );
-      case 3:
-        return DriverVehicleScreen();
-      case 4:
-        return DriverShiftScreen();
-      case 5:
-        return DriverStripeKycScreen();
-      default:
-        return const SizedBox();
+    const screens = [
+      DriverPersonalInfoScreen(),
+      DriverDocumentsScreen(),
+      DriverVehicleScreen(),
+      DriverShiftScreen(),
+      DriverInfoReviewScreen(),
+      DriverStripeKycScreen(),
+    ];
+    return screens[stepIndex];
+  }
+
+  bool _validateCurrentStep(DriverRegistrationViewModel viewModel) {
+    switch (viewModel.getCurrentStep) {
+      case 0: return viewModel.validateFormKey();
+      case 1: return viewModel.areAllDocumentsUploaded;
+      case 2: return true;
+      case 3: return viewModel.isValidWorkingDaysSelection;
+      case 4: return true;
+      case 5: return true;
+      default: return false;
     }
   }
 
-
-  void _nextStep() {
-    if (_currentStep < _steps.length - 1) {
-        _pageController.nextPage(
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-      );
-    }
-  }
-
-  void _previousStep() {
-    if (_currentStep > 0) {
-      _pageController.previousPage(
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-      );
-    }
-  }
-
-  void _completeRegistration() {
-    // Handle registration completion
+  void _completeRegistration(BuildContext context) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: CustomColors.whiteColor,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20.r),
-        ),
-        title: Row(
-          children: [
-            Icon(
-              Iconsax.tick_circle,
-              color: CustomColors.primaryColor,
-              size: 24.sp,
-            ),
-            SizedBox(width: 8.w),
-            Text(
-              'Registration Complete!',
-              style: TextStyle(
-                fontFamily: 'CircularStd',
-                color: CustomColors.blackColor,
-                fontSize: 18.sp,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
-        ),
-        content: Text(
-          'Your driver registration has been submitted successfully.',
-          style: TextStyle(
-            fontFamily: 'CircularStd',
-            color: CustomColors.blackColor.withValues(alpha: 0.7),
-            fontSize: 14.sp,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.r)),
+        title: Row(children: [
+          Icon(Iconsax.tick_circle, color: CustomColors.primaryColor, size: 24.sp),
+          SizedBox(width: 8.w),
+          black18w500(data: 'Registration Complete!'),
+        ]),
+        content: grey12(data: 'Your driver registration has been submitted successfully.'),
+        actions: [SizedBox(
+          width: double.infinity,
+          child: customButton(
+            onTap: () { Navigator.pop(context); Navigator.pop(context); },
+            text: 'OK',
+            colored: true,
           ),
-        ),
-        actions: [
-          Container(
-            width: double.infinity,
-            height: 48.h,
-            decoration: BoxDecoration(
-              color: CustomColors.primaryColor,
-              borderRadius: BorderRadius.circular(12.r),
-            ),
-            child: Material(
-              color: Colors.transparent,
-              child: InkWell(
-                borderRadius: BorderRadius.circular(12.r),
-                        onTap: () {
-                          Navigator.pop(context); // Close dialog
-                          Navigator.pop(context); // Go back to login
-                        },
-                child: Center(
-                  child: Text(
-                    'OK',
-                    style: TextStyle(
-                      fontFamily: 'CircularStd',
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w600,
-                      color: CustomColors.whiteColor,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
+        )],
       ),
     );
   }
 
-  @override
-  void dispose() {
-    _pageController.dispose();
-    super.dispose();
-  }
 }
 
 class StepData {
   final String title;
   final String subtitle;
   final IconData icon;
+  final int stepIndex;
 
   StepData({
     required this.title,
     required this.subtitle,
     required this.icon,
+    required this.stepIndex,
   });
 }

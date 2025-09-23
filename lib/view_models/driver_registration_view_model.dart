@@ -17,6 +17,10 @@ class DriverRegistrationViewModel extends ChangeNotifier {
   final TextEditingController _emergencyContactEmailController = TextEditingController();
   GlobalKey<FormState>? _formKey;
 
+  // Stepper state management
+  int _currentStep = 0;
+  final PageController _pageController = PageController();
+
   // Image picker and document images
   final ImagePicker _imagePicker = ImagePicker();
   File? _identityVerificationImage;
@@ -58,6 +62,10 @@ class DriverRegistrationViewModel extends ChangeNotifier {
     _formKey ??= GlobalKey<FormState>();
     return _formKey!;
   }
+
+  // Stepper getters
+  int get getCurrentStep => _currentStep;
+  PageController get getPageController => _pageController;
 
   // Image and document getters
   File? get getIdentityVerificationImage => _identityVerificationImage;
@@ -245,6 +253,53 @@ class DriverRegistrationViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  // Stepper navigation methods
+  void nextStep() {
+    if (_currentStep < 5) { // 0-5 steps (6 total)
+      _currentStep++;
+      _pageController.nextPage(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+      notifyListeners();
+    }
+  }
+
+  void previousStep() {
+    if (_currentStep > 0) {
+      _currentStep--;
+      _pageController.previousPage(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+      notifyListeners();
+    }
+  }
+
+  void setCurrentStep(int step) {
+    if (step >= 0 && step <= 5) {
+      _currentStep = step;
+      _pageController.animateToPage(
+        step,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+      notifyListeners();
+    }
+  }
+
+  bool canGoNext() {
+    return _currentStep < 5;
+  }
+
+  bool canGoPrevious() {
+    return _currentStep > 0;
+  }
+
+  bool isLastStep() {
+    return _currentStep == 5;
+  }
+
   @override
   void dispose() {
     _firstNameController.dispose();
@@ -259,6 +314,7 @@ class DriverRegistrationViewModel extends ChangeNotifier {
     _emergencyContactNameController.dispose();
     _emergencyContactNumberController.dispose();
     _emergencyContactEmailController.dispose();
+    _pageController.dispose();
     super.dispose();
   }
 }
