@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
@@ -32,11 +33,8 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 20.h),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     SizedBox(height: 40.h),
-
-                    // Logo/Icon Section
                     Container(
                       width: 100.w,
                       height: 100.w,
@@ -50,10 +48,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         color: CustomColors.whiteColor,
                       ),
                     ),
-
                     SizedBox(height: 40.h),
-
-                    // Welcome Text
                     black24w600(data: 'Welcome Back!', centre: true),
                     SizedBox(height: 12.h),
                     grey12(
@@ -62,266 +57,300 @@ class _LoginScreenState extends State<LoginScreen> {
                       centre: true,
                     ),
                     SizedBox(height: 50.h),
-
-                    // Login Method Toggle
-                    Container(
-                      padding: EdgeInsets.all(4.r),
-                      decoration: BoxDecoration(
-                        color: CustomColors.whiteColor,
-                        borderRadius: BorderRadius.circular(12.r),
-                        boxShadow: kElevationToShadow[9],
-                        border: Border.all(
-                          color: CustomColors.primaryColor.withValues(
-                            alpha: 0.2,
-                          ),
-                          width: 1,
-                        ),
-                      ),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: GestureDetector(
-                              onTap: () {
-                                FocusScope.of(context).unfocus();
-                                authViewModel.setLoginWith =
-                                    LoginWith.phone.value;
-                              },
-                              child: Container(
-                                padding: EdgeInsets.symmetric(vertical: 12.h),
-                                decoration: BoxDecoration(
-                                  color:
-                                      authViewModel.getLoginWith ==
-                                          LoginWith.phone.value
-                                      ? CustomColors.primaryColor
-                                      : Colors.transparent,
-                                  borderRadius: BorderRadius.circular(8.r),
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      Iconsax.mobile,
-                                      size: 18.sp,
-                                      color:
-                                          authViewModel.getLoginWith ==
-                                              LoginWith.phone.value
-                                          ? CustomColors.whiteColor
-                                          : CustomColors.blackColor,
-                                    ),
-                                    SizedBox(width: 8.w),
-                                    blackWhite14w500(
-                                      data: 'Phone',
-                                      isWhite:
-                                          authViewModel.getLoginWith ==
-                                          LoginWith.phone.value,
-                                    ),
-                                  ],
-                                ),
+                    AnimationLimiter(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: AnimationConfiguration.toStaggeredList(
+                          childAnimationBuilder: (Widget widget) =>
+                              FlipAnimation(
+                                duration: Duration(seconds: 1),
+                                //horizontalOffset: 50.0,
+                                child: FadeInAnimation(child: widget),
                               ),
-                            ),
-                          ),
-                          Expanded(
-                            child: GestureDetector(
-                              onTap: () {
-                                FocusScope.of(context).unfocus();
-                                authViewModel.setLoginWith =
-                                    LoginWith.email.value;
-                              },
-                              child: Container(
-                                padding: EdgeInsets.symmetric(vertical: 12.h),
-                                decoration: BoxDecoration(
-                                  color:
-                                      authViewModel.getLoginWith ==
-                                          LoginWith.email.value
-                                      ? CustomColors.primaryColor
-                                      : Colors.transparent,
-                                  borderRadius: BorderRadius.circular(8.r),
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      Iconsax.sms,
-                                      size: 18.sp,
-                                      color:
-                                          authViewModel.getLoginWith ==
-                                              LoginWith.email.value
-                                          ? CustomColors.whiteColor
-                                          : CustomColors.blackColor,
-                                    ),
-                                    SizedBox(width: 8.w),
-                                    blackWhite14w500(
-                                      data: 'Email',
-                                      isWhite:
-                                          authViewModel.getLoginWith ==
-                                          LoginWith.email.value,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    SizedBox(height: 30.h),
-                    Container(
-                      padding: EdgeInsets.all(24.w),
-                      decoration: BoxDecoration(
-                        boxShadow: kElevationToShadow[9],
-                        color: CustomColors.whiteColor,
-                        borderRadius: BorderRadius.circular(20.r),
-                        border: Border.all(
-                          color: CustomColors.primaryColor.withValues(
-                            alpha: 0.1,
-                          ),
-                          width: 1,
-                        ),
-                      ),
-                      child: Form(
-                        key: authViewModel.getFormKey,
-                        child: Column(
                           children: [
-                            // Input Field
-                            authViewModel.getLoginWith == LoginWith.phone.value
-                                ? Container(
-                                    decoration: BoxDecoration(
-                                      boxShadow: kElevationToShadow[3],
-                                      color: CustomColors.whiteColor,
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(15.r),
-                                      ),
-                                    ),
-                                    child: phoneFieldWidget(),
-                                  )
-                                : Container(
-                                    decoration: BoxDecoration(
-                                      boxShadow: kElevationToShadow[3],
-                                      color: CustomColors.whiteColor,
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(15.r),
-                                      ),
-                                    ),
-                                    child: emailFieldWidget(),
+                            Container(
+                              padding: EdgeInsets.all(4.r),
+                              decoration: BoxDecoration(
+                                color: CustomColors.whiteColor,
+                                borderRadius: BorderRadius.circular(12.r),
+                                boxShadow: kElevationToShadow[9],
+                                border: Border.all(
+                                  color: CustomColors.primaryColor.withValues(
+                                    alpha: 0.2,
                                   ),
-
-                            SizedBox(height: 30.h),
-
-                            // Terms and Conditions
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Checkbox(
-                                  value: authViewModel.getIsTermsAccepted,
-                                  onChanged: (value) {
-                                    authViewModel.setIsTermsAccepted =
-                                        value ?? false;
-                                  },
-                                  activeColor: CustomColors.primaryColor,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(4.r),
-                                  ),
+                                  width: 1,
                                 ),
-                                SizedBox(width: 8.w),
-                                Expanded(
-                                  child: RichText(
-                                    text: TextSpan(
-                                      style: TextStyle(
-                                        fontFamily: 'CircularStd',
-                                        fontSize: 13.sp,
-                                        color: CustomColors.greyColor,
-                                        height: 1.4,
-                                      ),
-                                      children: [
-                                        const TextSpan(
-                                          text:
-                                              'By continuing, you agree to our ',
+                              ),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        FocusScope.of(context).unfocus();
+                                        authViewModel.setLoginWith =
+                                            LoginWith.phone.value;
+                                      },
+                                      child: Container(
+                                        padding: EdgeInsets.symmetric(
+                                          vertical: 12.h,
                                         ),
-                                        TextSpan(
-                                          text: 'Terms of Service',
-                                          style: TextStyle(
-                                            color: CustomColors.primaryColor,
-                                            fontWeight: FontWeight.w500,
+                                        decoration: BoxDecoration(
+                                          color:
+                                              authViewModel.getLoginWith ==
+                                                  LoginWith.phone.value
+                                              ? CustomColors.blackColor
+                                              : Colors.transparent,
+                                          borderRadius: BorderRadius.circular(
+                                            8.r,
                                           ),
                                         ),
-                                        const TextSpan(text: ' and '),
-                                        TextSpan(
-                                          text: 'Privacy Policy',
-                                          style: TextStyle(
-                                            color: CustomColors.primaryColor,
-                                            fontWeight: FontWeight.w500,
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Icon(
+                                              Iconsax.mobile,
+                                              size: 18.sp,
+                                              color:
+                                                  authViewModel.getLoginWith ==
+                                                      LoginWith.phone.value
+                                                  ? CustomColors.whiteColor
+                                                  : CustomColors.blackColor,
+                                            ),
+                                            SizedBox(width: 8.w),
+                                            blackWhite14w500(
+                                              data: 'Phone',
+                                              isWhite:
+                                                  authViewModel.getLoginWith ==
+                                                  LoginWith.phone.value,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        FocusScope.of(context).unfocus();
+                                        authViewModel.setLoginWith =
+                                            LoginWith.email.value;
+                                      },
+                                      child: Container(
+                                        padding: EdgeInsets.symmetric(
+                                          vertical: 12.h,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color:
+                                              authViewModel.getLoginWith ==
+                                                  LoginWith.email.value
+                                              ? CustomColors.blackColor
+                                              : Colors.transparent,
+                                          borderRadius: BorderRadius.circular(
+                                            8.r,
+                                          ),
+                                        ),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Icon(
+                                              Iconsax.sms,
+                                              size: 18.sp,
+                                              color:
+                                                  authViewModel.getLoginWith ==
+                                                      LoginWith.email.value
+                                                  ? CustomColors.whiteColor
+                                                  : CustomColors.blackColor,
+                                            ),
+                                            SizedBox(width: 8.w),
+                                            blackWhite14w500(
+                                              data: 'Email',
+                                              isWhite:
+                                                  authViewModel.getLoginWith ==
+                                                  LoginWith.email.value,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+
+                            SizedBox(height: 30.h),
+                            Container(
+                              padding: EdgeInsets.all(24.w),
+                              decoration: BoxDecoration(
+                                boxShadow: kElevationToShadow[9],
+                                color: CustomColors.whiteColor,
+                                borderRadius: BorderRadius.circular(20.r),
+                                border: Border.all(
+                                  color: CustomColors.primaryColor.withValues(
+                                    alpha: 0.1,
+                                  ),
+                                  width: 1,
+                                ),
+                              ),
+                              child: Form(
+                                key: authViewModel.getFormKey,
+                                child: Column(
+                                  children: [
+                                    // Input Field
+                                    authViewModel.getLoginWith ==
+                                            LoginWith.phone.value
+                                        ? Container(
+                                            decoration: BoxDecoration(
+                                              boxShadow: kElevationToShadow[3],
+                                              color: CustomColors.whiteColor,
+                                              borderRadius: BorderRadius.all(
+                                                Radius.circular(15.r),
+                                              ),
+                                            ),
+                                            child: phoneFieldWidget(),
+                                          )
+                                        : Container(
+                                            decoration: BoxDecoration(
+                                              boxShadow: kElevationToShadow[3],
+                                              color: CustomColors.whiteColor,
+                                              borderRadius: BorderRadius.all(
+                                                Radius.circular(15.r),
+                                              ),
+                                            ),
+                                            child: emailFieldWidget(),
+                                          ),
+
+                                    SizedBox(height: 30.h),
+
+                                    // Terms and Conditions
+                                    Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Checkbox(
+                                          value:
+                                              authViewModel.getIsTermsAccepted,
+                                          onChanged: (value) {
+                                            authViewModel.setIsTermsAccepted =
+                                                value ?? false;
+                                          },
+                                          activeColor:
+                                              CustomColors.primaryColor,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              4.r,
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(width: 8.w),
+                                        Expanded(
+                                          child: RichText(
+                                            text: TextSpan(
+                                              style: TextStyle(
+                                                fontFamily: 'CircularStd',
+                                                fontSize: 12.sp,
+                                                color: CustomColors.greyColor,
+                                                height: 1.4,
+                                              ),
+                                              children: [
+                                                const TextSpan(
+                                                  text:
+                                                      'By continuing, you agree to our ',
+                                                ),
+                                                TextSpan(
+                                                  text: 'Terms of Service',
+                                                  style: TextStyle(
+                                                    color: CustomColors
+                                                        .primaryColor,
+                                                    fontSize: 12.sp,
+
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
+                                                ),
+                                                const TextSpan(text: ' and '),
+                                                TextSpan(
+                                                  text: 'Privacy Policy',
+                                                  style: TextStyle(
+                                                    color: CustomColors
+                                                        .primaryColor,
+                                                    fontSize: 12.sp,
+
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
                                           ),
                                         ),
                                       ],
                                     ),
-                                  ),
+
+                                    SizedBox(height: 30.h),
+
+                                    // Send OTP Button
+                                    customButton(
+                                      text: 'Send Otp',
+                                      onTap: () async {
+                                        final navigator = Navigator.of(context);
+                                        if (authViewModel.validateFormKey()) {
+                                          context
+                                              .read<OtpViewModel>()
+                                              .setPhoneOrEmail(
+                                                phone:
+                                                    authViewModel
+                                                        .getCountryCode +
+                                                    authViewModel
+                                                        .getPhoneController
+                                                        .text,
+                                                loginType:
+                                                    authViewModel.getLoginWith,
+                                                email: authViewModel
+                                                    .getEmailController
+                                                    .text,
+                                              );
+                                          if (authViewModel
+                                              .getIsTermsAccepted) {
+                                            await context
+                                                .read<OtpViewModel>()
+                                                .sendOtp()
+                                                .then((value) {
+                                                  if (value) {
+                                                    navigator.pushNamed(
+                                                      otpRoute,
+                                                    );
+                                                  }
+                                                });
+                                          } else {
+                                            EasyLoading.showError(
+                                              'Kindly accept terms and services',
+                                            );
+                                          }
+                                        }
+                                      },
+                                      colored: true,
+                                    ),
+                                  ],
                                 ),
-                              ],
+                              ),
                             ),
 
-                            SizedBox(height: 30.h),
+                            SizedBox(height: 40.h),
 
-                            // Send OTP Button
-                            Container(
-                              width: double.infinity,
-                              height: 56.h,
-                              decoration: BoxDecoration(
-                                color: CustomColors.primaryColor,
-                                borderRadius: BorderRadius.circular(16.r),
-                              ),
-                              child: customButton(
-                                text: 'Send Otp',
-                                onTap: () async {
-                                  final navigator = Navigator.of(context);
-                                  if (authViewModel.validateFormKey()) {
-                                    context
-                                        .read<OtpViewModel>()
-                                        .setPhoneOrEmail(
-                                          phone:
-                                              authViewModel.getCountryCode +
-                                              authViewModel
-                                                  .getPhoneController
-                                                  .text,
-                                          loginType: authViewModel.getLoginWith,
-                                          email: authViewModel
-                                              .getEmailController
-                                              .text,
-                                        );
-                                    if (authViewModel.getIsTermsAccepted) {
-                                      await context
-                                          .read<OtpViewModel>()
-                                          .sendOtp()
-                                          .then((value) {
-                                            if (value) {
-                                              navigator.pushNamed(otpRoute);
-                                            }
-                                          });
-                                    } else {
-                                      EasyLoading.showError(
-                                        'Kindly accept terms and services',
-                                      );
-                                    }
-                                  }
-                                },
-                                colored: true,
+                            // Version and Build Number
+                            Text(
+                              'Version ${authViewModel.getVersion} (Build ${authViewModel.getBuildNumber})',
+                              style: TextStyle(
+                                fontFamily: 'CircularStd',
+                                fontSize: 12.sp,
+                                color: CustomColors.blackColor.withValues(
+                                  alpha: 0.5,
+                                ),
+                                letterSpacing: 0.5,
                               ),
                             ),
                           ],
                         ),
-                      ),
-                    ),
-
-                    SizedBox(height: 40.h),
-
-                    // Version and Build Number
-                    Text(
-                      'Version ${authViewModel.getVersion} (Build ${authViewModel.getBuildNumber})',
-                      style: TextStyle(
-                        fontFamily: 'CircularStd',
-                        fontSize: 12.sp,
-                        color: CustomColors.blackColor.withValues(alpha: 0.5),
-                        letterSpacing: 0.5,
                       ),
                     ),
                   ],

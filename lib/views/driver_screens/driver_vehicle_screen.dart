@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import '../../../utils/custom_colors.dart';
 import '../../../utils/custom_font_style.dart';
+import '../../../widgets/image_source_bottom_sheet.dart';
 
 class DriverVehicleScreen extends StatefulWidget {
   const DriverVehicleScreen({super.key});
@@ -436,7 +437,12 @@ class _DriverVehicleScreenState extends State<DriverVehicleScreen> {
   Widget _buildDocumentItem(String title, String documentKey, IconData icon) {
     final hasImage = _requiredDocuments[documentKey] != null || _additionalDocuments[documentKey] != null;
     return GestureDetector(
-      onTap: () => _showImageSourceBottomSheet(documentKey),
+      onTap: () => ImageSourceBottomSheet.show(
+        context: context,
+        title: 'Select Image Source',
+        subtitle: 'Choose how you want to add the image',
+        onImageSelected: (source) => _pickImage(documentKey, source),
+      ),
       child: Container(
         padding: EdgeInsets.all(16.w),
         decoration: BoxDecoration(
@@ -517,51 +523,6 @@ class _DriverVehicleScreenState extends State<DriverVehicleScreen> {
     }
   }
 
-  void _showImageSourceBottomSheet(String documentKey) {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      builder: (context) => Container(
-        padding: EdgeInsets.all(20.w),
-        decoration: BoxDecoration(
-          color: CustomColors.whiteColor,
-          borderRadius: BorderRadius.only(topLeft: Radius.circular(20.r), topRight: Radius.circular(20.r)),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(width: 40.w, height: 4.h, decoration: BoxDecoration(color: CustomColors.primaryColor.withValues(alpha: 0.3), borderRadius: BorderRadius.circular(2.r))),
-            SizedBox(height: 20.h),
-            black18w500(data: 'Select Image Source'),
-            SizedBox(height: 20.h),
-            Row(
-              children: [
-                Expanded(child: _buildSourceOption('Camera', Iconsax.camera, () { Navigator.pop(context); _pickImage(documentKey, ImageSource.camera); })),
-                SizedBox(width: 16.w),
-                Expanded(child: _buildSourceOption('Gallery', Iconsax.gallery, () { Navigator.pop(context); _pickImage(documentKey, ImageSource.gallery); })),
-              ],
-            ),
-            SizedBox(height: 20.h),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSourceOption(String title, IconData icon, VoidCallback onTap) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: EdgeInsets.all(20.w),
-        decoration: BoxDecoration(
-          color: CustomColors.primaryColor.withValues(alpha: 0.05),
-          borderRadius: BorderRadius.circular(12.r),
-          border: Border.all(color: CustomColors.primaryColor.withValues(alpha: 0.2), width: 1),
-        ),
-        child: Column(children: [Icon(icon, size: 32.sp, color: CustomColors.primaryColor), SizedBox(height: 8.h), black14w500(data: title)]),
-      ),
-    );
-  }
 
   Future<void> _pickImage(String documentKey, ImageSource source) async {
     try {

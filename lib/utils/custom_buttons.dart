@@ -7,11 +7,11 @@ import 'custom_colors.dart';
 Widget customButton(
     {required String text, required VoidCallback onTap, required bool colored, IconData? icon, double? height, String? boldText}) {
   return SizedBox(
-    height: height == null ? 50.h : height.h,
+    height: height == null ? 45.h : height.h,
     width: double.infinity,
     child: ElevatedButton(
       style: ElevatedButton.styleFrom(
-          elevation: 0,
+          elevation: 9,
           backgroundColor: colored ? CustomColors.primaryColor : CustomColors
               .whiteColor,
           shape: RoundedRectangleBorder(
