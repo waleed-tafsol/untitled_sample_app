@@ -1,69 +1,77 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:provider/provider.dart';
+import 'package:untitled_sample_app/view_models/auth_view_model.dart';
 import 'dart:io';
 import '../../utils/custom_colors.dart';
 import '../../utils/custom_buttons.dart';
 import '../../utils/custom_font_style.dart';
+import '../../utils/phone_formator.dart';
 import '../../view_models/driver_registration_view_model.dart';
 
 class DriverInfoReviewScreen extends StatelessWidget {
-  final Map<String, dynamic>? personalInfo;
-  final Map<String, dynamic>? documents;
-  final Map<String, dynamic>? vehicleInfo;
-  final Map<String, dynamic>? paymentInfo;
-  final Map<String, dynamic>? shiftInfo;
-
-  const DriverInfoReviewScreen({
-    super.key,
-    this.personalInfo,
-    this.documents,
-    this.vehicleInfo,
-    this.paymentInfo,
-    this.shiftInfo,
-  });
+  const DriverInfoReviewScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Consumer<DriverRegistrationViewModel>(
       builder: (context, viewModel, child) {
-        return SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.only(left: 10.w, right: 10.w, bottom: 20.h),
-            child: Column(
-              children: [
-                // Section 1: Review Your Information
-                _buildReviewHeader(context),
-                SizedBox(height: 20.h),
-                
-                // Section 2: Personal Details
-                _buildPersonalDetailsSection(context, viewModel),
-                SizedBox(height: 20.h),
-                
-                // Section 3: Address Information
-                _buildAddressInformationSection(context, viewModel),
-                SizedBox(height: 20.h),
-                
-                // Section 4: Registration & License
-                _buildRegistrationLicenseSection(context, viewModel),
-                SizedBox(height: 20.h),
-                
-                // Section 5: Emergency Contact
-                _buildEmergencyContactSection(context, viewModel),
-                SizedBox(height: 20.h),
-                
-                // Section 6: Documents Uploaded
-                _buildDocumentsUploadedSection(context, viewModel),
-                SizedBox(height: 20.h),
-                
-                // Section 7: Required Declarations
-                _buildRequiredDeclarationsSection(context, viewModel),
-                SizedBox(height: 40.h),
-                
-                // Submit Button
-                _buildSubmitButton(context, viewModel),
-              ],
+        return Form(
+          key: viewModel.getFormKeyForStep(2),
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.only(left: 10.w, right: 10.w, bottom: 20.h),
+              child: AnimationLimiter(
+                child: Column(
+                  children: [
+                    // Section 1: Review Your Information
+                    _buildReviewHeader(context),
+                    SizedBox(height: 20.h),
+
+                    // Section 2: Personal Details
+                    Column(
+                      children: AnimationConfiguration.toStaggeredList(
+                        duration: const Duration(milliseconds: 375),
+                        childAnimationBuilder: (widget) => FlipAnimation(
+                          duration: Duration(seconds: 1),
+                          child: FadeInAnimation(
+                            child: widget,
+                          ),
+                        ),
+                        children: [
+                          _buildPersonalDetailsSection(context, viewModel),
+                          SizedBox(height: 20.h),
+
+                          // Section 3: Address Information
+                          _buildAddressInformationSection(context, viewModel),
+                          SizedBox(height: 20.h),
+
+                          // Section 4: Registration & License
+                          _buildRegistrationLicenseSection(context, viewModel),
+                          SizedBox(height: 20.h),
+
+                          // Section 5: Emergency Contact
+                          _buildEmergencyContactSection(context, viewModel),
+                          SizedBox(height: 20.h),
+
+                          // Section 6: Documents Uploaded
+                          _buildDocumentsUploadedSection(context, viewModel),
+                          SizedBox(height: 20.h),
+
+                          // Section 7: Required Declarations
+                          _buildRequiredDeclarationsSection(context, viewModel),
+                          SizedBox(height: 40.h),
+
+                          // Submit Button
+                          _buildSubmitButton(context, viewModel),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ),
         );
@@ -98,14 +106,18 @@ class DriverInfoReviewScreen extends StatelessWidget {
           ),
           SizedBox(height: 12.h),
           grey12(
-            data: 'Please review all your information carefully. You can make changes by clicking the edit icons. Once you proceed, changes will require additional verification.',
+            data:
+                'Please review all your information carefully. You can make changes by clicking the edit icons. Once you proceed, changes will require additional verification.',
           ),
         ],
       ),
     );
   }
 
-  Widget _buildPersonalDetailsSection(BuildContext context, DriverRegistrationViewModel viewModel) {
+  Widget _buildPersonalDetailsSection(
+    BuildContext context,
+    DriverRegistrationViewModel viewModel,
+  ) {
     return _buildInfoSection(
       context,
       title: 'Personal Details',
@@ -116,36 +128,55 @@ class DriverInfoReviewScreen extends StatelessWidget {
         );
       },
       children: [
-        _buildInfoRow('First Name', personalInfo?['firstName'] ?? viewModel.getFirstNameController.text),
-        _buildInfoRow('Last Name', personalInfo?['lastName'] ?? viewModel.getLastNameController.text),
-        _buildInfoRow('Email', personalInfo?['email'] ?? 'john.doe@example.com'),
-        _buildInfoRow('Phone', personalInfo?['phone'] ?? '+61 123 456 789'),
-        _buildInfoRow('Date of Birth', personalInfo?['dateOfBirth'] ?? 'Not provided'),
-        _buildInfoRow('Gender', personalInfo?['gender'] ?? 'Not provided'),
+        _buildInfoRow('First Name', viewModel.getFirstNameController.text),
+        _buildInfoRow('Last Name', viewModel.getLastNameController.text),
+        _buildInfoRow(
+          'Email',
+          context.read<AuthViewModel>().getEmailController.text,
+        ),
+        _buildInfoRow(
+          'Phone',
+          formattedPhoneNumber(
+            phoneNumber:
+                context.read<AuthViewModel>().getCountryCode +
+                context.read<AuthViewModel>().getPhoneController.text,
+          ),
+        ),
+        _buildInfoRow('Date of Birth', 'Not provided'),
+        _buildInfoRow('Gender', 'Not provided'),
       ],
     );
   }
 
-  Widget _buildAddressInformationSection(BuildContext context, DriverRegistrationViewModel viewModel) {
+  Widget _buildAddressInformationSection(
+    BuildContext context,
+    DriverRegistrationViewModel viewModel,
+  ) {
     return _buildInfoSection(
       context,
       title: 'Address Information',
       onEdit: () {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Navigate to Address Edit')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Navigate to Address Edit')));
       },
       children: [
-        _buildInfoRow('Street Address', personalInfo?['streetAddress'] ?? viewModel.getStreetAddressController.text),
-        _buildInfoRow('Suburb', personalInfo?['suburb'] ?? viewModel.getSuburbController.text),
-        _buildInfoRow('Postcode', personalInfo?['postcode'] ?? viewModel.getPostcodeController.text),
-        _buildInfoRow('State', personalInfo?['state'] ?? 'NSW'),
-        _buildInfoRow('Country', personalInfo?['country'] ?? 'Australia'),
+        _buildInfoRow(
+          'Street Address',
+          viewModel.getStreetAddressController.text,
+        ),
+        _buildInfoRow('Suburb', viewModel.getSuburbController.text),
+        _buildInfoRow('Postcode', viewModel.getPostcodeController.text),
+        _buildInfoRow('State', 'NSW'),
+        _buildInfoRow('Country', 'Australia'),
       ],
     );
   }
 
-  Widget _buildRegistrationLicenseSection(BuildContext context, DriverRegistrationViewModel viewModel) {
+  Widget _buildRegistrationLicenseSection(
+    BuildContext context,
+    DriverRegistrationViewModel viewModel,
+  ) {
     return _buildInfoSection(
       context,
       title: 'Registration & License',
@@ -155,17 +186,26 @@ class DriverInfoReviewScreen extends StatelessWidget {
         );
       },
       children: [
-        _buildInfoRow('ABN', personalInfo?['abn'] ?? viewModel.getAbnController.text),
-        _buildInfoRow('E-Tag Number', personalInfo?['etagNumber'] ?? viewModel.getEtagNumberController.text),
-        _buildInfoRow('License Number', personalInfo?['licenseNumber'] ?? viewModel.getLicenseNumberController.text),
-        _buildInfoRow('License Expiry', personalInfo?['licenseExpiry'] ?? viewModel.getLicenseExpiryController.text),
-        _buildInfoRow('License Class', personalInfo?['licenseClass'] ?? 'Not provided'),
-        _buildInfoRow('Years of Experience', personalInfo?['experience'] ?? 'Not provided'),
+        _buildInfoRow('ABN', viewModel.getAbnController.text),
+        _buildInfoRow('E-Tag Number', viewModel.getEtagNumberController.text),
+        _buildInfoRow(
+          'License Number',
+          viewModel.getLicenseNumberController.text,
+        ),
+        _buildInfoRow(
+          'License Expiry',
+          viewModel.getLicenseExpiryController.text,
+        ),
+        _buildInfoRow('License Class', 'Not provided'),
+        _buildInfoRow('Years of Experience', 'Not provided'),
       ],
     );
   }
 
-  Widget _buildEmergencyContactSection(BuildContext context, DriverRegistrationViewModel viewModel) {
+  Widget _buildEmergencyContactSection(
+    BuildContext context,
+    DriverRegistrationViewModel viewModel,
+  ) {
     return _buildInfoSection(
       context,
       title: 'Emergency Contact',
@@ -175,15 +215,27 @@ class DriverInfoReviewScreen extends StatelessWidget {
         );
       },
       children: [
-        _buildInfoRow('Contact Name', personalInfo?['emergencyContactName'] ?? viewModel.getEmergencyContactNameController.text),
-        _buildInfoRow('Contact Number', personalInfo?['emergencyContactNumber'] ?? viewModel.getEmergencyContactNumberController.text),
-        _buildInfoRow('Contact Email', personalInfo?['emergencyContactEmail'] ?? viewModel.getEmergencyContactEmailController.text),
-        _buildInfoRow('Relationship', personalInfo?['emergencyContactRelationship'] ?? 'Not provided'),
+        _buildInfoRow(
+          'Contact Name',
+          viewModel.getEmergencyContactNameController.text,
+        ),
+        _buildInfoRow(
+          'Contact Number',
+          viewModel.getEmergencyContactNumberController.text,
+        ),
+        _buildInfoRow(
+          'Contact Email',
+          viewModel.getEmergencyContactEmailController.text,
+        ),
+        _buildInfoRow('Relationship', 'Not provided'),
       ],
     );
   }
 
-  Widget _buildDocumentsUploadedSection(BuildContext context, DriverRegistrationViewModel viewModel) {
+  Widget _buildDocumentsUploadedSection(
+    BuildContext context,
+    DriverRegistrationViewModel viewModel,
+  ) {
     return Container(
       padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
@@ -210,93 +262,16 @@ class DriverInfoReviewScreen extends StatelessWidget {
             ],
           ),
           SizedBox(height: 20.h),
-          
+
           // Identity Verification Image
           if (viewModel.hasIdentityVerificationImage)
             _buildDocumentImageItem(
               'Identity Verification',
               viewModel.getIdentityVerificationImage!,
             ),
-          
-          // Show documents from passed parameter if available
-          if (documents != null && documents!.isNotEmpty)
-            _buildDocumentsFromParameter(),
-          
+
           // Document Images Grid (2 per row)
           _buildDocumentImagesGrid(viewModel),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildDocumentsFromParameter() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Additional Documents',
-          style: TextStyle(
-            fontFamily: 'CircularStd',
-            fontSize: 14.sp,
-            fontWeight: FontWeight.w600,
-            color: CustomColors.blackColor,
-          ),
-        ),
-        SizedBox(height: 12.h),
-        GridView.builder(
-          shrinkWrap: true,
-          physics: NeverScrollableScrollPhysics(),
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            crossAxisSpacing: 12.w,
-            mainAxisSpacing: 12.h,
-            childAspectRatio: 1.2,
-          ),
-          itemCount: documents!.length,
-          itemBuilder: (context, index) {
-            final entry = documents!.entries.elementAt(index);
-            return _buildDocumentTextItem(entry.key, entry.value.toString());
-          },
-        ),
-        SizedBox(height: 16.h),
-      ],
-    );
-  }
-
-  Widget _buildDocumentTextItem(String title, String value) {
-    return Container(
-      padding: EdgeInsets.all(12.w),
-      decoration: BoxDecoration(
-        color: CustomColors.primaryColor.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(
-          color: CustomColors.primaryColor.withOpacity(0.2),
-          width: 1,
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: TextStyle(
-              fontFamily: 'CircularStd',
-              fontSize: 12.sp,
-              fontWeight: FontWeight.w600,
-              color: CustomColors.blackColor,
-            ),
-          ),
-          SizedBox(height: 4.h),
-          Text(
-            value,
-            style: TextStyle(
-              fontFamily: 'CircularStd',
-              fontSize: 10.sp,
-              color: CustomColors.blackColor.withOpacity(0.7),
-            ),
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-          ),
         ],
       ),
     );
@@ -339,6 +314,7 @@ class DriverInfoReviewScreen extends StatelessWidget {
 
   Widget _buildDocumentImageItem(String title, File imageFile) {
     return Container(
+      height: 120.h, // Fixed height to avoid RenderFlex issues
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12.r),
         border: Border.all(
@@ -378,7 +354,10 @@ class DriverInfoReviewScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildRequiredDeclarationsSection(BuildContext context, DriverRegistrationViewModel viewModel) {
+  Widget _buildRequiredDeclarationsSection(
+    BuildContext context,
+    DriverRegistrationViewModel viewModel,
+  ) {
     return Container(
       padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
@@ -405,7 +384,7 @@ class DriverInfoReviewScreen extends StatelessWidget {
             ],
           ),
           SizedBox(height: 20.h),
-          
+
           // Declaration 1
           _buildDeclarationItem(
             'I am qualified to operate a WATS Taxi',
@@ -414,7 +393,7 @@ class DriverInfoReviewScreen extends StatelessWidget {
             viewModel,
           ),
           SizedBox(height: 16.h),
-          
+
           // Declaration 2
           _buildDeclarationItem(
             'I have read and consent to the Driver\'s Agreement',
@@ -423,7 +402,7 @@ class DriverInfoReviewScreen extends StatelessWidget {
             viewModel,
           ),
           SizedBox(height: 16.h),
-          
+
           // Declaration 3
           _buildDeclarationItem(
             'I have read and consent to the Driver\'s Use of Information Statement',
@@ -443,15 +422,15 @@ class DriverInfoReviewScreen extends StatelessWidget {
     DriverRegistrationViewModel viewModel,
   ) {
     final currentValue = viewModel.getDeclaration(declarationKey);
-    
+
     return Container(
       padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
         color: CustomColors.primaryColor.withOpacity(0.05),
         borderRadius: BorderRadius.circular(12.r),
         border: Border.all(
-          color: currentValue == true 
-              ? CustomColors.primaryColor 
+          color: currentValue == true
+              ? CustomColors.primaryColor
               : CustomColors.primaryColor.withOpacity(0.2),
           width: 1,
         ),
@@ -511,14 +490,9 @@ class DriverInfoReviewScreen extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 8.h),
         decoration: BoxDecoration(
-          color: isSelected 
-              ? CustomColors.primaryColor 
-              : Colors.transparent,
+          color: isSelected ? CustomColors.primaryColor : Colors.transparent,
           borderRadius: BorderRadius.circular(20.r),
-          border: Border.all(
-            color: CustomColors.primaryColor,
-            width: 1,
-          ),
+          border: Border.all(color: CustomColors.primaryColor, width: 1),
         ),
         child: Text(
           text,
@@ -526,8 +500,8 @@ class DriverInfoReviewScreen extends StatelessWidget {
             fontFamily: 'CircularStd',
             fontSize: 12.sp,
             fontWeight: FontWeight.w500,
-            color: isSelected 
-                ? CustomColors.whiteColor 
+            color: isSelected
+                ? CustomColors.whiteColor
                 : CustomColors.primaryColor,
           ),
         ),
@@ -535,29 +509,37 @@ class DriverInfoReviewScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildSubmitButton(BuildContext context, DriverRegistrationViewModel viewModel) {
-    final canSubmit = viewModel.areAllDeclarationsAccepted &&
-                     viewModel.areAllDocumentsUploaded;
-    
+  Widget _buildSubmitButton(
+    BuildContext context,
+    DriverRegistrationViewModel viewModel,
+  ) {
+    final canSubmit =
+        viewModel.areAllDeclarationsAccepted &&
+        viewModel.areAllDocumentsUploaded;
+
     return customButton(
       text: 'Submit Registration',
-      onTap: canSubmit ? () {
-        // Handle submission
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Registration submitted successfully!'),
-            backgroundColor: CustomColors.primaryColor,
-          ),
-        );
-      } : () {
-        // Show error message if not ready to submit
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Please complete all required fields and accept all declarations.'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      },
+      onTap: canSubmit
+          ? () {
+              // Handle submission
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Registration submitted successfully!'),
+                  backgroundColor: CustomColors.primaryColor,
+                ),
+              );
+            }
+          : () {
+              // Show error message if not ready to submit
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    'Please complete all required fields and accept all declarations.',
+                  ),
+                  backgroundColor: Colors.red,
+                ),
+              );
+            },
       colored: canSubmit,
       icon: Iconsax.check,
       height: 50,
@@ -586,15 +568,9 @@ class DriverInfoReviewScreen extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(
-                Iconsax.user,
-                color: CustomColors.primaryColor,
-                size: 24.sp,
-              ),
+              Icon(Iconsax.user, color: CustomColors.primaryColor, size: 24.sp),
               SizedBox(width: 12.w),
-              Expanded(
-                child: black18w500(data: title),
-              ),
+              Expanded(child: black18w500(data: title)),
               GestureDetector(
                 onTap: onEdit,
                 child: Container(
@@ -644,7 +620,7 @@ class DriverInfoReviewScreen extends StatelessWidget {
                 fontFamily: 'CircularStd',
                 fontSize: 12.sp,
                 fontWeight: FontWeight.w500,
-                color: value.isEmpty 
+                color: value.isEmpty
                     ? CustomColors.blackColor.withOpacity(0.5)
                     : CustomColors.blackColor,
               ),

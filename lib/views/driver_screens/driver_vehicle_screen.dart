@@ -1,87 +1,64 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import 'package:provider/provider.dart';
 import '../../../utils/custom_colors.dart';
 import '../../../utils/custom_font_style.dart';
 import '../../../widgets/image_source_bottom_sheet.dart';
+import '../../../view_models/driver_registration_view_model.dart';
 
-class DriverVehicleScreen extends StatefulWidget {
+class DriverVehicleScreen extends StatelessWidget {
   const DriverVehicleScreen({super.key});
 
   @override
-  State<DriverVehicleScreen> createState() => _DriverVehicleScreenState();
-}
-
-class _DriverVehicleScreenState extends State<DriverVehicleScreen> {
-  final ImagePicker _imagePicker = ImagePicker();
-  final _formKey = GlobalKey<FormState>();
-  
-  // Vehicle Information Controllers
-  final _taxiPlateController = TextEditingController();
-  final _operatorNameController = TextEditingController();
-  final _makeController = TextEditingController();
-  final _modelController = TextEditingController();
-  final _yearController = TextEditingController();
-  final _colorController = TextEditingController();
-  String _selectedVehicleType = 'sedan';
-  
-  // License Plate Images
-  File? _frontPlateImage;
-  File? _rearPlateImage;
-  
-  // Required Documents Images
-  final Map<String, File?> _requiredDocuments = {
-    'registration': null,
-    'comprehensiveInsurance': null,
-    'ctpInsurance': null,
-  };
-  
-  // Additional Documents Images
-  final Map<String, File?> _additionalDocuments = {
-    'workCover': null,
-    'publicLiability': null,
-    'safetyInspection': null,
-    'cameraInspection': null,
-  };
-
-  @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.only(left: 10.w, right: 10.w, bottom: 20.h),
-          child: Column(
-            children: [
-              black24w600(data: 'Vehicle Information'),
-              grey12(data: 'Complete your vehicle details and documents'),
-              SizedBox(height: 20.h),
-              
-              // Section 1: Vehicle Information
-              _buildVehicleInformationSection(),
-              SizedBox(height: 24.h),
-              
-              // Section 2: License Plate Recognition
-              _buildLicensePlateSection(),
-              SizedBox(height: 24.h),
-              
-              // Section 3: Required Documents
-              _buildRequiredDocumentsSection(),
-              SizedBox(height: 24.h),
-              
-              // Section 4: Additional Documents
-              _buildAdditionalDocumentsSection(),
-            ],
+    return Consumer<DriverRegistrationViewModel>(
+      builder: (context, viewModel, child) {
+        return Form(
+          key: viewModel.getFormKeyForStep(3),
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.only(left: 10.w, right: 10.w, bottom: 20.h),
+              child: AnimationLimiter(
+                child: Column(
+                  children: [
+                    black24w600(data: 'Vehicle Information'),
+                    grey12(data: 'Complete your vehicle details and documents'),
+                    SizedBox(height: 20.h),
+
+                    // All Sections in One Column (animated)
+                    Column(
+                      children: AnimationConfiguration.toStaggeredList(
+                        duration: const Duration(milliseconds: 375),
+                        childAnimationBuilder: (widget) => FlipAnimation(
+                          duration: Duration(seconds: 1),
+                          child: FadeInAnimation(child: widget),
+                        ),
+                        children: [
+                          _buildVehicleInformationSection(viewModel),
+                          SizedBox(height: 24.h),
+                          _buildLicensePlateSection(viewModel),
+                          SizedBox(height: 24.h),
+                          _buildRequiredDocumentsSection(context, viewModel),
+                          SizedBox(height: 24.h),
+                          _buildAdditionalDocumentsSection(context, viewModel),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
   // Section 1: Vehicle Information
-  Widget _buildVehicleInformationSection() {
+  Widget _buildVehicleInformationSection(DriverRegistrationViewModel viewModel) {
     return Container(
       padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
@@ -98,19 +75,13 @@ class _DriverVehicleScreenState extends State<DriverVehicleScreen> {
         children: [
           Row(
             children: [
-              Icon(
-                Iconsax.car,
-                color: CustomColors.primaryColor,
-                size: 24.sp,
-              ),
+              Icon(Iconsax.car, color: CustomColors.primaryColor, size: 24.sp),
               SizedBox(width: 12.w),
               black18w500(data: 'Vehicle Information'),
             ],
           ),
           SizedBox(height: 8.h),
-          grey12(
-            data: 'Enter your vehicle details',
-          ),
+          grey12(data: 'Enter your vehicle details'),
           SizedBox(height: 20.h),
           
           // Taxi Plate Number and Operator Name
@@ -120,7 +91,7 @@ class _DriverVehicleScreenState extends State<DriverVehicleScreen> {
                 child: _buildInputField(
                   'Taxi Plate Number',
                   'e.g., TAXI-123',
-                  _taxiPlateController,
+                  viewModel.getTaxiPlateController,
                   icon: Iconsax.card,
                 ),
               ),
@@ -129,7 +100,7 @@ class _DriverVehicleScreenState extends State<DriverVehicleScreen> {
                 child: _buildInputField(
                   'Operator Name',
                   'e.g., John Smith',
-                  _operatorNameController,
+                  viewModel.getOperatorNameController,
                   icon: Iconsax.user,
                 ),
               ),
@@ -144,7 +115,7 @@ class _DriverVehicleScreenState extends State<DriverVehicleScreen> {
                 child: _buildInputField(
                   'Make',
                   'e.g., Toyota',
-                  _makeController,
+                  viewModel.getMakeController,
                   icon: Iconsax.car,
                 ),
               ),
@@ -153,7 +124,7 @@ class _DriverVehicleScreenState extends State<DriverVehicleScreen> {
                 child: _buildInputField(
                   'Model',
                   'e.g., Camry',
-                  _modelController,
+                  viewModel.getModelController,
                   icon: Iconsax.car,
                 ),
               ),
@@ -168,7 +139,7 @@ class _DriverVehicleScreenState extends State<DriverVehicleScreen> {
                 child: _buildInputField(
                   'Year',
                   'e.g., 2020',
-                  _yearController,
+                  viewModel.getYearController,
                   keyboardType: TextInputType.number,
                   icon: Iconsax.calendar,
                 ),
@@ -178,7 +149,7 @@ class _DriverVehicleScreenState extends State<DriverVehicleScreen> {
                 child: _buildInputField(
                   'Color',
                   'e.g., White',
-                  _colorController,
+                  viewModel.getColorController,
                   icon: Iconsax.colorfilter,
                 ),
               ),
@@ -187,14 +158,14 @@ class _DriverVehicleScreenState extends State<DriverVehicleScreen> {
           SizedBox(height: 20.h),
           
           // Vehicle Type Selection
-          _buildVehicleTypeSelection(),
+          _buildVehicleTypeSelection(viewModel),
         ],
       ),
     );
   }
 
   // Section 2: License Plate Recognition
-  Widget _buildLicensePlateSection() {
+  Widget _buildLicensePlateSection(DriverRegistrationViewModel viewModel) {
     return Container(
       padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
@@ -211,34 +182,28 @@ class _DriverVehicleScreenState extends State<DriverVehicleScreen> {
         children: [
           Row(
             children: [
-              Icon(
-                Iconsax.scan,
-                color: CustomColors.primaryColor,
-                size: 24.sp,
-              ),
+              Icon(Iconsax.scan, color: CustomColors.primaryColor, size: 24.sp),
               SizedBox(width: 12.w),
               black18w500(data: 'License Plate Recognition'),
             ],
           ),
           SizedBox(height: 8.h),
-          grey12(
-            data: 'Capture front and rear number plate images',
-          ),
+          grey12(data: 'Capture front and rear number plate images'),
           SizedBox(height: 20.h),
           
           // Front Plate
-          _buildPlateCapture('Front Number Plate', _frontPlateImage, () => _capturePlateImage(true)),
+          _buildPlateCapture('Front Number Plate', viewModel.getFrontPlateImage, () => viewModel.capturePlateImage(true)),
           SizedBox(height: 16.h),
           
           // Rear Plate
-          _buildPlateCapture('Rear Number Plate', _rearPlateImage, () => _capturePlateImage(false)),
+          _buildPlateCapture('Rear Number Plate', viewModel.getRearPlateImage, () => viewModel.capturePlateImage(false)),
         ],
       ),
     );
   }
 
   // Section 3: Required Documents
-  Widget _buildRequiredDocumentsSection() {
+  Widget _buildRequiredDocumentsSection(BuildContext context, DriverRegistrationViewModel viewModel) {
     return Container(
       padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
@@ -255,33 +220,27 @@ class _DriverVehicleScreenState extends State<DriverVehicleScreen> {
         children: [
           Row(
             children: [
-              Icon(
-                Iconsax.document_text,
-                color: CustomColors.primaryColor,
-                size: 24.sp,
-              ),
+              Icon(Iconsax.document_text, color: CustomColors.primaryColor, size: 24.sp),
               SizedBox(width: 12.w),
               black18w500(data: 'Required Documents'),
             ],
           ),
           SizedBox(height: 8.h),
-          grey12(
-            data: 'Upload required vehicle documents',
-          ),
+          grey12(data: 'Upload required vehicle documents'),
           SizedBox(height: 20.h),
           
-          _buildDocumentItem('Registration', 'registration', Iconsax.document),
+          _buildDocumentItem(context, 'Registration', 'registration', Iconsax.document, viewModel),
           SizedBox(height: 16.h),
-          _buildDocumentItem('Comprehensive Insurance', 'comprehensiveInsurance', Iconsax.shield_tick),
+          _buildDocumentItem(context, 'Comprehensive Insurance', 'comprehensiveInsurance', Iconsax.shield_tick, viewModel),
           SizedBox(height: 16.h),
-          _buildDocumentItem('CTP Insurance', 'ctpInsurance', Iconsax.shield_tick),
+          _buildDocumentItem(context, 'CTP Insurance', 'ctpInsurance', Iconsax.shield_tick, viewModel),
         ],
       ),
     );
   }
 
   // Section 4: Additional Documents
-  Widget _buildAdditionalDocumentsSection() {
+  Widget _buildAdditionalDocumentsSection(BuildContext context, DriverRegistrationViewModel viewModel) {
     return Container(
       padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
@@ -298,28 +257,22 @@ class _DriverVehicleScreenState extends State<DriverVehicleScreen> {
         children: [
           Row(
             children: [
-              Icon(
-                Iconsax.folder,
-                color: CustomColors.primaryColor,
-                size: 24.sp,
-              ),
+              Icon(Iconsax.folder, color: CustomColors.primaryColor, size: 24.sp),
               SizedBox(width: 12.w),
               black18w500(data: 'Additional Documents'),
             ],
           ),
           SizedBox(height: 8.h),
-          grey12(
-            data: 'Upload additional required documents',
-          ),
+          grey12(data: 'Upload additional required documents'),
           SizedBox(height: 20.h),
           
-          _buildDocumentItem('Work Cover', 'workCover', Iconsax.verify),
+          _buildDocumentItem(context, 'Work Cover', 'workCover', Iconsax.verify, viewModel),
           SizedBox(height: 16.h),
-          _buildDocumentItem('Public Liability', 'publicLiability', Iconsax.shield_tick),
+          _buildDocumentItem(context, 'Public Liability', 'publicLiability', Iconsax.shield_tick, viewModel),
           SizedBox(height: 16.h),
-          _buildDocumentItem('Safety Inspection', 'safetyInspection', Iconsax.scan),
+          _buildDocumentItem(context, 'Safety Inspection', 'safetyInspection', Iconsax.scan, viewModel),
           SizedBox(height: 16.h),
-          _buildDocumentItem('Camera Inspection', 'cameraInspection', Iconsax.camera),
+          _buildDocumentItem(context, 'Camera Inspection', 'cameraInspection', Iconsax.camera, viewModel),
         ],
       ),
     );
@@ -346,7 +299,7 @@ class _DriverVehicleScreenState extends State<DriverVehicleScreen> {
     );
   }
 
-  Widget _buildVehicleTypeSelection() {
+  Widget _buildVehicleTypeSelection(DriverRegistrationViewModel viewModel) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -354,27 +307,27 @@ class _DriverVehicleScreenState extends State<DriverVehicleScreen> {
         SizedBox(height: 12.h),
         Row(
           children: [
-            Expanded(child: _buildVehicleTypeOption('Sedan', Iconsax.car, 'sedan')),
+            Expanded(child: _buildVehicleTypeOption('Sedan', Iconsax.car, 'sedan', viewModel)),
             SizedBox(width: 8.w),
-            Expanded(child: _buildVehicleTypeOption('SUV', Iconsax.car, 'suv')),
+            Expanded(child: _buildVehicleTypeOption('SUV', Iconsax.car, 'suv', viewModel)),
           ],
         ),
         SizedBox(height: 8.h),
         Row(
           children: [
-            Expanded(child: _buildVehicleTypeOption('Hatchback', Iconsax.car, 'hatchback')),
+            Expanded(child: _buildVehicleTypeOption('Hatchback', Iconsax.car, 'hatchback', viewModel)),
             SizedBox(width: 8.w),
-            Expanded(child: _buildVehicleTypeOption('Van', Iconsax.truck, 'van')),
+            Expanded(child: _buildVehicleTypeOption('Van', Iconsax.truck, 'van', viewModel)),
           ],
         ),
       ],
     );
   }
 
-  Widget _buildVehicleTypeOption(String title, IconData icon, String value) {
-    final isSelected = _selectedVehicleType == value;
+  Widget _buildVehicleTypeOption(String title, IconData icon, String value, DriverRegistrationViewModel viewModel) {
+    final isSelected = viewModel.getSelectedVehicleType == value;
     return GestureDetector(
-      onTap: () => setState(() => _selectedVehicleType = value),
+      onTap: () => viewModel.setSelectedVehicleType(value),
       child: Container(
         padding: EdgeInsets.all(12.w),
         decoration: BoxDecoration(
@@ -434,14 +387,14 @@ class _DriverVehicleScreenState extends State<DriverVehicleScreen> {
     );
   }
 
-  Widget _buildDocumentItem(String title, String documentKey, IconData icon) {
-    final hasImage = _requiredDocuments[documentKey] != null || _additionalDocuments[documentKey] != null;
+  Widget _buildDocumentItem(BuildContext context, String title, String documentKey, IconData icon, DriverRegistrationViewModel viewModel) {
+    final hasImage = viewModel.hasRequiredDocument(documentKey) || viewModel.hasAdditionalDocument(documentKey);
     return GestureDetector(
       onTap: () => ImageSourceBottomSheet.show(
         context: context,
         title: 'Select Image Source',
         subtitle: 'Choose how you want to add the image',
-        onImageSelected: (source) => _pickImage(documentKey, source),
+        onImageSelected: (source) => viewModel.pickVehicleDocumentImage(documentKey, source),
       ),
       child: Container(
         padding: EdgeInsets.all(16.w),
@@ -488,82 +441,5 @@ class _DriverVehicleScreenState extends State<DriverVehicleScreen> {
         ),
       ),
     );
-  }
-
-  // Image Capture Methods
-  Future<void> _capturePlateImage(bool isFront) async {
-    try {
-      final XFile? image = await _imagePicker.pickImage(source: ImageSource.camera, imageQuality: 80);
-      if (image != null) {
-        setState(() {
-          if (isFront) {
-            _frontPlateImage = File(image.path);
-          } else {
-            _rearPlateImage = File(image.path);
-          }
-        });
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('${isFront ? 'Front' : 'Rear'} plate image captured!'),
-            backgroundColor: CustomColors.primaryColor,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
-          ),
-        );
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Failed to capture image: $e'),
-          backgroundColor: Colors.red,
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
-        ),
-      );
-    }
-  }
-
-
-  Future<void> _pickImage(String documentKey, ImageSource source) async {
-    try {
-      final XFile? image = await _imagePicker.pickImage(source: source, imageQuality: 80);
-      if (image != null) {
-        setState(() {
-          if (_requiredDocuments.containsKey(documentKey)) {
-            _requiredDocuments[documentKey] = File(image.path);
-          } else {
-            _additionalDocuments[documentKey] = File(image.path);
-          }
-        });
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Document uploaded successfully!'),
-            backgroundColor: CustomColors.primaryColor,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
-          ),
-        );
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Failed to pick image: $e'),
-          backgroundColor: Colors.red,
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
-        ),
-      );
-    }
-  }
-
-  @override
-  void dispose() {
-    _taxiPlateController.dispose();
-    _operatorNameController.dispose();
-    _makeController.dispose();
-    _modelController.dispose();
-    _yearController.dispose();
-    _colorController.dispose();
-    super.dispose();
   }
 }

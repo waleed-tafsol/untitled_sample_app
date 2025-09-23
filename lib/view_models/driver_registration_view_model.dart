@@ -1,6 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:iconsax/iconsax.dart';
 import 'dart:io';
+
+class StepData {
+  final String title;
+  final String subtitle;
+  final IconData icon;
+
+  StepData({
+    required this.title,
+    required this.subtitle,
+    required this.icon,
+  });
+}
 
 class DriverRegistrationViewModel extends ChangeNotifier {
   final TextEditingController _firstNameController = TextEditingController();
@@ -15,11 +28,55 @@ class DriverRegistrationViewModel extends ChangeNotifier {
   final TextEditingController _emergencyContactNameController = TextEditingController();
   final TextEditingController _emergencyContactNumberController = TextEditingController();
   final TextEditingController _emergencyContactEmailController = TextEditingController();
+  
+  // Vehicle Information Controllers
+  final TextEditingController _taxiPlateController = TextEditingController();
+  final TextEditingController _operatorNameController = TextEditingController();
+  final TextEditingController _makeController = TextEditingController();
+  final TextEditingController _modelController = TextEditingController();
+  final TextEditingController _yearController = TextEditingController();
+  final TextEditingController _colorController = TextEditingController();
+  
   GlobalKey<FormState>? _formKey;
+  final Map<int, GlobalKey<FormState>> _stepFormKeys = {};
 
   // Stepper state management
   int _currentStep = 0;
   final PageController _pageController = PageController();
+
+  // Steps data
+  final List<StepData> _steps = [
+    StepData(
+      title: 'Personal Information',
+      subtitle: 'Enter your personal details',
+      icon: Iconsax.user,
+    ),
+    StepData(
+      title: 'Documents',
+      subtitle: 'Upload required documents',
+      icon: Iconsax.document_text,
+    ),
+    StepData(
+      title: 'Review',
+      subtitle: 'Review your information',
+      icon: Iconsax.tick_circle,
+    ),
+    StepData(
+      title: 'Vehicle',
+      subtitle: 'Add your vehicle details',
+      icon: Iconsax.car,
+    ),
+    StepData(
+      title: 'Shift',
+      subtitle: 'Set your working hours',
+      icon: Iconsax.clock,
+    ),
+    StepData(
+      title: 'Stripe',
+      subtitle: 'Connect with Stripe',
+      icon: Iconsax.wallet_3,
+    ),
+  ];
 
   // Image picker and document images
   final ImagePicker _imagePicker = ImagePicker();
@@ -32,6 +89,22 @@ class DriverRegistrationViewModel extends ChangeNotifier {
     'passport': null,
     'vevoDetails': null,
     'englishCertificate': null,
+  };
+  
+  // Vehicle Information State
+  String _selectedVehicleType = 'sedan';
+  File? _frontPlateImage;
+  File? _rearPlateImage;
+  final Map<String, File?> _requiredDocuments = {
+    'registration': null,
+    'comprehensiveInsurance': null,
+    'ctpInsurance': null,
+  };
+  final Map<String, File?> _additionalDocuments = {
+    'workCover': null,
+    'publicLiability': null,
+    'safetyInspection': null,
+    'cameraInspection': null,
   };
 
   TextEditingController get getFirstNameController => _firstNameController;
@@ -57,20 +130,59 @@ class DriverRegistrationViewModel extends ChangeNotifier {
   TextEditingController get getEmergencyContactNumberController => _emergencyContactNumberController;
 
   TextEditingController get getEmergencyContactEmailController => _emergencyContactEmailController;
+  
+  // Vehicle Information Getters
+  TextEditingController get getTaxiPlateController => _taxiPlateController;
+  TextEditingController get getOperatorNameController => _operatorNameController;
+  TextEditingController get getMakeController => _makeController;
+  TextEditingController get getModelController => _modelController;
+  TextEditingController get getYearController => _yearController;
+  TextEditingController get getColorController => _colorController;
 
   GlobalKey<FormState> get getFormKey {
-    _formKey ??= GlobalKey<FormState>();
+    if (_formKey == null) {
+      _formKey = GlobalKey<FormState>();
+    }
     return _formKey!;
+  }
+
+  GlobalKey<FormState> getFormKeyForStep(int step) {
+    if (!_stepFormKeys.containsKey(step)) {
+      _stepFormKeys[step] = GlobalKey<FormState>();
+    }
+    return _stepFormKeys[step]!;
+  }
+
+  void resetFormKey() {
+    if (_formKey != null) {
+      _formKey!.currentState?.reset();
+      _formKey = null;
+    }
+  }
+
+  void resetStepFormKey(int step) {
+    if (_stepFormKeys.containsKey(step)) {
+      _stepFormKeys[step]!.currentState?.reset();
+      _stepFormKeys.remove(step);
+    }
   }
 
   // Stepper getters
   int get getCurrentStep => _currentStep;
   PageController get getPageController => _pageController;
+  List<StepData> get getSteps => _steps;
 
   // Image and document getters
   File? get getIdentityVerificationImage => _identityVerificationImage;
   
   Map<String, File?> get getDocumentImages => Map.from(_documentImages);
+  
+  // Vehicle Information State Getters
+  String get getSelectedVehicleType => _selectedVehicleType;
+  File? get getFrontPlateImage => _frontPlateImage;
+  File? get getRearPlateImage => _rearPlateImage;
+  Map<String, File?> get getRequiredDocuments => Map.from(_requiredDocuments);
+  Map<String, File?> get getAdditionalDocuments => Map.from(_additionalDocuments);
   
   File? getDocumentImage(String documentKey) => _documentImages[documentKey];
   
@@ -84,15 +196,13 @@ class DriverRegistrationViewModel extends ChangeNotifier {
   }
 
   bool validateFormKey() {
-    if (_formKey?.currentState?.validate() ?? false) {
+    // Use the current step's form key for validation
+    final currentFormKey = getFormKeyForStep(_currentStep);
+    if (currentFormKey.currentState?.validate() == true) {
       return true;
     } else {
       return false;
     }
-  }
-
-  void resetFormKey() {
-    _formKey = null;
   }
 
   // Image handling methods
@@ -247,6 +357,50 @@ class DriverRegistrationViewModel extends ChangeNotifier {
     _declarations[declarationKey] = value;
     notifyListeners();
   }
+  
+  // Vehicle Information Methods
+  void setSelectedVehicleType(String type) {
+    _selectedVehicleType = type;
+    notifyListeners();
+  }
+  
+  Future<void> capturePlateImage(bool isFront) async {
+    try {
+      final XFile? image = await _imagePicker.pickImage(source: ImageSource.camera, imageQuality: 80);
+      if (image != null) {
+        if (isFront) {
+          _frontPlateImage = File(image.path);
+        } else {
+          _rearPlateImage = File(image.path);
+        }
+        notifyListeners();
+      }
+    } catch (e) {
+      // Handle error - could add error state management here
+      print('Failed to capture plate image: $e');
+    }
+  }
+  
+  Future<void> pickVehicleDocumentImage(String documentKey, ImageSource source) async {
+    try {
+      final XFile? image = await _imagePicker.pickImage(source: source, imageQuality: 80);
+      if (image != null) {
+        if (_requiredDocuments.containsKey(documentKey)) {
+          _requiredDocuments[documentKey] = File(image.path);
+        } else {
+          _additionalDocuments[documentKey] = File(image.path);
+        }
+        notifyListeners();
+      }
+    } catch (e) {
+      // Handle error - could add error state management here
+      print('Failed to pick document image: $e');
+    }
+  }
+  
+  bool hasRequiredDocument(String documentKey) => _requiredDocuments[documentKey] != null;
+  bool hasAdditionalDocument(String documentKey) => _additionalDocuments[documentKey] != null;
+  bool hasPlateImage(bool isFront) => isFront ? _frontPlateImage != null : _rearPlateImage != null;
 
   void clearAllDeclarations() {
     _declarations.updateAll((key, value) => null);
@@ -256,36 +410,34 @@ class DriverRegistrationViewModel extends ChangeNotifier {
   // Stepper navigation methods
   void nextStep() {
     if (_currentStep < 5) { // 0-5 steps (6 total)
-      _currentStep++;
-      _pageController.nextPage(
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-      );
-      notifyListeners();
+      _navigateToStep(_currentStep + 1);
     }
   }
 
   void previousStep() {
     if (_currentStep > 0) {
-      _currentStep--;
-      _pageController.previousPage(
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-      );
-      notifyListeners();
+      _navigateToStep(_currentStep - 1);
     }
   }
 
   void setCurrentStep(int step) {
     if (step >= 0 && step <= 5) {
-      _currentStep = step;
-      _pageController.animateToPage(
-        step,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-      );
-      notifyListeners();
+      _navigateToStep(step);
     }
+  }
+
+  void _navigateToStep(int step) {
+    // Update current step
+    _currentStep = step;
+    
+    // Navigate to the step
+    _pageController.animateToPage(
+      step,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
+    
+    notifyListeners();
   }
 
   bool canGoNext() {
@@ -314,6 +466,12 @@ class DriverRegistrationViewModel extends ChangeNotifier {
     _emergencyContactNameController.dispose();
     _emergencyContactNumberController.dispose();
     _emergencyContactEmailController.dispose();
+    _taxiPlateController.dispose();
+    _operatorNameController.dispose();
+    _makeController.dispose();
+    _modelController.dispose();
+    _yearController.dispose();
+    _colorController.dispose();
     _pageController.dispose();
     super.dispose();
   }

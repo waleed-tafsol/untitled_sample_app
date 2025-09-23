@@ -22,26 +22,29 @@ class _DriverStripeKycScreenState extends State<DriverStripeKycScreen> {
   Widget build(BuildContext context) {
     return Consumer<DriverRegistrationViewModel>(
       builder: (context, viewModel, child) {
-        return SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.only(left: 10.w, right: 10.w, bottom: 20.h),
-            child: Column(
-              children: [
-                // Header
-                _buildHeader(context),
-                SizedBox(height: 20.h),
-                
-                // Stripe Connection Section
-                _buildStripeConnectionSection(context),
-                SizedBox(height: 20.h),
-                
-                // Benefits Section
-                _buildBenefitsSection(context),
-                SizedBox(height: 20.h),
-                
-                // Security Information
-                _buildSecurityInfo(context),
-              ],
+        return Form(
+          key: viewModel.getFormKeyForStep(5),
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.only(left: 10.w, right: 10.w, bottom: 20.h),
+              child: Column(
+                children: [
+                  // Header
+                  _buildHeader(context),
+                  SizedBox(height: 20.h),
+                  
+                  // Stripe Connection Section
+                  _buildStripeConnectionSection(context),
+                  SizedBox(height: 20.h),
+                  
+                  // Benefits Section
+                  _buildBenefitsSection(context),
+                  SizedBox(height: 20.h),
+                  
+                  // Security Information
+                  _buildSecurityInfo(context),
+                ],
+              ),
             ),
           ),
         );

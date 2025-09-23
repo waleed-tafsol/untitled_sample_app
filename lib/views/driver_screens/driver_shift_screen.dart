@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:provider/provider.dart';
 import '../../utils/custom_colors.dart';
@@ -13,47 +14,64 @@ class DriverShiftScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<DriverRegistrationViewModel>(
       builder: (context, viewModel, child) {
-        return SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.only(left: 10.w, right: 10.w, bottom: 20.h),
-            child: Column(
-              children: [
-                // Header
-                _buildHeader(context),
-                SizedBox(height: 30.h),
-                
-                // Driver Type Options
-                _buildDriverTypeOption(
-                  context,
-                  title: 'Full-Time Driver',
-                  description: 'Minimum 24 hours/week • 4+ days • 6+ hours/day • Higher priority for rides\n\nPriority bookings\nFlexible hours',
-                  isRecommended: true,
-                  isSelected: viewModel.isFullTimeDriver,
-                  onTap: () => viewModel.setDriverType('fullTime'),
+        return Form(
+          key: viewModel.getFormKeyForStep(4),
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.only(left: 10.w, right: 10.w, bottom: 20.h),
+              child: AnimationLimiter(
+                child: Column(
+                  children: [
+                    // Header
+                    _buildHeader(context),
+                    SizedBox(height: 30.h),
+
+                    // Driver Type Options
+                    Column(
+                      children: AnimationConfiguration.toStaggeredList(
+                        duration: const Duration(milliseconds: 375),
+                        childAnimationBuilder: (widget) => FlipAnimation(
+                          duration: Duration(seconds: 1),
+                          child: FadeInAnimation(
+                            child: widget,
+                          ),
+                        ),
+                        children: [
+                          _buildDriverTypeOption(
+                            context,
+                            title: 'Full-Time Driver',
+                            description: 'Minimum 24 hours/week • 4+ days • 6+ hours/day • Higher priority for rides\n\nPriority bookings\nFlexible hours',
+                            isRecommended: true,
+                            isSelected: viewModel.isFullTimeDriver,
+                            onTap: () => viewModel.setDriverType('fullTime'),
+                          ),
+                          SizedBox(height: 20.h),
+
+                          _buildDriverTypeOption(
+                            context,
+                            title: 'Part-time Driver/Student',
+                            description: 'Maximum 24 hours/week • Up to 3 days • 6 hours/day max • Study-friendly schedule\n\nWeekend focus\nFlexible timing',
+                            isRecommended: false,
+                            isSelected: viewModel.isPartTimeDriver,
+                            onTap: () => viewModel.setDriverType('partTime'),
+                          ),
+                          // Show working days and hours sections when driver type is selected
+                          if (viewModel.isFullTimeDriver || viewModel.isPartTimeDriver) ...[
+                            SizedBox(height: 30.h),
+
+                            // Working Days Section
+                            _buildWorkingDaysSection(context, viewModel),
+                            SizedBox(height: 20.h),
+
+                            // Working Hours Section
+                            _buildWorkingHoursSection(context, viewModel),
+                          ],
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-                SizedBox(height: 20.h),
-                
-                _buildDriverTypeOption(
-                  context,
-                  title: 'Part-time Driver/Student',
-                  description: 'Maximum 24 hours/week • Up to 3 days • 6 hours/day max • Study-friendly schedule\n\nWeekend focus\nFlexible timing',
-                  isRecommended: false,
-                  isSelected: viewModel.isPartTimeDriver,
-                  onTap: () => viewModel.setDriverType('partTime'),
-                ),
-                
-                // Show working days and hours sections when driver type is selected
-                if (viewModel.isFullTimeDriver || viewModel.isPartTimeDriver) ...[
-                  SizedBox(height: 30.h),
-                  
-                  // Working Days Section
-                  _buildWorkingDaysSection(context, viewModel),
-                  SizedBox(height: 20.h),
-                  
-                  // Working Hours Section
-                  _buildWorkingHoursSection(context, viewModel),
-                ],
-              ],
+              ),
             ),
           ),
         );
