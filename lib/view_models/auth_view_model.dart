@@ -2,10 +2,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:untitled_sample_app/app_init.dart';
-import 'package:untitled_sample_app/utils/enums.dart';
+import '../app_init.dart';
 import '../route_generator.dart';
 import '../services/auth_service.dart';
+import '../utils/enums.dart';
 
 class AuthViewModel extends ChangeNotifier {
   AuthViewModel() {

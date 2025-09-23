@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:provider/provider.dart';
-import 'package:untitled_sample_app/utils/custom_font_style.dart';
-import 'package:untitled_sample_app/utils/enums.dart';
-import 'package:untitled_sample_app/view_models/auth_view_model.dart';
-import '../utils/custom_colors.dart';
-import '../utils/validators.dart';
-import '../view_models/driver_registration_view_model.dart';
-import '../widgets/user_form_fields_widget.dart';
+import '../../utils/custom_colors.dart';
+import '../../utils/custom_font_style.dart';
+import '../../utils/enums.dart';
+import '../../utils/validators.dart';
+import '../../view_models/auth_view_model.dart';
+import '../../view_models/driver_registration_view_model.dart';
+import '../../widgets/user_form_fields_widget.dart';
 
 class DriverPersonalInfoScreen extends StatefulWidget {
   const DriverPersonalInfoScreen({super.key});

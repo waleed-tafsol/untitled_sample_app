@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:untitled_sample_app/app_init.dart';
 
+import '../app_init.dart';
 import 'custom_colors.dart';
 
 Widget customButton(

@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:provider/provider.dart';
-import 'package:untitled_sample_app/view_models/driver_registration_view_model.dart';
-import '../utils/custom_colors.dart';
+import '../../utils/custom_colors.dart';
+import '../../view_models/driver_registration_view_model.dart';
 import 'driver_personal_info_screen.dart';
 import 'driver_documents_screen.dart';
 import 'driver_info_review_screen.dart';
-import 'driver_payment_screen.dart';
 import 'driver_stripe_kyc_screen.dart';
 import 'driver_shift_screen.dart';
 import 'driver_vehicle_screen.dart';
@@ -53,19 +52,14 @@ class _RegistrationStepperScreenState extends State<RegistrationStepperScreen> {
       icon: Iconsax.car,
     ),
     StepData(
-      title: 'Payment',
-      subtitle: 'Set up payment method',
-      icon: Iconsax.card,
+      title: 'Shift',
+      subtitle: 'Set your working hours',
+      icon: Iconsax.clock,
     ),
     StepData(
       title: 'Stripe',
       subtitle: 'Connect with Stripe',
       icon: Iconsax.wallet_3,
-    ),
-    StepData(
-      title: 'Shift',
-      subtitle: 'Set your working hours',
-      icon: Iconsax.clock,
     ),
   ];
 
@@ -145,6 +139,7 @@ class _RegistrationStepperScreenState extends State<RegistrationStepperScreen> {
           Expanded(
             child: PageView.builder(
               controller: _pageController,
+              physics: NeverScrollableScrollPhysics(), // Disable swiping/sliding
               onPageChanged: (index) {
                 setState(() {
                   _currentStep = index;
@@ -219,7 +214,7 @@ class _RegistrationStepperScreenState extends State<RegistrationStepperScreen> {
                         borderRadius: BorderRadius.circular(16.r),
                         onTap: (){
                           if(context.read<DriverRegistrationViewModel>().validateFormKey()) {
-                            _currentStep < _steps.length - 1 ? _nextStep : _completeRegistration;
+                            _currentStep < _steps.length - 1 ? _nextStep() : _completeRegistration();
                           }
                         },
                         child: Center(
@@ -275,11 +270,9 @@ class _RegistrationStepperScreenState extends State<RegistrationStepperScreen> {
       case 3:
         return DriverVehicleScreen();
       case 4:
-        return DriverPaymentScreen();
+        return DriverShiftScreen();
       case 5:
         return DriverStripeKycScreen();
-      case 6:
-        return DriverShiftScreen();
       default:
         return const SizedBox();
     }

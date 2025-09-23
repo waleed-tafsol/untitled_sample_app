@@ -75,7 +75,7 @@ class AppInit extends StatelessWidget {
             ),
           ),
           debugShowCheckedModeBanner: false,
-          title: 'Bruno\'s Kitchen',
+          title: 'Captain Taxis',
           navigatorObservers: [routeObserver],
           initialRoute: splashRoute,
           navigatorKey: navigatorKey,

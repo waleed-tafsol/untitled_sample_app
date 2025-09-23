@@ -4,15 +4,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
-import 'package:untitled_sample_app/utils/custom_buttons.dart';
-import 'package:untitled_sample_app/utils/enums.dart';
-import 'package:untitled_sample_app/view_models/otp_view_model.dart';
-import 'package:untitled_sample_app/widgets/user_form_fields_widget.dart';
-
 import '../route_generator.dart';
+import '../utils/custom_buttons.dart';
 import '../utils/custom_colors.dart';
 import '../utils/custom_font_style.dart';
+import '../utils/enums.dart';
 import '../view_models/auth_view_model.dart';
+import '../view_models/otp_view_model.dart';
+import '../widgets/user_form_fields_widget.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -22,23 +21,6 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  String version = '';
-  String buildNumber = '';
-
-  @override
-  void initState() {
-    super.initState();
-    _getPackageInfo();
-  }
-
-  Future<void> _getPackageInfo() async {
-    final packageInfo = await PackageInfo.fromPlatform();
-    setState(() {
-      version = packageInfo.version;
-      buildNumber = packageInfo.buildNumber;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Consumer<AuthViewModel>(
@@ -214,14 +196,15 @@ class _LoginScreenState extends State<LoginScreen> {
                                     child: phoneFieldWidget(),
                                   )
                                 : Container(
-                                decoration: BoxDecoration(
-                                  boxShadow: kElevationToShadow[3],
-                                  color: CustomColors.whiteColor,
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(15.r),
+                                    decoration: BoxDecoration(
+                                      boxShadow: kElevationToShadow[3],
+                                      color: CustomColors.whiteColor,
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(15.r),
+                                      ),
+                                    ),
+                                    child: emailFieldWidget(),
                                   ),
-                                ),
-                                child: emailFieldWidget()),
 
                             SizedBox(height: 30.h),
 
@@ -333,9 +316,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                     // Version and Build Number
                     Text(
-                      version.isNotEmpty && buildNumber.isNotEmpty
-                          ? 'Version $version (Build $buildNumber)'
-                          : 'Loading...',
+                      'Version ${authViewModel.getVersion} (Build ${authViewModel.getBuildNumber})',
                       style: TextStyle(
                         fontFamily: 'CircularStd',
                         fontSize: 12.sp,

@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 import 'dart:io';
-import '../utils/custom_colors.dart';
-import '../utils/custom_buttons.dart';
-import '../utils/custom_font_style.dart';
+import '../../utils/custom_colors.dart';
+import '../../utils/custom_buttons.dart';
+import '../../utils/custom_font_style.dart';
+import '../../view_models/driver_registration_view_model.dart';
 
 class DriverDocumentsScreen extends StatefulWidget {
   const DriverDocumentsScreen({super.key});
@@ -15,21 +17,12 @@ class DriverDocumentsScreen extends StatefulWidget {
 }
 
 class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
-  final ImagePicker _imagePicker = ImagePicker();
-  File? _identityVerificationImage;
-  final Map<String, File?> _documentImages = {
-    'driverLicenseFront': null,
-    'driverLicenseBack': null,
-    'drivingRecord': null,
-    'policeCheck': null,
-    'passport': null,
-    'vevoDetails': null,
-    'englishCertificate': null,
-  };
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
+    return Consumer<DriverRegistrationViewModel>(
+      builder: (context, viewModel, child) {
+        return SingleChildScrollView(
       child: Padding(
         padding: EdgeInsets.only(left: 10.w, right: 10.w, bottom: 20.h),
         child: Column(
@@ -71,7 +64,7 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
                   SizedBox(height: 20.h),
                   
                   // Identity Image Display or Capture Button
-                  if (_identityVerificationImage != null)
+                  if (viewModel.hasIdentityVerificationImage)
                     Container(
                       width: double.infinity,
                       height: 200.h,
@@ -85,7 +78,7 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(12.r),
                         child: Image.file(
-                          _identityVerificationImage!,
+                          viewModel.getIdentityVerificationImage!,
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -123,8 +116,8 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
                   
                   // Start Verification Button
                   customButton(
-                    text: _identityVerificationImage != null ? 'Retake Photo' : 'Start Verification',
-                    onTap: _captureIdentityImage,
+                    text: viewModel.hasIdentityVerificationImage ? 'Retake Photo' : 'Start Verification',
+                    onTap: () => _captureIdentityImage(viewModel),
                     colored: true,
                     icon: Iconsax.camera,
                     height: 50,
@@ -172,42 +165,49 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
                     'Driver License (Front)',
                     'driverLicenseFront',
                     Iconsax.card,
+                    viewModel,
                   ),
                   SizedBox(height: 16.h),
                   _buildDocumentItem(
                     'Driver License (Back)',
                     'driverLicenseBack',
                     Iconsax.card,
+                    viewModel,
                   ),
                   SizedBox(height: 16.h),
                   _buildDocumentItem(
                     'Driving Record (5 years)',
                     'drivingRecord',
                     Iconsax.document,
+                    viewModel,
                   ),
                   SizedBox(height: 16.h),
                   _buildDocumentItem(
                     'Police Check (6 months)',
                     'policeCheck',
                     Iconsax.verify,
+                    viewModel,
                   ),
                   SizedBox(height: 16.h),
                   _buildDocumentItem(
                     'Passport',
                     'passport',
                     Iconsax.card,
+                    viewModel,
                   ),
                   SizedBox(height: 16.h),
                   _buildDocumentItem(
                     'VEVO Details',
                     'vevoDetails',
                     Iconsax.document_download,
+                    viewModel,
                   ),
                   SizedBox(height: 16.h),
                   _buildDocumentItem(
                     'English Certificate',
                     'englishCertificate',
                     Iconsax.book,
+                    viewModel,
                   ),
                 ],
               ),
@@ -216,13 +216,15 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
         ),
       ),
     );
+      },
+    );
   }
 
-  Widget _buildDocumentItem(String title, String documentKey, IconData icon) {
-    final hasImage = _documentImages[documentKey] != null;
+  Widget _buildDocumentItem(String title, String documentKey, IconData icon, DriverRegistrationViewModel viewModel) {
+    final hasImage = viewModel.hasDocumentImage(documentKey);
     
     return GestureDetector(
-      onTap: () => _showImageSourceBottomSheet(documentKey),
+      onTap: () => _showImageSourceBottomSheet(documentKey, viewModel),
       child: Container(
         padding: EdgeInsets.all(16.w),
         decoration: BoxDecoration(
@@ -286,35 +288,26 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
   }
 
   // Capture identity verification image
-  Future<void> _captureIdentityImage() async {
+  Future<void> _captureIdentityImage(DriverRegistrationViewModel viewModel) async {
     try {
-      final XFile? image = await _imagePicker.pickImage(
-        source: ImageSource.camera,
-        imageQuality: 80,
-      );
+      await viewModel.captureIdentityImage();
       
-      if (image != null) {
-        setState(() {
-          _identityVerificationImage = File(image.path);
-        });
-        
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              'Identity verification photo captured!',
-              style: TextStyle(
-                fontFamily: 'CircularStd',
-                color: CustomColors.whiteColor,
-              ),
-            ),
-            backgroundColor: CustomColors.primaryColor,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8.r),
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Identity verification photo captured!',
+            style: TextStyle(
+              fontFamily: 'CircularStd',
+              color: CustomColors.whiteColor,
             ),
           ),
-        );
-      }
+          backgroundColor: CustomColors.primaryColor,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8.r),
+          ),
+        ),
+      );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -336,7 +329,7 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
   }
 
   // Show bottom sheet for image source selection
-  void _showImageSourceBottomSheet(String documentKey) {
+  void _showImageSourceBottomSheet(String documentKey, DriverRegistrationViewModel viewModel) {
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
@@ -371,7 +364,7 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
                     Iconsax.camera,
                     () {
                       Navigator.pop(context);
-                      _pickImage(documentKey, ImageSource.camera);
+                      _pickImage(documentKey, ImageSource.camera, viewModel);
                     },
                   ),
                 ),
@@ -382,7 +375,7 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
                     Iconsax.gallery,
                     () {
                       Navigator.pop(context);
-                      _pickImage(documentKey, ImageSource.gallery);
+                      _pickImage(documentKey, ImageSource.gallery, viewModel);
                     },
                   ),
                 ),
@@ -424,35 +417,26 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
   }
 
   // Pick image from camera or gallery
-  Future<void> _pickImage(String documentKey, ImageSource source) async {
+  Future<void> _pickImage(String documentKey, ImageSource source, DriverRegistrationViewModel viewModel) async {
     try {
-      final XFile? image = await _imagePicker.pickImage(
-        source: source,
-        imageQuality: 80,
-      );
+      await viewModel.pickDocumentImage(documentKey, source);
       
-      if (image != null) {
-        setState(() {
-          _documentImages[documentKey] = File(image.path);
-        });
-        
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              'Document uploaded successfully!',
-              style: TextStyle(
-                fontFamily: 'CircularStd',
-                color: CustomColors.whiteColor,
-              ),
-            ),
-            backgroundColor: CustomColors.primaryColor,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8.r),
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Document uploaded successfully!',
+            style: TextStyle(
+              fontFamily: 'CircularStd',
+              color: CustomColors.whiteColor,
             ),
           ),
-        );
-      }
+          backgroundColor: CustomColors.primaryColor,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8.r),
+          ),
+        ),
+      );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -473,17 +457,4 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
     }
   }
 
-  // Getters for accessing document status
-  Map<String, File?> getDocumentImages() {
-    return Map.from(_documentImages);
-  }
-
-  File? getIdentityVerificationImage() {
-    return _identityVerificationImage;
-  }
-
-  bool areAllDocumentsUploaded() {
-    return _documentImages.values.every((image) => image != null) && 
-           _identityVerificationImage != null;
-  }
 }

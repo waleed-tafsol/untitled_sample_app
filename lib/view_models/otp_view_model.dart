@@ -1,11 +1,10 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:http/http.dart';
-import 'package:untitled_sample_app/models/base_response_model.dart';
-import 'package:untitled_sample_app/services/firebase_service.dart';
-import 'package:untitled_sample_app/utils/enums.dart';
+import '../models/base_response_model.dart';
 import '../services/auth_service.dart';
+import '../services/firebase_service.dart';
+import '../utils/enums.dart';
 
 class OtpViewModel extends ChangeNotifier {
   final AuthService _authService = AuthService();

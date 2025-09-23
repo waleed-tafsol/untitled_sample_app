@@ -3,8 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-import '../../utils/custom_colors.dart';
-import '../../utils/custom_font_style.dart';
+import '../../../utils/custom_colors.dart';
+import '../../../utils/custom_font_style.dart';
 
 class DriverVehicleScreen extends StatefulWidget {
   const DriverVehicleScreen({super.key});
