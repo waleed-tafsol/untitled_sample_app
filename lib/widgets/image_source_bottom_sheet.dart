@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:untitled_sample_app/app_init.dart';
 import '../utils/custom_colors.dart';
 import '../utils/custom_font_style.dart';
 
@@ -17,14 +18,13 @@ class ImageSourceBottomSheet extends StatelessWidget {
     this.subtitle,
   });
 
-  static void show({
-    required BuildContext context,
+  static Future<ImageSource?> show({
     required String title,
     required Function(ImageSource source) onImageSelected,
     String? subtitle,
   }) {
-    showModalBottomSheet(
-      context: context,
+    return showModalBottomSheet<ImageSource>(
+      context: navigatorKey.currentContext!,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       builder: (context) => ImageSourceBottomSheet(

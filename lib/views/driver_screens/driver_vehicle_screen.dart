@@ -3,11 +3,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:iconsax/iconsax.dart';
 import 'dart:io';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import '../../../utils/custom_colors.dart';
 import '../../../utils/custom_font_style.dart';
-import '../../../widgets/image_source_bottom_sheet.dart';
+import '../../../utils/image_genrator.dart';
 import '../../../view_models/driver_registration_view_model.dart';
+import '../../../widgets/image_source_bottom_sheet.dart';
 
 class DriverVehicleScreen extends StatelessWidget {
   const DriverVehicleScreen({super.key});
@@ -192,11 +195,11 @@ class DriverVehicleScreen extends StatelessWidget {
           SizedBox(height: 20.h),
           
           // Front Plate
-          _buildPlateCapture('Front Number Plate', viewModel.getFrontPlateImage, () => viewModel.capturePlateImage(true)),
+          _buildPlateCapture('Front Number Plate', viewModel.getFrontPlateImage, () => _capturePlateImage(true, viewModel)),
           SizedBox(height: 16.h),
           
           // Rear Plate
-          _buildPlateCapture('Rear Number Plate', viewModel.getRearPlateImage, () => viewModel.capturePlateImage(false)),
+          _buildPlateCapture('Rear Number Plate', viewModel.getRearPlateImage, () => _capturePlateImage(false, viewModel)),
         ],
       ),
     );
@@ -390,12 +393,7 @@ class DriverVehicleScreen extends StatelessWidget {
   Widget _buildDocumentItem(BuildContext context, String title, String documentKey, IconData icon, DriverRegistrationViewModel viewModel) {
     final hasImage = viewModel.hasRequiredDocument(documentKey) || viewModel.hasAdditionalDocument(documentKey);
     return GestureDetector(
-      onTap: () => ImageSourceBottomSheet.show(
-        context: context,
-        title: 'Select Image Source',
-        subtitle: 'Choose how you want to add the image',
-        onImageSelected: (source) => viewModel.pickVehicleDocumentImage(documentKey, source),
-      ),
+      onTap: () => _pickVehicleDocument(context, documentKey, viewModel),
       child: Container(
         padding: EdgeInsets.all(16.w),
         decoration: BoxDecoration(
@@ -441,5 +439,58 @@ class DriverVehicleScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  // Capture plate image using ImageGenerator
+  Future<void> _capturePlateImage(bool isFront, DriverRegistrationViewModel viewModel) async {
+    try {
+      final ImageGenerator imageGenerator = ImageGenerator();
+      final CroppedFile croppedFile = await imageGenerator.createImageFile(fromCamera: true);
+      final File image = File(croppedFile.path);
+      
+      if (isFront) {
+        viewModel.setFrontPlateImage(image);
+      } else {
+        viewModel.setRearPlateImage(image);
+      }
+      _showSuccessMessage('${isFront ? 'Front' : 'Rear'} plate image captured!');
+    } catch (e) {
+      debugPrint('Plate capture error: $e');
+      _showErrorMessage('Failed to capture plate image. Please check camera permissions and try again.');
+    }
+  }
+
+  // Pick vehicle document using ImageGenerator
+  Future<void> _pickVehicleDocument(BuildContext context, String documentKey, DriverRegistrationViewModel viewModel) async {
+    try {
+      // Show bottom sheet to choose source
+      await ImageSourceBottomSheet.show(
+        title: 'Select Image Source',
+        subtitle: 'Choose how you want to add the image',
+        onImageSelected: (source) async {
+          final ImageGenerator imageGenerator = ImageGenerator();
+          final CroppedFile croppedFile = await imageGenerator.createImageFile(fromCamera: source == ImageSource.camera);
+          final File image = File(croppedFile.path);
+          
+          viewModel.setVehicleDocumentImage(documentKey, image);
+          _showSuccessMessage('Document uploaded successfully!');
+        },
+      );
+    } catch (e) {
+      debugPrint('Vehicle document pick error: $e');
+      _showErrorMessage('Failed to upload document. Please check permissions and try again.');
+    }
+  }
+
+  void _showSuccessMessage(String message) {
+    // Note: This would need to be called from a StatefulWidget context
+    // For now, we'll use debugPrint
+    debugPrint('Success: $message');
+  }
+
+  void _showErrorMessage(String message) {
+    // Note: This would need to be called from a StatefulWidget context
+    // For now, we'll use debugPrint
+    debugPrint('Error: $message');
   }
 }

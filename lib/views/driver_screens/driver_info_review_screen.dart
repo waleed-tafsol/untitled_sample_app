@@ -312,7 +312,7 @@ class DriverInfoReviewScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildDocumentImageItem(String title, File imageFile) {
+  Widget _buildDocumentImageItem(String title, String imageUrl) {
     return Container(
       height: 120.h, // Fixed height to avoid RenderFlex issues
       decoration: BoxDecoration(
@@ -327,8 +327,8 @@ class DriverInfoReviewScreen extends StatelessWidget {
           Expanded(
             child: ClipRRect(
               borderRadius: BorderRadius.vertical(top: Radius.circular(12.r)),
-              child: Image.file(
-                imageFile,
+              child: Image.network(
+                imageUrl,
                 fit: BoxFit.cover,
                 width: double.infinity,
               ),

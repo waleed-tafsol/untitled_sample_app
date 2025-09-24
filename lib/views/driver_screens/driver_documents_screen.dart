@@ -18,7 +18,6 @@ class DriverDocumentsScreen extends StatefulWidget {
 }
 
 class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
-
   @override
   Widget build(BuildContext context) {
     return Consumer<DriverRegistrationViewModel>(
@@ -41,9 +40,7 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
                         duration: const Duration(milliseconds: 375),
                         childAnimationBuilder: (widget) => FlipAnimation(
                           duration: Duration(seconds: 1),
-                          child: FadeInAnimation(
-                            child: widget,
-                          ),
+                          child: FadeInAnimation(child: widget),
                         ),
                         children: [
                           Container(
@@ -53,7 +50,9 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
                               color: CustomColors.whiteColor,
                               borderRadius: BorderRadius.circular(20.r),
                               border: Border.all(
-                                color: CustomColors.primaryColor.withValues(alpha: 0.1),
+                                color: CustomColors.primaryColor.withValues(
+                                  alpha: 0.1,
+                                ),
                                 width: 1,
                               ),
                             ),
@@ -73,7 +72,8 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
                                 ),
                                 SizedBox(height: 8.h),
                                 grey12(
-                                  data: 'Take a selfie for identity verification',
+                                  data:
+                                      'Take a selfie for identity verification',
                                 ),
                                 SizedBox(height: 20.h),
 
@@ -85,13 +85,14 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(12.r),
                                       border: Border.all(
-                                        color: CustomColors.primaryColor.withValues(alpha: 0.2),
+                                        color: CustomColors.primaryColor
+                                            .withValues(alpha: 0.2),
                                         width: 1,
                                       ),
                                     ),
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(12.r),
-                                      child: Image.file(
+                                      child: Image.network(
                                         viewModel.getIdentityVerificationImage!,
                                         fit: BoxFit.cover,
                                       ),
@@ -102,20 +103,24 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
                                     width: double.infinity,
                                     height: 200.h,
                                     decoration: BoxDecoration(
-                                      color: CustomColors.primaryColor.withValues(alpha: 0.05),
+                                      color: CustomColors.primaryColor
+                                          .withValues(alpha: 0.05),
                                       borderRadius: BorderRadius.circular(12.r),
                                       border: Border.all(
-                                        color: CustomColors.primaryColor.withValues(alpha: 0.2),
+                                        color: CustomColors.primaryColor
+                                            .withValues(alpha: 0.2),
                                         width: 1,
                                       ),
                                     ),
                                     child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         Icon(
                                           Iconsax.camera,
                                           size: 48.sp,
-                                          color: CustomColors.primaryColor.withValues(alpha: 0.6),
+                                          color: CustomColors.primaryColor
+                                              .withValues(alpha: 0.6),
                                         ),
                                         SizedBox(height: 12.h),
                                         grey12(
@@ -130,8 +135,11 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
 
                                 // Start Verification Button
                                 customButton(
-                                  text: viewModel.hasIdentityVerificationImage ? 'Retake Photo' : 'Start Verification',
-                                  onTap: () => _captureIdentityImage(viewModel),
+                                  text: viewModel.hasIdentityVerificationImage
+                                      ? 'Retake Photo'
+                                      : 'Start Verification',
+                                  onTap: () => viewModel
+                                      .captureIdentityImageWithGenerator(),
                                   colored: true,
                                   icon: Iconsax.camera,
                                   height: 50,
@@ -150,7 +158,9 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
                               color: CustomColors.whiteColor,
                               borderRadius: BorderRadius.circular(20.r),
                               border: Border.all(
-                                color: CustomColors.primaryColor.withValues(alpha: 0.1),
+                                color: CustomColors.primaryColor.withValues(
+                                  alpha: 0.1,
+                                ),
                                 width: 1,
                               ),
                             ),
@@ -170,7 +180,8 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
                                 ),
                                 SizedBox(height: 8.h),
                                 grey12(
-                                  data: 'Upload all required documents for verification',
+                                  data:
+                                      'Upload all required documents for verification',
                                 ),
                                 SizedBox(height: 20.h),
 
@@ -239,16 +250,16 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
     );
   }
 
-  Widget _buildDocumentItem(String title, String documentKey, IconData icon, DriverRegistrationViewModel viewModel) {
+  Widget _buildDocumentItem(
+    String title,
+    String documentKey,
+    IconData icon,
+    DriverRegistrationViewModel viewModel,
+  ) {
     final hasImage = viewModel.hasDocumentImage(documentKey);
-    
+
     return GestureDetector(
-      onTap: () => ImageSourceBottomSheet.show(
-        context: context,
-        title: 'Select Image Source',
-        subtitle: 'Choose how you want to add the image',
-        onImageSelected: (source) => _pickImage(documentKey, source, viewModel),
-      ),
+      onTap: () => viewModel.pickDocumentImageWithGenerator(documentKey, ),
       child: Container(
         padding: EdgeInsets.all(16.w),
         decoration: BoxDecoration(
@@ -256,8 +267,8 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
           color: CustomColors.whiteColor,
           borderRadius: BorderRadius.circular(15.r),
           border: Border.all(
-            color: hasImage 
-                ? CustomColors.primaryColor 
+            color: hasImage
+                ? CustomColors.primaryColor
                 : CustomColors.primaryColor.withValues(alpha: 0.2),
             width: 1.5,
           ),
@@ -267,15 +278,15 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
             Container(
               padding: EdgeInsets.all(8.w),
               decoration: BoxDecoration(
-                color: hasImage 
-                    ? CustomColors.primaryColor 
+                color: hasImage
+                    ? CustomColors.primaryColor
                     : CustomColors.primaryColor.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(8.r),
               ),
               child: Icon(
                 hasImage ? Iconsax.tick_circle : icon,
-                color: hasImage 
-                    ? CustomColors.whiteColor 
+                color: hasImage
+                    ? CustomColors.whiteColor
                     : CustomColors.primaryColor,
                 size: 24.w,
               ),
@@ -311,87 +322,39 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
     );
   }
 
-  // Capture identity verification image
-  Future<void> _captureIdentityImage(DriverRegistrationViewModel viewModel) async {
-    try {
-      await viewModel.captureIdentityImage();
-      
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'Identity verification photo captured!',
-            style: TextStyle(
-              fontFamily: 'CircularStd',
-              color: CustomColors.whiteColor,
-            ),
-          ),
-          backgroundColor: CustomColors.primaryColor,
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8.r),
+
+
+  void _showSuccessMessage(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          message,
+          style: TextStyle(
+            fontFamily: 'CircularStd',
+            color: CustomColors.whiteColor,
           ),
         ),
-      );
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'Failed to capture image: $e',
-            style: TextStyle(
-              fontFamily: 'CircularStd',
-              color: CustomColors.whiteColor,
-            ),
-          ),
-          backgroundColor: Colors.red,
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8.r),
-          ),
-        ),
-      );
-    }
+        backgroundColor: CustomColors.primaryColor,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
+      ),
+    );
   }
 
-
-  // Pick image from camera or gallery
-  Future<void> _pickImage(String documentKey, ImageSource source, DriverRegistrationViewModel viewModel) async {
-    try {
-      await viewModel.pickDocumentImage(documentKey, source);
-      
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'Document uploaded successfully!',
-            style: TextStyle(
-              fontFamily: 'CircularStd',
-              color: CustomColors.whiteColor,
-            ),
-          ),
-          backgroundColor: CustomColors.primaryColor,
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8.r),
+  void _showErrorMessage(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          message,
+          style: TextStyle(
+            fontFamily: 'CircularStd',
+            color: CustomColors.whiteColor,
           ),
         ),
-      );
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'Failed to pick image: $e',
-            style: TextStyle(
-              fontFamily: 'CircularStd',
-              color: CustomColors.whiteColor,
-            ),
-          ),
-          backgroundColor: Colors.red,
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8.r),
-          ),
-        ),
-      );
-    }
+        backgroundColor: Colors.red,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
+      ),
+    );
   }
-
 }

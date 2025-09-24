@@ -73,7 +73,7 @@ class AuthViewModel extends ChangeNotifier {
 
   void _navigateToLogin() {
     Timer(const Duration(seconds: 3), () {
-      Navigator.pushReplacementNamed(navigatorKey.currentContext!, loginRoute);
+      Navigator.pushReplacementNamed(navigatorKey.currentContext!, driverDocumentsRoutes);
     });
   }
 
