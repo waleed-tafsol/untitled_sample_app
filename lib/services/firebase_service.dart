@@ -17,7 +17,7 @@ class FirebaseService {
   double get uploadProgress => _uploadProgress;
 
   Future<String> upLoadImageFile({
-    required CroppedFile mFileImage, 
+    required File mFileImage,
     required String fileName,
     Function(double progress)? onProgress,
   }) async {
@@ -32,7 +32,7 @@ class FirebaseService {
     onProgress?.call(0.0);
     
     // Upload file with progress tracking
-    final UploadTask uploadTask = imageRef.putFile(File(mFileImage.path));
+    final UploadTask uploadTask = imageRef.putFile(mFileImage);
     
     // Listen to upload progress
     uploadTask.snapshotEvents.listen((TaskSnapshot snapshot) {

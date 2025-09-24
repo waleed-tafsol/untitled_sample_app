@@ -7,6 +7,7 @@ import '../../utils/custom_colors.dart';
 import '../../utils/custom_buttons.dart';
 import '../../utils/custom_font_style.dart';
 import '../../view_models/driver_registration_view_model.dart';
+import 'identity_verification_screen.dart';
 import '../../widgets/custom_progress_indicator.dart';
 
 class DriverDocumentsScreen extends StatefulWidget {
@@ -158,12 +159,12 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
                                   text: viewModel.hasIdentityVerificationImage
                                       ? 'Retake Photo'
                                       : 'Start Verification',
-                                  onTap: () async {
-
-                                    await viewModel
-                                        .captureIdentityImageWithGenerator();
-
-                                  },
+                                  onTap: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => IdentityVerificationScreen(),
+                                    ),
+                                  ),
                                   colored: true,
                                   icon: Iconsax.camera,
                                   height: 50,

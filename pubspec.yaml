@@ -42,6 +42,8 @@ dependencies:
   country_code_picker: ^3.4.0
   iconsax: ^0.0.8
   flutter_staggered_animations: ^1.1.1
+  camera: ^0.11.2
+
 
 
 

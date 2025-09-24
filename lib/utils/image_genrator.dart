@@ -2,13 +2,13 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ImageGenerator{
-  final ImagePicker _picker = ImagePicker();
 
   Future<CroppedFile> createImageFile({required bool fromCamera}) async {
-    XFile? imageFile = fromCamera ? await _picker.pickImage(
+    final ImagePicker picker = ImagePicker();
+    XFile? imageFile = fromCamera ? await picker.pickImage(
         source: ImageSource.camera)
         :
-    await _picker.pickImage(source: ImageSource.gallery);
+    await picker.pickImage(source: ImageSource.gallery);
     return cropImage(imageFileToCrop: imageFile!);
   }
 

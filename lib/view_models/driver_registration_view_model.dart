@@ -301,7 +301,7 @@ class DriverRegistrationViewModel extends ChangeNotifier {
       
       // Start upload and track real progress
       final String imageUrl = await firebaseService.upLoadImageFile(
-        mFileImage: croppedFile,
+        mFileImage: File(croppedFile.path),
         fileName: 'profile_image',
         onProgress: (progress) {
           setProfileImageProgress = progress;
@@ -337,7 +337,7 @@ class DriverRegistrationViewModel extends ChangeNotifier {
             EasyLoading.show(status: 'Uploading image...');
 
             final String imageUrl = await firebaseService.upLoadImageFile(
-              mFileImage: croppedFile,
+              mFileImage: File(croppedFile.path),
               fileName: '${documentKey}_image',
               onProgress: (progress) {
                 setProfileImageProgress = progress;
