@@ -292,17 +292,13 @@ class DriverRegistrationViewModel extends ChangeNotifier {
       );
       setIdentityVerificationImage(imageUrl);
     } catch (e) {
-      debugPrint('Identity capture error: $e');
-      throw Exception(
-        'Failed to capture image. Please check camera permissions and try again.',
-      );
+      EasyLoading.showError(e.toString());
     }
   }
 
   // Pick document image using ImageGenerator
   Future<void> pickDocumentImageWithGenerator(
     String documentKey,
-    ImageSource source,
   ) async {
     try {
       await ImageSourceBottomSheet.show(

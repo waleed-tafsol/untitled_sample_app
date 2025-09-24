@@ -18,10 +18,7 @@ class FirebaseService {
   Future<String> upLoadImageFile(
       {required CroppedFile mFileImage, required String fileName}) async {
     final Reference storageReference = FirebaseStorage.instance.ref().child(
-        navigatorKey.currentContext!
-            .read<AuthViewModel>()
-            .getEmailController
-            .text);
+        'profile');
     // Create a reference to "mountains.jpg"
     final mountainsRef = storageReference.child("$fileName.jpg");
     mountainsRef.putFile(File(mFileImage.path));

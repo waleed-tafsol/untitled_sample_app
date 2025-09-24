@@ -2,13 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import '../../utils/custom_colors.dart';
 import '../../utils/custom_buttons.dart';
 import '../../utils/custom_font_style.dart';
 import '../../view_models/driver_registration_view_model.dart';
-import '../../widgets/image_source_bottom_sheet.dart';
 
 class DriverDocumentsScreen extends StatefulWidget {
   const DriverDocumentsScreen({super.key});
@@ -259,7 +257,7 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
     final hasImage = viewModel.hasDocumentImage(documentKey);
 
     return GestureDetector(
-      onTap: () => viewModel.pickDocumentImageWithGenerator(documentKey, ),
+        onTap: () => viewModel.pickDocumentImageWithGenerator(documentKey),
       child: Container(
         padding: EdgeInsets.all(16.w),
         decoration: BoxDecoration(
@@ -318,42 +316,6 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
               ),
           ],
         ),
-      ),
-    );
-  }
-
-
-
-  void _showSuccessMessage(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          message,
-          style: TextStyle(
-            fontFamily: 'CircularStd',
-            color: CustomColors.whiteColor,
-          ),
-        ),
-        backgroundColor: CustomColors.primaryColor,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
-      ),
-    );
-  }
-
-  void _showErrorMessage(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          message,
-          style: TextStyle(
-            fontFamily: 'CircularStd',
-            color: CustomColors.whiteColor,
-          ),
-        ),
-        backgroundColor: Colors.red,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
       ),
     );
   }
