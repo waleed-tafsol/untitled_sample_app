@@ -7,6 +7,7 @@ import '../../utils/custom_colors.dart';
 import '../../utils/custom_buttons.dart';
 import '../../utils/custom_font_style.dart';
 import '../../view_models/driver_registration_view_model.dart';
+import '../../widgets/custom_progress_indicator.dart';
 
 class DriverDocumentsScreen extends StatefulWidget {
   const DriverDocumentsScreen({super.key});
@@ -16,6 +17,7 @@ class DriverDocumentsScreen extends StatefulWidget {
 }
 
 class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
+
   @override
   Widget build(BuildContext context) {
     return Consumer<DriverRegistrationViewModel>(
@@ -110,7 +112,27 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
                                         width: 1,
                                       ),
                                     ),
-                                    child: Column(
+                                    child: viewModel.getUpLoadingProfileImage>0?
+                                    Column(
+                                      mainAxisAlignment:
+                                      MainAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          Iconsax.cloud_plus,
+                                          size: 48.sp,
+                                          color: CustomColors.primaryColor
+                                              .withValues(alpha: 0.6),
+                                        ),
+                                        SizedBox(height: 12.h),
+                                         SizedBox(
+                                           width: 100.w,
+                                             child: AnimatedLinearProgress(progress: viewModel.getUpLoadingProfileImage)),
+                                      ],
+                                    ):
+
+
+
+                                    Column(
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
                                       children: [
@@ -136,8 +158,12 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
                                   text: viewModel.hasIdentityVerificationImage
                                       ? 'Retake Photo'
                                       : 'Start Verification',
-                                  onTap: () => viewModel
-                                      .captureIdentityImageWithGenerator(),
+                                  onTap: () async {
+
+                                    await viewModel
+                                        .captureIdentityImageWithGenerator();
+
+                                  },
                                   colored: true,
                                   icon: Iconsax.camera,
                                   height: 50,
@@ -257,7 +283,7 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
     final hasImage = viewModel.hasDocumentImage(documentKey);
 
     return GestureDetector(
-        onTap: () => viewModel.pickDocumentImageWithGenerator(documentKey),
+      onTap: () => viewModel.pickDocumentImageWithGenerator(documentKey),
       child: Container(
         padding: EdgeInsets.all(16.w),
         decoration: BoxDecoration(

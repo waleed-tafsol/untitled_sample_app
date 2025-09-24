@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:image_picker/image_picker.dart';
@@ -46,6 +48,15 @@ class DriverRegistrationViewModel extends ChangeNotifier {
   final TextEditingController _modelController = TextEditingController();
   final TextEditingController _yearController = TextEditingController();
   final TextEditingController _colorController = TextEditingController();
+
+  double _profileImageProgress = 0.0;
+
+  double get getUpLoadingProfileImage => _profileImageProgress;
+
+  set setProfileImageProgress(double value) {
+    _profileImageProgress = value;
+    notifyListeners();
+  }
 
   GlobalKey<FormState>? _formKey;
   final Map<int, GlobalKey<FormState>> _stepFormKeys = {};
@@ -281,39 +292,67 @@ class DriverRegistrationViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> captureIdentityImageWithGenerator() async {
+  Future<bool> captureIdentityImageWithGenerator() async {
     try {
       final CroppedFile croppedFile = await imageGenerator.createImageFile(
         fromCamera: true,
       );
+      setProfileImageProgress = 0.1;
+      const totalSeconds = 10;
+
+      for (int second = 1; second <= totalSeconds; second++) {
+        await Future.delayed(Duration(seconds: 1));
+
+        double progress = second / totalSeconds;
+        setProfileImageProgress = progress;
+
+        print(
+          'Second $second/$totalSeconds - Progress: ${(progress * 100).toStringAsFixed(0)}%',
+        );
+      }
+      setProfileImageProgress = 0.0;
+
       final String imageUrl = await firebaseService.upLoadImageFile(
         mFileImage: croppedFile,
         fileName: 'profile_image',
       );
       setIdentityVerificationImage(imageUrl);
+
+      EasyLoading.showSuccess(
+        'Identity verification image captured successfully!',
+      );
+      return true;
     } catch (e) {
       EasyLoading.showError(e.toString());
+      return false;
     }
   }
 
   // Pick document image using ImageGenerator
-  Future<void> pickDocumentImageWithGenerator(
-    String documentKey,
-  ) async {
+  Future<void> pickDocumentImageWithGenerator(String documentKey) async {
     try {
       await ImageSourceBottomSheet.show(
         title: 'Select Image Source',
         subtitle: 'Choose how you want to add the image',
         onImageSelected: (source) async {
-          final CroppedFile croppedFile = await imageGenerator.createImageFile(
-            fromCamera: source == ImageSource.camera,
-          );
-          final String imageUrl = await firebaseService.upLoadImageFile(
-            mFileImage: croppedFile,
-            fileName: '${documentKey}_image',
-          );
-          setDocumentImage(documentKey, imageUrl);
-          EasyLoading.showSuccess('Document uploaded successfully');
+          try {
+            EasyLoading.show(status: 'Capturing image...');
+
+            final CroppedFile croppedFile = await imageGenerator
+                .createImageFile(fromCamera: source == ImageSource.camera);
+
+            EasyLoading.show(status: 'Uploading image...');
+
+            final String imageUrl = await firebaseService.upLoadImageFile(
+              mFileImage: croppedFile,
+              fileName: '${documentKey}_image',
+            );
+            setDocumentImage(documentKey, imageUrl);
+
+            EasyLoading.showSuccess('Document uploaded successfully!');
+          } catch (e) {
+            EasyLoading.showError(e.toString());
+          }
         },
       );
     } catch (e) {

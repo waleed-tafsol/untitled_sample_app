@@ -15,8 +15,11 @@ class FirebaseService {
   String? _verificationId;
   int? _resendToken;
 
+  double? _uploadProgress;
+
   Future<String> upLoadImageFile(
       {required CroppedFile mFileImage, required String fileName}) async {
+
     final Reference storageReference = FirebaseStorage.instance.ref().child(
         'profile');
     // Create a reference to "mountains.jpg"
