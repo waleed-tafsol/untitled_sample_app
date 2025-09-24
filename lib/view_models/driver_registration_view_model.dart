@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:image_picker/image_picker.dart';
@@ -297,25 +295,19 @@ class DriverRegistrationViewModel extends ChangeNotifier {
       final CroppedFile croppedFile = await imageGenerator.createImageFile(
         fromCamera: true,
       );
-      setProfileImageProgress = 0.1;
-      const totalSeconds = 10;
-
-      for (int second = 1; second <= totalSeconds; second++) {
-        await Future.delayed(Duration(seconds: 1));
-
-        double progress = second / totalSeconds;
-        setProfileImageProgress = progress;
-
-        print(
-          'Second $second/$totalSeconds - Progress: ${(progress * 100).toStringAsFixed(0)}%',
-        );
-      }
+      
+      // Start progress tracking
       setProfileImageProgress = 0.0;
-
+      
+      // Start upload and track real progress
       final String imageUrl = await firebaseService.upLoadImageFile(
         mFileImage: croppedFile,
         fileName: 'profile_image',
+        onProgress: (progress) {
+          setProfileImageProgress = progress;
+        },
       );
+      
       setIdentityVerificationImage(imageUrl);
 
       EasyLoading.showSuccess(
@@ -323,6 +315,7 @@ class DriverRegistrationViewModel extends ChangeNotifier {
       );
       return true;
     } catch (e) {
+      setProfileImageProgress = 0.0; // Reset progress on error
       EasyLoading.showError(e.toString());
       return false;
     }
@@ -346,6 +339,9 @@ class DriverRegistrationViewModel extends ChangeNotifier {
             final String imageUrl = await firebaseService.upLoadImageFile(
               mFileImage: croppedFile,
               fileName: '${documentKey}_image',
+              onProgress: (progress) {
+                setProfileImageProgress = progress;
+              },
             );
             setDocumentImage(documentKey, imageUrl);
 
