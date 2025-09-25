@@ -44,7 +44,9 @@ enum EndPoints {
   driverDocuments('driver/documents'),
   driverDocumentsUpdate('driver/documents/update'),
   driverShift('driver/shift'),
-  driverShiftUpdate('driver/shift/update');
+  driverShiftUpdate('driver/shift/update'),
+  driverVehicle('driver/vehicle'),
+  driverVehicleUpdate('driver/vehicle/update');
 
   final String url;
 

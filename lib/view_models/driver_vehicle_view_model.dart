@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import '../models/requests/driver_vehicle_request.dart';
+import '../models/responses/driver_vehicle_response.dart';
+import '../services/driver_vehicle_service.dart';
+import '../models/base_response_model.dart';
 
 class DriverVehicleViewModel extends ChangeNotifier {
   final ImagePicker _imagePicker = ImagePicker();
@@ -220,6 +224,101 @@ class DriverVehicleViewModel extends ChangeNotifier {
     _requiredDocuments.updateAll((key, value) => null);
     _additionalDocuments.updateAll((key, value) => null);
     notifyListeners();
+  }
+
+  // Service instance for API calls
+  final DriverVehicleService _service = DriverVehicleService();
+
+  // Create DriverVehicleRequest from current data
+  DriverVehicleRequest createRequest() {
+    return DriverVehicleRequest(
+      taxiPlate: _taxiPlateController.text.trim(),
+      operatorName: _operatorNameController.text.trim(),
+      make: _makeController.text.trim(),
+      model: _modelController.text.trim(),
+      year: _yearController.text.trim(),
+      color: _colorController.text.trim(),
+      selectedVehicleType: _selectedVehicleType,
+      frontPlateImage: _frontPlateImage?.path,
+      rearPlateImage: _rearPlateImage?.path,
+      requiredDocuments: _requiredDocuments.map((key, value) => MapEntry(key, value?.path)),
+      additionalDocuments: _additionalDocuments.map((key, value) => MapEntry(key, value?.path)),
+    );
+  }
+
+  // Set data from DriverVehicleRequest
+  void setFromRequest(DriverVehicleRequest request) {
+    _taxiPlateController.text = request.taxiPlate ?? '';
+    _operatorNameController.text = request.operatorName ?? '';
+    _makeController.text = request.make ?? '';
+    _modelController.text = request.model ?? '';
+    _yearController.text = request.year ?? '';
+    _colorController.text = request.color ?? '';
+    _selectedVehicleType = request.selectedVehicleType ?? 'sedan';
+    
+    if (request.frontPlateImage != null && request.frontPlateImage!.isNotEmpty) {
+      _frontPlateImage = File(request.frontPlateImage!);
+    }
+    if (request.rearPlateImage != null && request.rearPlateImage!.isNotEmpty) {
+      _rearPlateImage = File(request.rearPlateImage!);
+    }
+    
+    if (request.requiredDocuments != null) {
+      request.requiredDocuments!.forEach((key, value) {
+        if (value != null && value.isNotEmpty) {
+          _requiredDocuments[key] = File(value);
+        }
+      });
+    }
+    
+    if (request.additionalDocuments != null) {
+      request.additionalDocuments!.forEach((key, value) {
+        if (value != null && value.isNotEmpty) {
+          _additionalDocuments[key] = File(value);
+        }
+      });
+    }
+    
+    notifyListeners();
+  }
+
+  // Submit vehicle information to API
+  Future<BaseResponseModel> submitVehicleInfo() async {
+    final request = createRequest();
+    return await _service.submitDriverVehicle(request);
+  }
+
+  // Update vehicle information via API
+  Future<BaseResponseModel> updateVehicleInfo(String driverId) async {
+    final request = createRequest();
+    return await _service.updateDriverVehicle(request, driverId);
+  }
+
+  // Load vehicle information from API
+  Future<DriverVehicleResponse> loadVehicleInfo(String driverId) async {
+    final response = await _service.getDriverVehicle(driverId);
+    
+    if (response.isSuccess == true && response.driverVehicleModel != null) {
+      try {
+        setFromRequest(DriverVehicleRequest(
+          taxiPlate: response.driverVehicleModel!.taxiPlate,
+          operatorName: response.driverVehicleModel!.operatorName,
+          make: response.driverVehicleModel!.make,
+          model: response.driverVehicleModel!.model,
+          year: response.driverVehicleModel!.year,
+          color: response.driverVehicleModel!.color,
+          selectedVehicleType: response.driverVehicleModel!.selectedVehicleType,
+          frontPlateImage: response.driverVehicleModel!.frontPlateImage,
+          rearPlateImage: response.driverVehicleModel!.rearPlateImage,
+          requiredDocuments: response.driverVehicleModel!.requiredDocuments,
+          additionalDocuments: response.driverVehicleModel!.additionalDocuments,
+        ));
+      } catch (e) {
+        // Handle parsing error if needed
+      }
+    }
+    
+    return response;
   }
 
   @override
