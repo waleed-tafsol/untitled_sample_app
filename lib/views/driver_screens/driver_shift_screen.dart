@@ -5,14 +5,14 @@ import 'package:iconsax/iconsax.dart';
 import 'package:provider/provider.dart';
 import '../../utils/custom_colors.dart';
 import '../../utils/custom_font_style.dart';
-import '../../view_models/driver_registration_view_model.dart';
+import '../../view_models/driver_shift_view_model.dart';
 
 class DriverShiftScreen extends StatelessWidget {
   const DriverShiftScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<DriverRegistrationViewModel>(
+    return Consumer<DriverShiftViewModel>(
       builder: (context, viewModel, child) {
         return Form(
           key: viewModel.getFormKeyForStep(4),
@@ -88,7 +88,7 @@ class DriverShiftScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildWorkingDaysSection(BuildContext context, DriverRegistrationViewModel viewModel) {
+  Widget _buildWorkingDaysSection(BuildContext context, DriverShiftViewModel viewModel) {
     final days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
     final isFullTime = viewModel.isFullTimeDriver;
     
@@ -193,7 +193,7 @@ class DriverShiftScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildWorkingHoursSection(BuildContext context, DriverRegistrationViewModel viewModel) {
+  Widget _buildWorkingHoursSection(BuildContext context, DriverShiftViewModel viewModel) {
     return Container(
       padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(

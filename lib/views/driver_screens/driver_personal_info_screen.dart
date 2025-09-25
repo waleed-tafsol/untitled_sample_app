@@ -8,7 +8,7 @@ import '../../utils/custom_font_style.dart';
 import '../../utils/enums.dart';
 import '../../utils/validators.dart';
 import '../../view_models/auth_view_model.dart';
-import '../../view_models/driver_registration_view_model.dart';
+import '../../view_models/driver_personal_info_view_model.dart';
 import '../../widgets/user_form_fields_widget.dart';
 
 class DriverPersonalInfoScreen extends StatefulWidget {
@@ -22,10 +22,10 @@ class DriverPersonalInfoScreen extends StatefulWidget {
 class _DriverPersonalInfoScreenState extends State<DriverPersonalInfoScreen> {
   @override
   Widget build(BuildContext context) {
-    return Consumer<DriverRegistrationViewModel>(
-      builder: (_, driverRegistrationViewModel, _) {
+    return Consumer<DriverPersonalInfoViewModel>(
+      builder: (_, driverPersonalInfoViewModel, _) {
         return Form(
-          key: driverRegistrationViewModel.getFormKeyForStep(0),
+          key: driverPersonalInfoViewModel.getFormKey,
           child: SingleChildScrollView(
             child: AnimationLimiter(
               child: Padding(
@@ -88,7 +88,7 @@ class _DriverPersonalInfoScreenState extends State<DriverPersonalInfoScreen> {
                                           ),
                                         ),
                                         child: TextFormField(
-                                          controller: driverRegistrationViewModel
+                                          controller: driverPersonalInfoViewModel
                                               .getFirstNameController,
                                           decoration: InputDecoration(
                                             contentPadding: EdgeInsets.symmetric(
@@ -114,7 +114,7 @@ class _DriverPersonalInfoScreenState extends State<DriverPersonalInfoScreen> {
                                           ),
                                         ),
                                         child: TextFormField(
-                                          controller: driverRegistrationViewModel
+                                          controller: driverPersonalInfoViewModel
                                               .getLastNameController,
                                           decoration: InputDecoration(
                                             contentPadding: EdgeInsets.symmetric(
@@ -206,7 +206,7 @@ class _DriverPersonalInfoScreenState extends State<DriverPersonalInfoScreen> {
                                     ),
                                   ),
                                   child: TextFormField(
-                                    controller: driverRegistrationViewModel
+                                    controller: driverPersonalInfoViewModel
                                         .getStreetAddressController,
                                     decoration: InputDecoration(
                                       contentPadding: EdgeInsets.symmetric(
@@ -235,7 +235,7 @@ class _DriverPersonalInfoScreenState extends State<DriverPersonalInfoScreen> {
                                           ),
                                         ),
                                         child: TextFormField(
-                                          controller: driverRegistrationViewModel
+                                          controller: driverPersonalInfoViewModel
                                               .getSuburbController,
                                           decoration: InputDecoration(
                                             contentPadding: EdgeInsets.symmetric(
@@ -261,7 +261,7 @@ class _DriverPersonalInfoScreenState extends State<DriverPersonalInfoScreen> {
                                           ),
                                         ),
                                         child: TextFormField(
-                                          controller: driverRegistrationViewModel
+                                          controller: driverPersonalInfoViewModel
                                               .getPostcodeController,
                                           decoration: InputDecoration(
                                             contentPadding: EdgeInsets.symmetric(
@@ -329,7 +329,7 @@ class _DriverPersonalInfoScreenState extends State<DriverPersonalInfoScreen> {
                                           ),
                                         ),
                                         child: TextFormField(
-                                          controller: driverRegistrationViewModel
+                                          controller: driverPersonalInfoViewModel
                                               .getAbnController,
                                           decoration: InputDecoration(
                                             contentPadding: EdgeInsets.symmetric(
@@ -356,7 +356,7 @@ class _DriverPersonalInfoScreenState extends State<DriverPersonalInfoScreen> {
                                           ),
                                         ),
                                         child: TextFormField(
-                                          controller: driverRegistrationViewModel
+                                          controller: driverPersonalInfoViewModel
                                               .getEtagNumberController,
                                           decoration: InputDecoration(
                                             contentPadding: EdgeInsets.symmetric(
@@ -388,7 +388,7 @@ class _DriverPersonalInfoScreenState extends State<DriverPersonalInfoScreen> {
                                           ),
                                         ),
                                         child: TextFormField(
-                                          controller: driverRegistrationViewModel
+                                          controller: driverPersonalInfoViewModel
                                               .getLicenseNumberController,
                                           decoration: InputDecoration(
                                             contentPadding: EdgeInsets.symmetric(
@@ -414,7 +414,7 @@ class _DriverPersonalInfoScreenState extends State<DriverPersonalInfoScreen> {
                                           ),
                                         ),
                                         child: TextFormField(
-                                          controller: driverRegistrationViewModel
+                                          controller: driverPersonalInfoViewModel
                                               .getLicenseExpiryController,
                                           decoration: InputDecoration(
                                             contentPadding: EdgeInsets.symmetric(
@@ -448,7 +448,7 @@ class _DriverPersonalInfoScreenState extends State<DriverPersonalInfoScreen> {
                                                 );
                                                 if (pickedDate != null) {
                                                   final formattedDate = "${pickedDate.day.toString().padLeft(2, '0')}/${pickedDate.month.toString().padLeft(2, '0')}/${pickedDate.year}";
-                                                  driverRegistrationViewModel.getLicenseExpiryController.text = formattedDate;
+                                                  driverPersonalInfoViewModel.getLicenseExpiryController.text = formattedDate;
                                                 }
                                               },
                                             ),
@@ -507,7 +507,7 @@ class _DriverPersonalInfoScreenState extends State<DriverPersonalInfoScreen> {
                                     ),
                                   ),
                                   child: TextFormField(
-                                    controller: driverRegistrationViewModel
+                                    controller: driverPersonalInfoViewModel
                                         .getEmergencyContactNameController,
                                     decoration: InputDecoration(
                                       contentPadding: EdgeInsets.symmetric(
@@ -536,7 +536,7 @@ class _DriverPersonalInfoScreenState extends State<DriverPersonalInfoScreen> {
                                           ),
                                         ),
                                         child: TextFormField(
-                                          controller: driverRegistrationViewModel
+                                          controller: driverPersonalInfoViewModel
                                               .getEmergencyContactNumberController,
                                           decoration: InputDecoration(
                                             contentPadding: EdgeInsets.symmetric(
@@ -563,7 +563,7 @@ class _DriverPersonalInfoScreenState extends State<DriverPersonalInfoScreen> {
                                           ),
                                         ),
                                         child: TextFormField(
-                                          controller: driverRegistrationViewModel
+                                          controller: driverPersonalInfoViewModel
                                               .getEmergencyContactEmailController,
                                           decoration: InputDecoration(
                                             contentPadding: EdgeInsets.symmetric(

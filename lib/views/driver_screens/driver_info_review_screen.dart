@@ -3,21 +3,23 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:provider/provider.dart';
-import 'dart:io';
 import '../../utils/custom_colors.dart';
 import '../../utils/custom_buttons.dart';
 import '../../utils/custom_font_style.dart';
 import '../../utils/phone_formator.dart';
 import '../../view_models/auth_view_model.dart';
 import '../../view_models/driver_registration_view_model.dart';
+import '../../view_models/driver_personal_info_view_model.dart';
+import '../../view_models/driver_documents_view_model.dart';
+import '../../view_models/driver_shift_view_model.dart';
 
 class DriverInfoReviewScreen extends StatelessWidget {
   const DriverInfoReviewScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<DriverRegistrationViewModel>(
-      builder: (context, viewModel, child) {
+    return Consumer4<DriverRegistrationViewModel, DriverPersonalInfoViewModel, DriverDocumentsViewModel, DriverShiftViewModel>(
+      builder: (context, viewModel, personalInfoViewModel, documentsViewModel, shiftViewModel, child) {
         return Form(
           key: viewModel.getFormKeyForStep(2),
           child: SingleChildScrollView(
@@ -41,31 +43,31 @@ class DriverInfoReviewScreen extends StatelessWidget {
                           ),
                         ),
                         children: [
-                          _buildPersonalDetailsSection(context, viewModel),
+                          _buildPersonalDetailsSection(context, personalInfoViewModel),
                           SizedBox(height: 20.h),
 
                           // Section 3: Address Information
-                          _buildAddressInformationSection(context, viewModel),
+                          _buildAddressInformationSection(context, personalInfoViewModel),
                           SizedBox(height: 20.h),
 
                           // Section 4: Registration & License
-                          _buildRegistrationLicenseSection(context, viewModel),
+                          _buildRegistrationLicenseSection(context, personalInfoViewModel),
                           SizedBox(height: 20.h),
 
                           // Section 5: Emergency Contact
-                          _buildEmergencyContactSection(context, viewModel),
+                          _buildEmergencyContactSection(context, personalInfoViewModel),
                           SizedBox(height: 20.h),
 
                           // Section 6: Documents Uploaded
-                          _buildDocumentsUploadedSection(context, viewModel),
+                          _buildDocumentsUploadedSection(context, documentsViewModel),
                           SizedBox(height: 20.h),
 
                           // Section 7: Required Declarations
-                          _buildRequiredDeclarationsSection(context, viewModel),
+                          _buildRequiredDeclarationsSection(context, shiftViewModel),
                           SizedBox(height: 40.h),
 
                           // Submit Button
-                          _buildSubmitButton(context, viewModel),
+                          _buildSubmitButton(context, viewModel, documentsViewModel, shiftViewModel),
                         ],
                       ),
                     ),
@@ -116,7 +118,7 @@ class DriverInfoReviewScreen extends StatelessWidget {
 
   Widget _buildPersonalDetailsSection(
     BuildContext context,
-    DriverRegistrationViewModel viewModel,
+    DriverPersonalInfoViewModel viewModel,
   ) {
     return _buildInfoSection(
       context,
@@ -150,7 +152,7 @@ class DriverInfoReviewScreen extends StatelessWidget {
 
   Widget _buildAddressInformationSection(
     BuildContext context,
-    DriverRegistrationViewModel viewModel,
+    DriverPersonalInfoViewModel viewModel,
   ) {
     return _buildInfoSection(
       context,
@@ -175,7 +177,7 @@ class DriverInfoReviewScreen extends StatelessWidget {
 
   Widget _buildRegistrationLicenseSection(
     BuildContext context,
-    DriverRegistrationViewModel viewModel,
+    DriverPersonalInfoViewModel viewModel,
   ) {
     return _buildInfoSection(
       context,
@@ -204,7 +206,7 @@ class DriverInfoReviewScreen extends StatelessWidget {
 
   Widget _buildEmergencyContactSection(
     BuildContext context,
-    DriverRegistrationViewModel viewModel,
+    DriverPersonalInfoViewModel viewModel,
   ) {
     return _buildInfoSection(
       context,
@@ -234,7 +236,7 @@ class DriverInfoReviewScreen extends StatelessWidget {
 
   Widget _buildDocumentsUploadedSection(
     BuildContext context,
-    DriverRegistrationViewModel viewModel,
+    DriverDocumentsViewModel viewModel,
   ) {
     return Container(
       padding: EdgeInsets.all(20.w),
@@ -277,7 +279,7 @@ class DriverInfoReviewScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildDocumentImagesGrid(DriverRegistrationViewModel viewModel) {
+  Widget _buildDocumentImagesGrid(DriverDocumentsViewModel viewModel) {
     final documentTitles = {
       'driverLicenseFront': 'Driver License (Front)',
       'driverLicenseBack': 'Driver License (Back)',
@@ -356,7 +358,7 @@ class DriverInfoReviewScreen extends StatelessWidget {
 
   Widget _buildRequiredDeclarationsSection(
     BuildContext context,
-    DriverRegistrationViewModel viewModel,
+    DriverShiftViewModel viewModel,
   ) {
     return Container(
       padding: EdgeInsets.all(20.w),
@@ -419,7 +421,7 @@ class DriverInfoReviewScreen extends StatelessWidget {
     String title,
     String description,
     String declarationKey,
-    DriverRegistrationViewModel viewModel,
+    DriverShiftViewModel viewModel,
   ) {
     final currentValue = viewModel.getDeclaration(declarationKey);
 
@@ -512,10 +514,12 @@ class DriverInfoReviewScreen extends StatelessWidget {
   Widget _buildSubmitButton(
     BuildContext context,
     DriverRegistrationViewModel viewModel,
+    DriverDocumentsViewModel documentsViewModel,
+    DriverShiftViewModel shiftViewModel,
   ) {
     final canSubmit =
-        viewModel.areAllDeclarationsAccepted &&
-        viewModel.areAllDocumentsUploaded;
+        shiftViewModel.areAllDeclarationsAccepted &&
+        documentsViewModel.areAllDocumentsUploaded;
 
     return customButton(
       text: 'Submit Registration',

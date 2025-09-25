@@ -9,7 +9,7 @@ import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 import '../utils/custom_colors.dart';
 import '../utils/custom_buttons.dart';
 import '../utils/custom_font_style.dart';
-import '../view_models/driver_registration_view_model.dart';
+import '../view_models/driver_documents_view_model.dart';
 import '../widgets/custom_progress_indicator.dart';
 
 class IdentityVerificationScreen extends StatefulWidget {
@@ -107,7 +107,7 @@ class _IdentityVerificationScreenState extends State<IdentityVerificationScreen>
     });
   }
 
-  Future<void> _captureImage(DriverRegistrationViewModel viewModel) async {
+  Future<void> _captureImage(DriverDocumentsViewModel viewModel) async {
     if (_cameraController == null || !_cameraController!.value.isInitialized) {
       return;
     }
@@ -348,7 +348,7 @@ class _IdentityVerificationScreenState extends State<IdentityVerificationScreen>
           ),
         ],
       ),
-      body: Consumer<DriverRegistrationViewModel>(
+      body: Consumer<DriverDocumentsViewModel>(
         builder: (context, viewModel, child) {
           return SizedBox.expand(
             child: Stack(

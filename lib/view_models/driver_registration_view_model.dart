@@ -1,12 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:image_cropper/image_cropper.dart';
 import 'package:iconsax/iconsax.dart';
-import 'dart:io';
-import '../services/firebase_service.dart';
-import '../utils/image_genrator.dart';
-import '../widgets/image_source_bottom_sheet.dart';
 
 class StepData {
   final String title;
@@ -17,46 +10,6 @@ class StepData {
 }
 
 class DriverRegistrationViewModel extends ChangeNotifier {
-  final ImageGenerator imageGenerator = ImageGenerator();
-  final FirebaseService firebaseService = FirebaseService();
-
-  final TextEditingController _firstNameController = TextEditingController();
-  final TextEditingController _lastNameController = TextEditingController();
-  final TextEditingController _streetAddressController =
-      TextEditingController();
-  final TextEditingController _suburbController = TextEditingController();
-  final TextEditingController _postcodeController = TextEditingController();
-  final TextEditingController _abnController = TextEditingController();
-  final TextEditingController _etagNumberController = TextEditingController();
-  final TextEditingController _licenseNumberController =
-      TextEditingController();
-  final TextEditingController _licenseExpiryController =
-      TextEditingController();
-  final TextEditingController _emergencyContactNameController =
-      TextEditingController();
-  final TextEditingController _emergencyContactNumberController =
-      TextEditingController();
-  final TextEditingController _emergencyContactEmailController =
-      TextEditingController();
-
-  // Vehicle Information Controllers
-  final TextEditingController _taxiPlateController = TextEditingController();
-  final TextEditingController _operatorNameController = TextEditingController();
-  final TextEditingController _makeController = TextEditingController();
-  final TextEditingController _modelController = TextEditingController();
-  final TextEditingController _yearController = TextEditingController();
-  final TextEditingController _colorController = TextEditingController();
-
-  double _profileImageProgress = 0.0;
-
-  double get getUpLoadingProfileImage => _profileImageProgress;
-
-  set setProfileImageProgress(double value) {
-    _profileImageProgress = value;
-    notifyListeners();
-  }
-
-  GlobalKey<FormState>? _formKey;
   final Map<int, GlobalKey<FormState>> _stepFormKeys = {};
 
   // Stepper state management
@@ -97,85 +50,9 @@ class DriverRegistrationViewModel extends ChangeNotifier {
     ),
   ];
 
-  // Image picker and document images
-  final ImagePicker _imagePicker = ImagePicker();
-  String? _identityVerificationImage;
-  final Map<String, String?> _documentImages = {
-    'driverLicenseFront': null,
-    'driverLicenseBack': null,
-    'drivingRecord': null,
-    'policeCheck': null,
-    'passport': null,
-    'vevoDetails': null,
-    'englishCertificate': null,
-  };
 
-  // Vehicle Information State
-  String _selectedVehicleType = 'sedan';
-  File? _frontPlateImage;
-  File? _rearPlateImage;
-  final Map<String, File?> _requiredDocuments = {
-    'registration': null,
-    'comprehensiveInsurance': null,
-    'ctpInsurance': null,
-  };
-  final Map<String, File?> _additionalDocuments = {
-    'workCover': null,
-    'publicLiability': null,
-    'safetyInspection': null,
-    'cameraInspection': null,
-  };
 
-  TextEditingController get getFirstNameController => _firstNameController;
 
-  TextEditingController get getLastNameController => _lastNameController;
-
-  TextEditingController get getStreetAddressController =>
-      _streetAddressController;
-
-  TextEditingController get getSuburbController => _suburbController;
-
-  TextEditingController get getPostcodeController => _postcodeController;
-
-  TextEditingController get getAbnController => _abnController;
-
-  TextEditingController get getEtagNumberController => _etagNumberController;
-
-  TextEditingController get getLicenseNumberController =>
-      _licenseNumberController;
-
-  TextEditingController get getLicenseExpiryController =>
-      _licenseExpiryController;
-
-  TextEditingController get getEmergencyContactNameController =>
-      _emergencyContactNameController;
-
-  TextEditingController get getEmergencyContactNumberController =>
-      _emergencyContactNumberController;
-
-  TextEditingController get getEmergencyContactEmailController =>
-      _emergencyContactEmailController;
-
-  // Vehicle Information Getters
-  TextEditingController get getTaxiPlateController => _taxiPlateController;
-
-  TextEditingController get getOperatorNameController =>
-      _operatorNameController;
-
-  TextEditingController get getMakeController => _makeController;
-
-  TextEditingController get getModelController => _modelController;
-
-  TextEditingController get getYearController => _yearController;
-
-  TextEditingController get getColorController => _colorController;
-
-  GlobalKey<FormState> get getFormKey {
-    if (_formKey == null) {
-      _formKey = GlobalKey<FormState>();
-    }
-    return _formKey!;
-  }
 
   GlobalKey<FormState> getFormKeyForStep(int step) {
     if (!_stepFormKeys.containsKey(step)) {
@@ -184,54 +61,11 @@ class DriverRegistrationViewModel extends ChangeNotifier {
     return _stepFormKeys[step]!;
   }
 
-  void resetFormKey() {
-    if (_formKey != null) {
-      _formKey!.currentState?.reset();
-      _formKey = null;
-    }
-  }
-
   void resetStepFormKey(int step) {
     if (_stepFormKeys.containsKey(step)) {
       _stepFormKeys[step]!.currentState?.reset();
       _stepFormKeys.remove(step);
     }
-  }
-
-  // Stepper getters
-  int get getCurrentStep => _currentStep;
-
-  PageController get getPageController => _pageController;
-
-  List<StepData> get getSteps => _steps;
-
-  // Image and document getters
-  String? get getIdentityVerificationImage => _identityVerificationImage;
-
-  Map<String, File?> get getDocumentImages => Map.from(_documentImages);
-
-  // Vehicle Information State Getters
-  String get getSelectedVehicleType => _selectedVehicleType;
-
-  File? get getFrontPlateImage => _frontPlateImage;
-
-  File? get getRearPlateImage => _rearPlateImage;
-
-  Map<String, File?> get getRequiredDocuments => Map.from(_requiredDocuments);
-
-  Map<String, File?> get getAdditionalDocuments =>
-      Map.from(_additionalDocuments);
-
-  String? getDocumentImage(String documentKey) => _documentImages[documentKey];
-
-  bool hasDocumentImage(String documentKey) =>
-      _documentImages[documentKey] != null;
-
-  bool get hasIdentityVerificationImage => _identityVerificationImage != null;
-
-  bool get areAllDocumentsUploaded {
-    return _documentImages.values.every((image) => image != null) &&
-        _identityVerificationImage != null;
   }
 
   bool validateFormKey() {
@@ -244,300 +78,26 @@ class DriverRegistrationViewModel extends ChangeNotifier {
     }
   }
 
-  void removeDocumentImage(String documentKey) {
-    _documentImages[documentKey] = null;
-    notifyListeners();
-  }
+  // Stepper getters
+  int get getCurrentStep => _currentStep;
 
-  void removeIdentityVerificationImage() {
-    _identityVerificationImage = null;
-    notifyListeners();
-  }
+  PageController get getPageController => _pageController;
 
-  void clearAllImages() {
-    _identityVerificationImage = null;
-    _documentImages.updateAll((key, value) => null);
-    notifyListeners();
-  }
+  List<StepData> get getSteps => _steps;
 
-  // Setter methods for direct file assignment
-  void setIdentityVerificationImage(String image) {
-    _identityVerificationImage = image;
-    notifyListeners();
-  }
 
-  void setDocumentImage(String documentKey, String image) {
-    _documentImages[documentKey] = image;
-    notifyListeners();
-  }
 
-  void setFrontPlateImage(File image) {
-    _frontPlateImage = image;
-    notifyListeners();
-  }
 
-  void setRearPlateImage(File image) {
-    _rearPlateImage = image;
-    notifyListeners();
-  }
 
-  void setVehicleDocumentImage(String documentKey, File image) {
-    if (_requiredDocuments.containsKey(documentKey)) {
-      _requiredDocuments[documentKey] = image;
-    } else if (_additionalDocuments.containsKey(documentKey)) {
-      _additionalDocuments[documentKey] = image;
-    }
-    notifyListeners();
-  }
 
-  Future<bool> captureIdentityImageWithGenerator(File cameraImage) async {
-    try {
-    /*  final CroppedFile croppedFile = await imageGenerator.createImageFile(
-        fromCamera: true,
-      );*/
-      
-      // Start progress tracking
-      setProfileImageProgress = 0.0;
-      
-      // Start upload and track real progress
-      final String imageUrl = await firebaseService.upLoadImageFile(
-        mFileImage: cameraImage,
-        fileName: 'profile_image',
-        onProgress: (progress) {
-          setProfileImageProgress = progress;
-        },
-      );
-      
-      setIdentityVerificationImage(imageUrl);
 
-      EasyLoading.showSuccess(
-        'Identity verification image captured successfully!',
-      );
-      return true;
-    } catch (e) {
-      setProfileImageProgress = 0.0; // Reset progress on error
-      EasyLoading.showError(e.toString());
-      return false;
-    }
-  }
 
-  // Pick document image using ImageGenerator
-  Future<void> pickDocumentImageWithGenerator(String documentKey) async {
-    try {
-      await ImageSourceBottomSheet.show(
-        title: 'Select Image Source',
-        subtitle: 'Choose how you want to add the image',
-        onImageSelected: (source) async {
-          try {
-            EasyLoading.show(status: 'Capturing image...');
 
-            final CroppedFile croppedFile = await imageGenerator
-                .createImageFile(fromCamera: source == ImageSource.camera);
 
-            EasyLoading.show(status: 'Uploading image...');
 
-            final String imageUrl = await firebaseService.upLoadImageFile(
-              mFileImage: File(croppedFile.path),
-              fileName: '${documentKey}_image',
-              onProgress: (progress) {
-                setProfileImageProgress = progress;
-              },
-            );
-            setDocumentImage(documentKey, imageUrl);
 
-            EasyLoading.showSuccess('Document uploaded successfully!');
-          } catch (e) {
-            EasyLoading.showError(e.toString());
-          }
-        },
-      );
-    } catch (e) {
-      debugPrint('Document pick error: $e');
-      throw Exception(
-        'Failed to upload document. Please check permissions and try again.',
-      );
-    }
-  }
 
-  // Declarations state management
-  final Map<String, bool?> _declarations = {
-    'qualifiedToOperate': null,
-    'consentToAgreement': null,
-    'consentToInformationStatement': null,
-  };
 
-  // Driver type state management
-  String _selectedDriverType = 'fullTime'; // 'fullTime' or 'partTime'
-
-  // Working days and hours state management
-  final Set<String> _selectedWorkingDays = {};
-  TimeOfDay _preferredStartTime = TimeOfDay(hour: 9, minute: 0);
-  int _selectedHours = 8;
-
-  // Driver type getters and setters
-  String get getSelectedDriverType => _selectedDriverType;
-
-  bool get isFullTimeDriver => _selectedDriverType == 'fullTime';
-
-  bool get isPartTimeDriver => _selectedDriverType == 'partTime';
-
-  void setDriverType(String driverType) {
-    _selectedDriverType = driverType;
-    // Reset selections when changing driver type
-    _selectedWorkingDays.clear();
-    _selectedHours = driverType == 'fullTime' ? 8 : 6;
-    notifyListeners();
-  }
-
-  // Working days getters and setters
-  Set<String> get getSelectedWorkingDays => Set.from(_selectedWorkingDays);
-
-  bool isWorkingDaySelected(String day) => _selectedWorkingDays.contains(day);
-
-  int get getSelectedWorkingDaysCount => _selectedWorkingDays.length;
-
-  bool get isValidWorkingDaysSelection {
-    if (isFullTimeDriver) {
-      return _selectedWorkingDays.length >= 4;
-    } else {
-      return _selectedWorkingDays.length <= 3 &&
-          _selectedWorkingDays.length > 0;
-    }
-  }
-
-  void toggleWorkingDay(String day) {
-    // Convert full day names to short forms for consistency
-    final dayMap = {
-      'Monday': 'Mon',
-      'Tuesday': 'Tue',
-      'Wednesday': 'Wed',
-      'Thursday': 'Thu',
-      'Friday': 'Fri',
-      'Saturday': 'Sat',
-      'Sunday': 'Sun',
-    };
-
-    final shortDay = dayMap[day] ?? day;
-
-    if (_selectedWorkingDays.contains(shortDay)) {
-      _selectedWorkingDays.remove(shortDay);
-    } else {
-      if (isFullTimeDriver) {
-        // No limit for full-time
-        _selectedWorkingDays.add(shortDay);
-      } else {
-        // Max 3 days for part-time
-        if (_selectedWorkingDays.length < 3) {
-          _selectedWorkingDays.add(shortDay);
-        }
-      }
-    }
-    notifyListeners();
-  }
-
-  // Working hours getters and setters
-  TimeOfDay get getPreferredStartTime => _preferredStartTime;
-
-  int get getSelectedHours => _selectedHours;
-
-  int get getMaxHours => isFullTimeDriver ? 12 : 8;
-
-  int get getMinHours => isFullTimeDriver ? 6 : 4;
-
-  void setPreferredStartTime(TimeOfDay time) {
-    _preferredStartTime = time;
-    notifyListeners();
-  }
-
-  void setSelectedHours(int hours) {
-    if (hours >= getMinHours && hours <= getMaxHours) {
-      _selectedHours = hours;
-      notifyListeners();
-    }
-  }
-
-  // Declaration getters and setters
-  bool? getDeclaration(String declarationKey) => _declarations[declarationKey];
-
-  bool get isQualifiedToOperate => _declarations['qualifiedToOperate'] ?? false;
-
-  bool get hasConsentedToAgreement =>
-      _declarations['consentToAgreement'] ?? false;
-
-  bool get hasConsentedToInformationStatement =>
-      _declarations['consentToInformationStatement'] ?? false;
-
-  bool get areAllDeclarationsAccepted {
-    return _declarations.values.every((value) => value == true);
-  }
-
-  void setDeclaration(String declarationKey, bool value) {
-    _declarations[declarationKey] = value;
-    notifyListeners();
-  }
-
-  // Vehicle Information Methods
-  void setSelectedVehicleType(String type) {
-    _selectedVehicleType = type;
-    notifyListeners();
-  }
-
-  Future<void> capturePlateImage(bool isFront) async {
-    try {
-      final XFile? image = await _imagePicker.pickImage(
-        source: ImageSource.camera,
-        imageQuality: 80,
-      );
-      if (image != null) {
-        if (isFront) {
-          _frontPlateImage = File(image.path);
-        } else {
-          _rearPlateImage = File(image.path);
-        }
-        notifyListeners();
-      }
-    } catch (e) {
-      // Handle error - could add error state management here
-      print('Failed to capture plate image: $e');
-    }
-  }
-
-  Future<void> pickVehicleDocumentImage(
-    String documentKey,
-    ImageSource source,
-  ) async {
-    try {
-      final XFile? image = await _imagePicker.pickImage(
-        source: source,
-        imageQuality: 80,
-      );
-      if (image != null) {
-        if (_requiredDocuments.containsKey(documentKey)) {
-          _requiredDocuments[documentKey] = File(image.path);
-        } else {
-          _additionalDocuments[documentKey] = File(image.path);
-        }
-        notifyListeners();
-      }
-    } catch (e) {
-      // Handle error - could add error state management here
-      print('Failed to pick document image: $e');
-    }
-  }
-
-  bool hasRequiredDocument(String documentKey) =>
-      _requiredDocuments[documentKey] != null;
-
-  bool hasAdditionalDocument(String documentKey) =>
-      _additionalDocuments[documentKey] != null;
-
-  bool hasPlateImage(bool isFront) =>
-      isFront ? _frontPlateImage != null : _rearPlateImage != null;
-
-  void clearAllDeclarations() {
-    _declarations.updateAll((key, value) => null);
-    notifyListeners();
-  }
 
   // Stepper navigation methods
   void nextStep() {
@@ -587,24 +147,6 @@ class DriverRegistrationViewModel extends ChangeNotifier {
 
   @override
   void dispose() {
-    _firstNameController.dispose();
-    _lastNameController.dispose();
-    _streetAddressController.dispose();
-    _suburbController.dispose();
-    _postcodeController.dispose();
-    _abnController.dispose();
-    _etagNumberController.dispose();
-    _licenseNumberController.dispose();
-    _licenseExpiryController.dispose();
-    _emergencyContactNameController.dispose();
-    _emergencyContactNumberController.dispose();
-    _emergencyContactEmailController.dispose();
-    _taxiPlateController.dispose();
-    _operatorNameController.dispose();
-    _makeController.dispose();
-    _modelController.dispose();
-    _yearController.dispose();
-    _colorController.dispose();
     _pageController.dispose();
     super.dispose();
   }

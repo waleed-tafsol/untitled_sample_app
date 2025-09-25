@@ -7,7 +7,7 @@ import 'package:untitled_sample_app/widgets/custom_app_bar_widget.dart';
 import '../../utils/custom_colors.dart';
 import '../../utils/custom_buttons.dart';
 import '../../utils/custom_font_style.dart';
-import '../../view_models/driver_registration_view_model.dart';
+import '../../view_models/driver_documents_view_model.dart';
 import '../identity_verification_screen.dart';
 import '../../widgets/custom_progress_indicator.dart';
 
@@ -27,7 +27,7 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<DriverRegistrationViewModel>(
+    return Consumer<DriverDocumentsViewModel>(
       builder: (context, viewModel, child) {
         return Form(
           key: viewModel.getFormKeyForStep(1),
@@ -285,7 +285,7 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
     String title,
     String documentKey,
     IconData icon,
-    DriverRegistrationViewModel viewModel,
+    DriverDocumentsViewModel viewModel,
   ) {
     final hasImage = viewModel.hasDocumentImage(documentKey);
 

@@ -9,7 +9,7 @@ import 'package:provider/provider.dart';
 import '../../../utils/custom_colors.dart';
 import '../../../utils/custom_font_style.dart';
 import '../../../utils/image_genrator.dart';
-import '../../../view_models/driver_registration_view_model.dart';
+import '../../../view_models/driver_vehicle_view_model.dart';
 import '../../../widgets/image_source_bottom_sheet.dart';
 
 class DriverVehicleScreen extends StatelessWidget {
@@ -17,7 +17,7 @@ class DriverVehicleScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<DriverRegistrationViewModel>(
+    return Consumer<DriverVehicleViewModel>(
       builder: (context, viewModel, child) {
         return Form(
           key: viewModel.getFormKeyForStep(3),
@@ -61,7 +61,7 @@ class DriverVehicleScreen extends StatelessWidget {
   }
 
   // Section 1: Vehicle Information
-  Widget _buildVehicleInformationSection(DriverRegistrationViewModel viewModel) {
+  Widget _buildVehicleInformationSection(DriverVehicleViewModel viewModel) {
     return Container(
       padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
@@ -168,7 +168,7 @@ class DriverVehicleScreen extends StatelessWidget {
   }
 
   // Section 2: License Plate Recognition
-  Widget _buildLicensePlateSection(DriverRegistrationViewModel viewModel) {
+  Widget _buildLicensePlateSection(DriverVehicleViewModel viewModel) {
     return Container(
       padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
@@ -206,7 +206,7 @@ class DriverVehicleScreen extends StatelessWidget {
   }
 
   // Section 3: Required Documents
-  Widget _buildRequiredDocumentsSection(BuildContext context, DriverRegistrationViewModel viewModel) {
+  Widget _buildRequiredDocumentsSection(BuildContext context, DriverVehicleViewModel viewModel) {
     return Container(
       padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
@@ -243,7 +243,7 @@ class DriverVehicleScreen extends StatelessWidget {
   }
 
   // Section 4: Additional Documents
-  Widget _buildAdditionalDocumentsSection(BuildContext context, DriverRegistrationViewModel viewModel) {
+  Widget _buildAdditionalDocumentsSection(BuildContext context, DriverVehicleViewModel viewModel) {
     return Container(
       padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
@@ -302,7 +302,7 @@ class DriverVehicleScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildVehicleTypeSelection(DriverRegistrationViewModel viewModel) {
+  Widget _buildVehicleTypeSelection(DriverVehicleViewModel viewModel) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -327,7 +327,7 @@ class DriverVehicleScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildVehicleTypeOption(String title, IconData icon, String value, DriverRegistrationViewModel viewModel) {
+  Widget _buildVehicleTypeOption(String title, IconData icon, String value, DriverVehicleViewModel viewModel) {
     final isSelected = viewModel.getSelectedVehicleType == value;
     return GestureDetector(
       onTap: () => viewModel.setSelectedVehicleType(value),
@@ -390,7 +390,7 @@ class DriverVehicleScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildDocumentItem(BuildContext context, String title, String documentKey, IconData icon, DriverRegistrationViewModel viewModel) {
+  Widget _buildDocumentItem(BuildContext context, String title, String documentKey, IconData icon, DriverVehicleViewModel viewModel) {
     final hasImage = viewModel.hasRequiredDocument(documentKey) || viewModel.hasAdditionalDocument(documentKey);
     return GestureDetector(
       onTap: () => _pickVehicleDocument(context, documentKey, viewModel),
@@ -442,7 +442,7 @@ class DriverVehicleScreen extends StatelessWidget {
   }
 
   // Capture plate image using ImageGenerator
-  Future<void> _capturePlateImage(bool isFront, DriverRegistrationViewModel viewModel) async {
+  Future<void> _capturePlateImage(bool isFront, DriverVehicleViewModel viewModel) async {
     try {
       final ImageGenerator imageGenerator = ImageGenerator();
       final CroppedFile croppedFile = await imageGenerator.createImageFile(fromCamera: true);
@@ -461,7 +461,7 @@ class DriverVehicleScreen extends StatelessWidget {
   }
 
   // Pick vehicle document using ImageGenerator
-  Future<void> _pickVehicleDocument(BuildContext context, String documentKey, DriverRegistrationViewModel viewModel) async {
+  Future<void> _pickVehicleDocument(BuildContext context, String documentKey, DriverVehicleViewModel viewModel) async {
     try {
       // Show bottom sheet to choose source
       await ImageSourceBottomSheet.show(
