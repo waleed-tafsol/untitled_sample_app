@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:ui' as ui;
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -7,10 +6,7 @@ import 'package:iconsax/iconsax.dart';
 import 'package:provider/provider.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 import '../utils/custom_colors.dart';
-import '../utils/custom_buttons.dart';
-import '../utils/custom_font_style.dart';
 import '../view_models/driver_documents_view_model.dart';
-import '../widgets/custom_progress_indicator.dart';
 
 class IdentityVerificationScreen extends StatefulWidget {
   const IdentityVerificationScreen({super.key});
@@ -30,6 +26,7 @@ class _IdentityVerificationScreenState extends State<IdentityVerificationScreen>
   bool _isFaceDetected = false;
   bool _isFaceCentered = false;
   String _faceDetectionMessage = 'Position your face in the center';
+  int _frameCount = 0;
 
   @override
   void initState() {
@@ -39,43 +36,62 @@ class _IdentityVerificationScreenState extends State<IdentityVerificationScreen>
   }
 
   void _initializeFaceDetector() {
-    final options = FaceDetectorOptions(
-      enableContours: true,
-      enableLandmarks: true,
-      enableClassification: true,
-      enableTracking: true,
-      minFaceSize: 0.1,
-      performanceMode: FaceDetectorMode.accurate,
-    );
-    _faceDetector = FaceDetector(options: options);
+    try {
+      final options = FaceDetectorOptions(
+        enableContours: true,
+        enableLandmarks: true,
+        enableClassification: true,
+        enableTracking: true,
+        minFaceSize: 0.1,
+        performanceMode: FaceDetectorMode.accurate,
+      );
+      _faceDetector = FaceDetector(options: options);
+      print('Face detector initialized successfully');
+    } catch (e) {
+      print('Face detector initialization error: $e');
+    }
   }
 
   Future<void> _initializeCamera() async {
     try {
       _cameras = await availableCameras();
+      print('Available cameras: ${_cameras.length}');
+      
       if (_cameras.isNotEmpty) {
         final frontCamera = _cameras.firstWhere(
               (camera) => camera.lensDirection == CameraLensDirection.front,
           orElse: () => _cameras.first,
         );
 
+        print('Using camera: ${frontCamera.name}, direction: ${frontCamera.lensDirection}');
+
         _cameraController = CameraController(
           frontCamera,
-          ResolutionPreset.medium,
+          ResolutionPreset.high,
           enableAudio: false,
+          imageFormatGroup: ImageFormatGroup.yuv420,
         );
 
         await _cameraController!.initialize();
+        print('Camera initialized successfully');
 
         if (mounted) {
           setState(() {
             _isCameraInitialized = true;
           });
           _startFaceDetection();
+          print('Face detection started');
         }
+      } else {
+        print('No cameras available');
       }
     } catch (e) {
       print('Camera initialization error: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Camera initialization failed: $e')),
+        );
+      }
     }
   }
 
@@ -95,8 +111,9 @@ class _IdentityVerificationScreenState extends State<IdentityVerificationScreen>
 
     _cameraController = CameraController(
       newCamera,
-      ResolutionPreset.medium,
+      ResolutionPreset.high,
       enableAudio: false,
+      imageFormatGroup: ImageFormatGroup.yuv420,
     );
 
     await _cameraController!.initialize();
@@ -138,11 +155,26 @@ class _IdentityVerificationScreenState extends State<IdentityVerificationScreen>
   Future<void> _processImageForFaceDetection(CameraImage image) async {
     if (!mounted) return;
 
+    // Process every 3rd frame to reduce load
+    _frameCount++;
+    if (_frameCount % 3 != 0) return;
+
     try {
-      final inputImage = _inputImageFromCameraImage(image);
-      if (inputImage == null) return;
+      InputImage? inputImage = _inputImageFromCameraImage(image);
+      
+      // If direct conversion fails, try alternative approach
+      if (inputImage == null) {
+        print('Direct conversion failed, trying alternative approach');
+        inputImage = await _convertCameraImageToInputImage(image);
+      }
+      
+      if (inputImage == null) {
+        print('All conversion methods failed - format not supported');
+        return;
+      }
 
       final List<Face> faces = await _faceDetector.processImage(inputImage);
+      print('Faces detected: ${faces.length}');
       
       if (mounted) {
         setState(() {
@@ -150,6 +182,7 @@ class _IdentityVerificationScreenState extends State<IdentityVerificationScreen>
           if (_isFaceDetected) {
             _isFaceCentered = _isFaceInCenter(faces.first, image);
             _updateFaceDetectionMessage();
+            print('Face centered: $_isFaceCentered');
           } else {
             _isFaceCentered = false;
             _faceDetectionMessage = 'No face detected';
@@ -162,27 +195,104 @@ class _IdentityVerificationScreenState extends State<IdentityVerificationScreen>
   }
 
   InputImage? _inputImageFromCameraImage(CameraImage image) {
-    final camera = _cameras.firstWhere(
-      (camera) => camera.lensDirection == (_isFrontCamera ? CameraLensDirection.front : CameraLensDirection.back),
-      orElse: () => _cameras.first,
-    );
-
     final imageFormat = InputImageFormatValue.fromRawValue(image.format.raw);
-    if (imageFormat == null || (imageFormat != InputImageFormat.nv21 && imageFormat != InputImageFormat.yuv_420_888 && imageFormat != InputImageFormat.bgra8888)) {
+    print('Image format: ${image.format.raw}, supported: $imageFormat');
+    
+    // Support more image formats
+    if (imageFormat == null) {
+      print('Unsupported image format: ${image.format.raw}');
       return null;
     }
 
-    final plane = image.planes.first;
+    // Handle different image formats
+    InputImageMetadata metadata;
     
-    return InputImage.fromBytes(
-      bytes: plane.bytes,
-      metadata: InputImageMetadata(
+    if (imageFormat == InputImageFormat.nv21) {
+      final plane = image.planes.first;
+      metadata = InputImageMetadata(
         size: Size(image.width.toDouble(), image.height.toDouble()),
         rotation: _isFrontCamera ? InputImageRotation.rotation90deg : InputImageRotation.rotation270deg,
         format: imageFormat,
         bytesPerRow: plane.bytesPerRow,
-      ),
-    );
+      );
+      
+      return InputImage.fromBytes(
+        bytes: plane.bytes,
+        metadata: metadata,
+      );
+    } else if (imageFormat == InputImageFormat.yuv_420_888) {
+      final plane = image.planes.first;
+      metadata = InputImageMetadata(
+        size: Size(image.width.toDouble(), image.height.toDouble()),
+        rotation: _isFrontCamera ? InputImageRotation.rotation90deg : InputImageRotation.rotation270deg,
+        format: imageFormat,
+        bytesPerRow: plane.bytesPerRow,
+      );
+      
+      return InputImage.fromBytes(
+        bytes: plane.bytes,
+        metadata: metadata,
+      );
+    } else if (imageFormat == InputImageFormat.bgra8888) {
+      final plane = image.planes.first;
+      metadata = InputImageMetadata(
+        size: Size(image.width.toDouble(), image.height.toDouble()),
+        rotation: _isFrontCamera ? InputImageRotation.rotation90deg : InputImageRotation.rotation270deg,
+        format: imageFormat,
+        bytesPerRow: plane.bytesPerRow,
+      );
+      
+      return InputImage.fromBytes(
+        bytes: plane.bytes,
+        metadata: metadata,
+      );
+    } else if (imageFormat == InputImageFormat.yuv420) {
+      final plane = image.planes.first;
+      metadata = InputImageMetadata(
+        size: Size(image.width.toDouble(), image.height.toDouble()),
+        rotation: _isFrontCamera ? InputImageRotation.rotation90deg : InputImageRotation.rotation270deg,
+        format: imageFormat,
+        bytesPerRow: plane.bytesPerRow,
+      );
+      
+      return InputImage.fromBytes(
+        bytes: plane.bytes,
+        metadata: metadata,
+      );
+    } else {
+      print('Unsupported image format: ${image.format.raw}');
+      return null;
+    }
+  }
+
+  Future<InputImage?> _convertCameraImageToInputImage(CameraImage cameraImage) async {
+    try {
+      // Try to create InputImage with basic metadata
+      final imageFormat = InputImageFormatValue.fromRawValue(cameraImage.format.raw);
+      
+      if (imageFormat == null) {
+        print('Cannot determine image format for alternative conversion');
+        return null;
+      }
+
+      // Use the first plane for most formats
+      final plane = cameraImage.planes.first;
+      
+      final metadata = InputImageMetadata(
+        size: Size(cameraImage.width.toDouble(), cameraImage.height.toDouble()),
+        rotation: _isFrontCamera ? InputImageRotation.rotation90deg : InputImageRotation.rotation270deg,
+        format: imageFormat,
+        bytesPerRow: plane.bytesPerRow,
+      );
+
+      return InputImage.fromBytes(
+        bytes: plane.bytes,
+        metadata: metadata,
+      );
+    } catch (e) {
+      print('Alternative conversion failed: $e');
+      return null;
+    }
   }
 
   bool _isFaceInCenter(Face face, CameraImage image) {
