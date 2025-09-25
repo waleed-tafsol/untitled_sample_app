@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import '../models/requests/driver_shift_request.dart';
+import '../models/responses/driver_shift_response.dart';
+import '../services/driver_shift_service.dart';
+import '../models/base_response_model.dart';
 
 class DriverShiftViewModel extends ChangeNotifier {
   // Driver type state management
@@ -191,6 +195,82 @@ class DriverShiftViewModel extends ChangeNotifier {
     _selectedHours = 8;
     _declarations.updateAll((key, value) => null);
     notifyListeners();
+  }
+
+  // Service instance for API calls
+  final DriverShiftService _service = DriverShiftService();
+
+  // Create DriverShiftRequest from current data
+  DriverShiftRequest createRequest() {
+    return DriverShiftRequest(
+      selectedDriverType: _selectedDriverType,
+      selectedWorkingDays: _selectedWorkingDays.toList(),
+      preferredStartTime: {
+        'hour': _preferredStartTime.hour,
+        'minute': _preferredStartTime.minute,
+      },
+      selectedHours: _selectedHours,
+      declarations: Map.from(_declarations),
+    );
+  }
+
+  // Set data from DriverShiftRequest
+  void setFromRequest(DriverShiftRequest request) {
+    _selectedDriverType = request.selectedDriverType ?? 'fullTime';
+    
+    if (request.selectedWorkingDays != null) {
+      _selectedWorkingDays.clear();
+      _selectedWorkingDays.addAll(request.selectedWorkingDays!);
+    }
+    
+    if (request.preferredStartTime != null) {
+      _preferredStartTime = TimeOfDay(
+        hour: request.preferredStartTime!['hour'] ?? 9,
+        minute: request.preferredStartTime!['minute'] ?? 0,
+      );
+    }
+    
+    _selectedHours = request.selectedHours ?? 8;
+    
+    if (request.declarations != null) {
+      _declarations.clear();
+      _declarations.addAll(request.declarations!);
+    }
+    
+    notifyListeners();
+  }
+
+  // Submit shift information to API
+  Future<BaseResponseModel> submitShiftInfo() async {
+    final request = createRequest();
+    return await _service.submitDriverShift(request);
+  }
+
+  // Update shift information via API
+  Future<BaseResponseModel> updateShiftInfo(String driverId) async {
+    final request = createRequest();
+    return await _service.updateDriverShift(request, driverId);
+  }
+
+  // Load shift information from API
+  Future<DriverShiftResponse> loadShiftInfo(String driverId) async {
+    final response = await _service.getDriverShift(driverId);
+    
+    if (response.isSuccess == true && response.driverShiftModel != null) {
+      try {
+        setFromRequest(DriverShiftRequest(
+          selectedDriverType: response.driverShiftModel!.selectedDriverType,
+          selectedWorkingDays: response.driverShiftModel!.selectedWorkingDays,
+          preferredStartTime: response.driverShiftModel!.preferredStartTime,
+          selectedHours: response.driverShiftModel!.selectedHours,
+          declarations: response.driverShiftModel!.declarations,
+        ));
+      } catch (e) {
+        // Handle parsing error if needed
+      }
+    }
+    
+    return response;
   }
 
   @override
