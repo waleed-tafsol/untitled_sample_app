@@ -50,10 +50,6 @@ class DriverRegistrationViewModel extends ChangeNotifier {
     ),
   ];
 
-
-
-
-
   GlobalKey<FormState> getFormKeyForStep(int step) {
     if (!_stepFormKeys.containsKey(step)) {
       _stepFormKeys[step] = GlobalKey<FormState>();
@@ -84,20 +80,6 @@ class DriverRegistrationViewModel extends ChangeNotifier {
   PageController get getPageController => _pageController;
 
   List<StepData> get getSteps => _steps;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   // Stepper navigation methods
   void nextStep() {
