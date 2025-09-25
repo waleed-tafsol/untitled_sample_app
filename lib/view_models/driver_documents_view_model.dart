@@ -6,6 +6,10 @@ import 'dart:io';
 import '../services/firebase_service.dart';
 import '../utils/image_genrator.dart';
 import '../widgets/image_source_bottom_sheet.dart';
+import '../models/requests/driver_documents_request.dart';
+import '../models/responses/driver_documents_response.dart';
+import '../services/driver_documents_service.dart';
+import '../models/base_response_model.dart';
 
 class DriverDocumentsViewModel extends ChangeNotifier {
   final ImageGenerator imageGenerator = ImageGenerator();
@@ -187,6 +191,72 @@ class DriverDocumentsViewModel extends ChangeNotifier {
       _documentImages.addAll(Map<String, String?>.from(documentsInfo['documentImages']));
     }
     notifyListeners();
+  }
+
+  // Service instance for API calls
+  final DriverDocumentsService _service = DriverDocumentsService();
+
+  // Create DriverDocumentsRequest from current data
+  DriverDocumentsRequest createRequest() {
+    return DriverDocumentsRequest(
+      identityVerificationImage: _identityVerificationImage,
+      driverLicenseFront: _documentImages['driverLicenseFront'],
+      driverLicenseBack: _documentImages['driverLicenseBack'],
+      drivingRecord: _documentImages['drivingRecord'],
+      policeCheck: _documentImages['policeCheck'],
+      passport: _documentImages['passport'],
+      vevoDetails: _documentImages['vevoDetails'],
+      englishCertificate: _documentImages['englishCertificate'],
+    );
+  }
+
+  // Set data from DriverDocumentsRequest
+  void setFromRequest(DriverDocumentsRequest request) {
+    _identityVerificationImage = request.identityVerificationImage;
+    _documentImages['driverLicenseFront'] = request.driverLicenseFront;
+    _documentImages['driverLicenseBack'] = request.driverLicenseBack;
+    _documentImages['drivingRecord'] = request.drivingRecord;
+    _documentImages['policeCheck'] = request.policeCheck;
+    _documentImages['passport'] = request.passport;
+    _documentImages['vevoDetails'] = request.vevoDetails;
+    _documentImages['englishCertificate'] = request.englishCertificate;
+    notifyListeners();
+  }
+
+  // Submit documents to API
+  Future<BaseResponseModel> submitDocuments() async {
+    final request = createRequest();
+    return await _service.submitDriverDocuments(request);
+  }
+
+  // Update documents via API
+  Future<BaseResponseModel> updateDocuments(String driverId) async {
+    final request = createRequest();
+    return await _service.updateDriverDocuments(request, driverId);
+  }
+
+  // Load documents from API
+  Future<DriverDocumentsResponse> loadDocuments(String driverId) async {
+    final response = await _service.getDriverDocuments(driverId);
+    
+    if (response.isSuccess == true && response.driverDocumentsModel != null) {
+      try {
+        setFromRequest(DriverDocumentsRequest(
+          identityVerificationImage: response.driverDocumentsModel!.identityVerificationImage,
+          driverLicenseFront: response.driverDocumentsModel!.driverLicenseFront,
+          driverLicenseBack: response.driverDocumentsModel!.driverLicenseBack,
+          drivingRecord: response.driverDocumentsModel!.drivingRecord,
+          policeCheck: response.driverDocumentsModel!.policeCheck,
+          passport: response.driverDocumentsModel!.passport,
+          vevoDetails: response.driverDocumentsModel!.vevoDetails,
+          englishCertificate: response.driverDocumentsModel!.englishCertificate,
+        ));
+      } catch (e) {
+        // Handle parsing error if needed
+      }
+    }
+    
+    return response;
   }
 
   @override

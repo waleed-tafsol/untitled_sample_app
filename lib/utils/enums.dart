@@ -40,7 +40,9 @@ enum RegExpPattern {
 enum EndPoints {
   signIn('auth/login'),
   driverPersonalInfo('driver/personal-info'),
-  driverPersonalInfoUpdate('driver/personal-info/update');
+  driverPersonalInfoUpdate('driver/personal-info/update'),
+  driverDocuments('driver/documents'),
+  driverDocumentsUpdate('driver/documents/update');
 
   final String url;
 
