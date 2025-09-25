@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:provider/provider.dart';
+import 'package:untitled_sample_app/widgets/custom_app_bar_widget.dart';
 import '../utils/custom_buttons.dart';
 import '../utils/custom_colors.dart';
 import '../utils/custom_font_style.dart';
@@ -21,17 +22,8 @@ class OtpScreen extends StatelessWidget {
       builder: (context, otpViewModel, child) {
         return Scaffold(
           backgroundColor: CustomColors.whiteColor,
-          appBar: AppBar(
-            backgroundColor: CustomColors.whiteColor,
-            elevation: 0,
-            leading: IconButton(
-              icon: Icon(
-                Iconsax.arrow_left_2,
-                color: CustomColors.blackColor,
-                size: 24.sp,
-              ),
-              onPressed: () => Navigator.pop(context),
-            ),
+          appBar: CustomAppBarWidget(
+            title: 'OTP Verification',
           ),
           body: SafeArea(
             child: SingleChildScrollView(

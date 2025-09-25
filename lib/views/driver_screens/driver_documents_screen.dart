@@ -3,16 +3,22 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:provider/provider.dart';
+import 'package:untitled_sample_app/widgets/custom_app_bar_widget.dart';
 import '../../utils/custom_colors.dart';
 import '../../utils/custom_buttons.dart';
 import '../../utils/custom_font_style.dart';
 import '../../view_models/driver_registration_view_model.dart';
-import 'identity_verification_screen.dart';
+import '../identity_verification_screen.dart';
 import '../../widgets/custom_progress_indicator.dart';
 
 class DriverDocumentsScreen extends StatefulWidget {
   const DriverDocumentsScreen({super.key});
 
+  static Widget withAppBar({Key? key}) {
+    return Scaffold(
+      appBar: CustomAppBarWidget(title: ''),
+        body: DriverDocumentsScreen(key: key));
+  }
   @override
   State<DriverDocumentsScreen> createState() => _DriverDocumentsScreenState();
 }

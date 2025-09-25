@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../../utils/custom_colors.dart';
 import '../../utils/custom_buttons.dart';
 import '../../view_models/driver_registration_view_model.dart';
+import '../../widgets/custom_app_bar_widget.dart';
 import 'driver_personal_info_screen.dart';
 import 'driver_documents_screen.dart';
 import 'driver_info_review_screen.dart';
@@ -21,7 +22,14 @@ class RegistrationStepperScreen extends StatelessWidget {
       builder: (context, viewModel, child) {
         return Scaffold(
           backgroundColor: CustomColors.whiteColor,
-          appBar: _buildAppBar(context, viewModel),
+          appBar: CustomAppBarWidget(
+            title: 'Driver Registration',
+            onBackPressed: () {
+              viewModel.getCurrentStep > 0
+                  ? viewModel.previousStep()
+                  : Navigator.pop(context);
+            },
+          ),
           body: Column(
             children: [
               _buildProgressIndicator(viewModel),
@@ -34,37 +42,15 @@ class RegistrationStepperScreen extends StatelessWidget {
     );
   }
 
-  PreferredSizeWidget _buildAppBar(BuildContext context, DriverRegistrationViewModel viewModel) {
-    return AppBar(
-      backgroundColor: CustomColors.whiteColor,
-      elevation: 0,
-      leading: IconButton(
-        icon: Icon(Iconsax.arrow_left_2, color: CustomColors.blackColor, size: 24.sp),
-        onPressed: () => viewModel.getCurrentStep > 0 
-            ? viewModel.previousStep() 
-            : Navigator.pop(context),
-      ),
-      title: Text(
-        'Driver Registration',
-        style: TextStyle(
-          fontFamily: 'CircularStd',
-          color: CustomColors.blackColor,
-          fontSize: 18.sp,
-          fontWeight: FontWeight.w600,
-        ),
-      ),
-      centerTitle: true,
-    );
-  }
-
   Widget _buildProgressIndicator(DriverRegistrationViewModel viewModel) {
     return Container(
       padding: EdgeInsets.all(20.w),
       child: Column(
         children: [
           Row(
-            children: List.generate(viewModel.getSteps.length, (index) => 
-              Expanded(
+            children: List.generate(
+              viewModel.getSteps.length,
+              (index) => Expanded(
                 child: Row(
                   children: [
                     Expanded(
@@ -78,7 +64,8 @@ class RegistrationStepperScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    if (index < viewModel.getSteps.length - 1) SizedBox(width: 8.w),
+                    if (index < viewModel.getSteps.length - 1)
+                      SizedBox(width: 8.w),
                   ],
                 ),
               ),
@@ -121,10 +108,14 @@ class RegistrationStepperScreen extends StatelessWidget {
     return screens[stepIndex];
   }
 
-  Widget _buildNavigationButtons(BuildContext context, DriverRegistrationViewModel viewModel) {
+  Widget _buildNavigationButtons(
+    BuildContext context,
+    DriverRegistrationViewModel viewModel,
+  ) {
     final isFirstStep = viewModel.getCurrentStep == 0;
-    final isLastStep = viewModel.getCurrentStep == viewModel.getSteps.length - 1;
-    
+    final isLastStep =
+        viewModel.getCurrentStep == viewModel.getSteps.length - 1;
+
     return Container(
       padding: EdgeInsets.all(20.w),
       child: Row(
@@ -164,7 +155,9 @@ class RegistrationStepperScreen extends StatelessWidget {
       decoration: BoxDecoration(
         color: isPrimary ? CustomColors.primaryColor : CustomColors.whiteColor,
         borderRadius: BorderRadius.circular(16.r),
-        border: isPrimary ? null : Border.all(color: CustomColors.primaryColor, width: 1.5),
+        border: isPrimary
+            ? null
+            : Border.all(color: CustomColors.primaryColor, width: 1.5),
       ),
       child: Material(
         color: Colors.transparent,
@@ -181,11 +174,19 @@ class RegistrationStepperScreen extends StatelessWidget {
                     fontFamily: 'CircularStd',
                     fontSize: 16.sp,
                     fontWeight: FontWeight.w600,
-                    color: isPrimary ? CustomColors.whiteColor : CustomColors.primaryColor,
+                    color: isPrimary
+                        ? CustomColors.whiteColor
+                        : CustomColors.primaryColor,
                   ),
                 ),
                 SizedBox(width: 8.w),
-                Icon(icon, color: isPrimary ? CustomColors.whiteColor : CustomColors.primaryColor, size: 20.sp),
+                Icon(
+                  icon,
+                  color: isPrimary
+                      ? CustomColors.whiteColor
+                      : CustomColors.primaryColor,
+                  size: 20.sp,
+                ),
               ],
             ),
           ),
@@ -194,7 +195,10 @@ class RegistrationStepperScreen extends StatelessWidget {
     );
   }
 
-  void _handleNextOrComplete(BuildContext context, DriverRegistrationViewModel viewModel) {
+  void _handleNextOrComplete(
+    BuildContext context,
+    DriverRegistrationViewModel viewModel,
+  ) {
     if (context.read<DriverRegistrationViewModel>().validateFormKey()) {
       if (viewModel.getCurrentStep < viewModel.getSteps.length - 1) {
         viewModel.nextStep();
@@ -209,10 +213,16 @@ class RegistrationStepperScreen extends StatelessWidget {
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: CustomColors.whiteColor,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.r)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.r),
+        ),
         title: Row(
           children: [
-            Icon(Iconsax.tick_circle, color: CustomColors.primaryColor, size: 24.sp),
+            Icon(
+              Iconsax.tick_circle,
+              color: CustomColors.primaryColor,
+              size: 24.sp,
+            ),
             SizedBox(width: 8.w),
             Text(
               'Registration Complete!',

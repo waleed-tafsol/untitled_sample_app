@@ -6,11 +6,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:provider/provider.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
-import '../../utils/custom_colors.dart';
-import '../../utils/custom_buttons.dart';
-import '../../utils/custom_font_style.dart';
-import '../../view_models/driver_registration_view_model.dart';
-import '../../widgets/custom_progress_indicator.dart';
+import '../utils/custom_colors.dart';
+import '../utils/custom_buttons.dart';
+import '../utils/custom_font_style.dart';
+import '../view_models/driver_registration_view_model.dart';
+import '../widgets/custom_progress_indicator.dart';
 
 class IdentityVerificationScreen extends StatefulWidget {
   const IdentityVerificationScreen({super.key});
