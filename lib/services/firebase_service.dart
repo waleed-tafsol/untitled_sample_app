@@ -16,11 +16,24 @@ class FirebaseService {
 
   double get uploadProgress => _uploadProgress;
 
+  Future<void> initializeAnonymousUser() async {
+    try {
+      if (_auth.currentUser == null) {
+        await _auth.signInAnonymously();
+        print('Anonymous user created: ${_auth.currentUser?.uid}');
+      }
+    } catch (e) {
+      print('Error creating anonymous user: $e');
+    }
+  }
+
   Future<String> upLoadImageFile({
     required File mFileImage,
     required String fileName,
     Function(double progress)? onProgress,
   }) async {
+
+    await initializeAnonymousUser();
 
     final Reference storageReference = FirebaseStorage.instance.ref().child(
         'profile');

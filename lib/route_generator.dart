@@ -29,7 +29,7 @@ class RouteGenerator {
       case homeRoute:
         return MaterialPageRoute(builder: (_) => const UserHomeScreen());
       case driverDocumentsRoutes:
-        return MaterialPageRoute(builder: (_) => const DriverDocumentsScreen());
+        return MaterialPageRoute(builder: (_) => Scaffold(body: const DriverDocumentsScreen()));
       case '/tasting_details':
       /*return MaterialPageRoute(
             builder: (_) => const TastingDetailsScreen(),

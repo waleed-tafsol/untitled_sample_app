@@ -3,8 +3,8 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:untitled_sample_app/services/firebase_service.dart';
 import 'dart:io';
+import '../services/firebase_service.dart';
 import '../utils/image_genrator.dart';
 import '../widgets/image_source_bottom_sheet.dart';
 
@@ -290,18 +290,18 @@ class DriverRegistrationViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<bool> captureIdentityImageWithGenerator() async {
+  Future<bool> captureIdentityImageWithGenerator(File cameraImage) async {
     try {
-      final CroppedFile croppedFile = await imageGenerator.createImageFile(
+    /*  final CroppedFile croppedFile = await imageGenerator.createImageFile(
         fromCamera: true,
-      );
+      );*/
       
       // Start progress tracking
       setProfileImageProgress = 0.0;
       
       // Start upload and track real progress
       final String imageUrl = await firebaseService.upLoadImageFile(
-        mFileImage: File(croppedFile.path),
+        mFileImage: cameraImage,
         fileName: 'profile_image',
         onProgress: (progress) {
           setProfileImageProgress = progress;

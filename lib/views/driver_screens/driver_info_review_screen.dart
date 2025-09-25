@@ -3,12 +3,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:provider/provider.dart';
-import 'package:untitled_sample_app/view_models/auth_view_model.dart';
 import 'dart:io';
 import '../../utils/custom_colors.dart';
 import '../../utils/custom_buttons.dart';
 import '../../utils/custom_font_style.dart';
 import '../../utils/phone_formator.dart';
+import '../../view_models/auth_view_model.dart';
 import '../../view_models/driver_registration_view_model.dart';
 
 class DriverInfoReviewScreen extends StatelessWidget {
