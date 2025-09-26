@@ -42,11 +42,7 @@ Future<void> main() async {
       providers: [
         ChangeNotifierProvider(create: (context) => AuthViewModel()),
         ChangeNotifierProvider(create: (context) => OtpViewModel()),
-        ChangeNotifierProvider(create: (context) => DriverRegistrationViewModel()),
-        ChangeNotifierProvider(create: (context) => DriverPersonalInfoViewModel()),
-        ChangeNotifierProvider(create: (context) => DriverDocumentsViewModel()),
-        ChangeNotifierProvider(create: (context) => DriverVehicleViewModel()),
-        ChangeNotifierProvider(create: (context) => DriverShiftViewModel()),
+
       ],
       child: AppInit(),
     ),

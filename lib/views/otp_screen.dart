@@ -13,8 +13,25 @@ import '../view_models/auth_view_model.dart';
 import '../view_models/otp_view_model.dart';
 import '../route_generator.dart';
 
-class OtpScreen extends StatelessWidget {
+class OtpScreen extends StatefulWidget {
   const OtpScreen({super.key});
+
+  @override
+  State<OtpScreen> createState() => _OtpScreenState();
+}
+
+class _OtpScreenState extends State<OtpScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // Start the timer when the screen is loaded
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final otpViewModel = context.read<OtpViewModel>();
+      if (otpViewModel.otpTimerSeconds == 0) {
+        otpViewModel.startOtpTimer();
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -182,7 +199,7 @@ class OtpScreen extends StatelessWidget {
                                       if (success) {
                                         Navigator.pushReplacementNamed(
                                           context,
-                                          registrationStepperRoute,
+                                          driverRegistrationStepperRoute,
                                         );
                                       }
                                     }

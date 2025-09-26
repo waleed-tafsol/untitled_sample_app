@@ -58,6 +58,7 @@ class OtpViewModel extends ChangeNotifier {
             .verifyPhoneNumber(_loginValue);
         if (response.isSuccess!) {
           EasyLoading.dismiss();
+          startOtpTimer(); // Start the timer when OTP is sent successfully
           return true;
         } else {
           EasyLoading.showError(response.message!);
@@ -71,6 +72,7 @@ class OtpViewModel extends ChangeNotifier {
       try {
         await _authService.sendOtpEmail(_loginValue);
         EasyLoading.dismiss();
+        startOtpTimer(); // Start the timer when OTP is sent successfully
         return true;
       } catch (e) {
         EasyLoading.showError(e.toString());

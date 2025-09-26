@@ -10,7 +10,7 @@ import 'package:untitled_sample_app/widgets/custom_app_bar_widget.dart';
 const String splashRoute = '/';
 const String loginRoute = '/login';
 const String otpRoute = '/otp';
-const String registrationStepperRoute = '/registration-stepper';
+const String driverRegistrationStepperRoute = '/driver-registration-stepper';
 const String homeRoute = '/home';
 const String driverDocumentsRoutes = '/driver-documents';
 
@@ -23,9 +23,9 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => const LoginScreen());
       case otpRoute:
         return MaterialPageRoute(builder: (_) => const OtpScreen());
-      case registrationStepperRoute:
+      case driverRegistrationStepperRoute:
         return MaterialPageRoute(
-          builder: (_) => const RegistrationStepperScreen(),
+          builder: (_) => const DriverRegistrationStepperScreen(),
         );
       case homeRoute:
         return MaterialPageRoute(builder: (_) => const UserHomeScreen());

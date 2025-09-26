@@ -16,7 +16,7 @@ class DriverDocumentsResponse extends BaseResponseModel{
     return DriverDocumentsResponse(
       isSuccess: json['isSuccess'],
       message: json['message'],
-      driverDocumentsModel: json['data'],
+      driverDocumentsModel: json['driver_documents'],
  );
   }
 }

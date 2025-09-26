@@ -4,7 +4,11 @@ import 'package:iconsax/iconsax.dart';
 import 'package:provider/provider.dart';
 import '../../utils/custom_colors.dart';
 import '../../utils/custom_buttons.dart';
+import '../../view_models/driver_documents_view_model.dart';
 import '../../view_models/driver_registration_view_model.dart';
+import '../../view_models/driver_personal_info_view_model.dart';
+import '../../view_models/driver_shift_view_model.dart';
+import '../../view_models/driver_vehicle_view_model.dart';
 import '../../widgets/custom_app_bar_widget.dart';
 import 'driver_personal_info_screen.dart';
 import 'driver_documents_screen.dart';
@@ -13,32 +17,45 @@ import 'driver_stripe_kyc_screen.dart';
 import 'driver_shift_screen.dart';
 import 'driver_vehicle_screen.dart';
 
-class RegistrationStepperScreen extends StatelessWidget {
-  const RegistrationStepperScreen({super.key});
+class DriverRegistrationStepperScreen extends StatelessWidget {
+  const DriverRegistrationStepperScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<DriverRegistrationViewModel>(
-      builder: (context, viewModel, child) {
-        return Scaffold(
-          backgroundColor: CustomColors.whiteColor,
-          appBar: CustomAppBarWidget(
-            title: 'Driver Registration',
-            onBackPressed: () {
-              viewModel.getCurrentStep > 0
-                  ? viewModel.previousStep()
-                  : Navigator.pop(context);
-            },
-          ),
-          body: Column(
-            children: [
-              _buildProgressIndicator(viewModel),
-              Expanded(child: _buildPageView(viewModel)),
-              _buildNavigationButtons(context, viewModel),
-            ],
-          ),
-        );
-      },
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => DriverRegistrationViewModel(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => DriverPersonalInfoViewModel(),
+        ),
+        ChangeNotifierProvider(create: (context) => DriverDocumentsViewModel()),
+        ChangeNotifierProvider(create: (context) => DriverVehicleViewModel()),
+        ChangeNotifierProvider(create: (context) => DriverShiftViewModel()),
+      ],
+      child: Consumer<DriverRegistrationViewModel>(
+        builder: (context, viewModel, child) {
+          return Scaffold(
+            backgroundColor: CustomColors.whiteColor,
+            appBar: CustomAppBarWidget(
+              title: 'Driver Registration',
+              onBackPressed: () {
+                viewModel.getCurrentStep > 0
+                    ? viewModel.previousStep()
+                    : Navigator.pop(context);
+              },
+            ),
+            body: Column(
+              children: [
+                _buildProgressIndicator(viewModel),
+                Expanded(child: _buildPageView(viewModel)),
+                _buildNavigationButtons(context, viewModel),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 
@@ -199,12 +216,44 @@ class RegistrationStepperScreen extends StatelessWidget {
     BuildContext context,
     DriverRegistrationViewModel viewModel,
   ) {
-    if (context.read<DriverRegistrationViewModel>().validateFormKey()) {
+    // Validate the current step's form
+    bool isValid = _validateCurrentStep(context, viewModel.getCurrentStep);
+
+    if (isValid) {
       if (viewModel.getCurrentStep < viewModel.getSteps.length - 1) {
         viewModel.nextStep();
       } else {
         _showCompletionDialog(context);
       }
+    }
+  }
+
+  bool _validateCurrentStep(BuildContext context, int currentStep) {
+    switch (currentStep) {
+      case 0: // DriverPersonalInfoScreen
+        final personalInfoViewModel = context
+            .read<DriverPersonalInfoViewModel>();
+        return personalInfoViewModel.validateForm();
+      case 1: // DriverDocumentsScreen
+        // Documents screen - allow proceeding without validation
+        // Users can upload documents at any time during the process
+        return true;
+      case 2: // DriverInfoReviewScreen
+        // Review screen doesn't need validation
+        return true;
+      case 3: // DriverVehicleScreen
+        // Vehicle screen - allow proceeding without strict validation
+        // Users can complete vehicle information later
+        return true;
+      case 4: // DriverShiftScreen
+        // Shift screen - allow proceeding without strict validation
+        // Users can complete shift preferences and declarations later
+        return true;
+      case 5: // DriverStripeKycScreen
+        // Stripe screen validation would go here
+        return true;
+      default:
+        return true;
     }
   }
 

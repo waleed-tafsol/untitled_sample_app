@@ -5,6 +5,7 @@ import 'package:iconsax/iconsax.dart';
 import 'package:provider/provider.dart';
 import 'package:untitled_sample_app/widgets/custom_app_bar_widget.dart';
 import '../../utils/custom_colors.dart';
+import '../../utils/custom_font_style.dart';
 import '../../view_models/driver_documents_view_model.dart';
 import '../identity_verification_screen.dart';
 
@@ -28,42 +29,40 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
       builder: (context, viewModel, child) {
         return Form(
           key: viewModel.getFormKeyForStep(1),
-          child: Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  CustomColors.whiteColor,
-                  CustomColors.primaryColor.withValues(alpha: 0.02),
-                ],
-              ),
-            ),
-            child: SingleChildScrollView(
-              physics: const BouncingScrollPhysics(),
+          child: SingleChildScrollView(
+            child: AnimationLimiter(
               child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
-                child: AnimationLimiter(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Header Section
-                      _buildHeader(),
-                      SizedBox(height: 32.h),
-
-                      // Identity Verification Section
-                      _buildIdentityVerificationSection(viewModel),
-                      SizedBox(height: 32.h),
-
-                      // Required Documents Section
-                      _buildRequiredDocumentsSection(viewModel),
-                      SizedBox(height: 32.h),
-
-                      // Progress Summary
-                      _buildProgressSummary(viewModel),
-                      SizedBox(height: 20.h),
-                    ],
-                  ),
+                padding: EdgeInsets.only(
+                  left: 10.w,
+                  right: 10.w,
+                  bottom: 20.h,
+                ),
+                child: Column(
+                  children: [
+                    // Header (not animated)
+                    black24w600(data: 'Document Verification'),
+                    grey12(data: 'Upload required documents for verification'),
+                    SizedBox(height: 20.h),
+                    // All Sections in One Column (animated)
+                    Column(
+                      children: AnimationConfiguration.toStaggeredList(
+                        childAnimationBuilder: (widget) => FlipAnimation(
+                          duration: Duration(seconds: 1),
+                          child: FadeInAnimation(child: widget),
+                        ),
+                        children: [
+                          // Identity Verification Section
+                          _buildIdentityVerificationSection(viewModel),
+                          SizedBox(height: 24.h),
+                          // Required Documents Section
+                          _buildRequiredDocumentsSection(viewModel),
+                          SizedBox(height: 24.h),
+                          // Progress Summary
+                          _buildProgressSummary(viewModel),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -73,110 +72,44 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
     );
   }
 
-  Widget _buildHeader() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Document Verification',
-          style: TextStyle(
-            fontFamily: 'CircularStd',
-            fontSize: 28.sp,
-            fontWeight: FontWeight.bold,
-            color: CustomColors.blackColor,
-          ),
-        ),
-        SizedBox(height: 8.h),
-        Text(
-          'Upload required documents for verification',
-          style: TextStyle(
-            fontFamily: 'CircularStd',
-            fontSize: 16.sp,
-            color: CustomColors.blackColor.withValues(alpha: 0.6),
-            height: 1.4,
-          ),
-        ),
-      ],
-    );
-  }
 
   Widget _buildIdentityVerificationSection(DriverDocumentsViewModel viewModel) {
-    return AnimationConfiguration.staggeredList(
-      position: 0,
-      duration: const Duration(milliseconds: 600),
-      child: SlideAnimation(
-        verticalOffset: 50.0,
-        child: FadeInAnimation(
-          child: Container(
-            padding: EdgeInsets.all(24.w),
-            decoration: BoxDecoration(
-              color: CustomColors.whiteColor,
-              borderRadius: BorderRadius.circular(24.r),
-              boxShadow: [
-                BoxShadow(
-                  color: CustomColors.primaryColor.withValues(alpha: 0.08),
-                  blurRadius: 20,
-                  offset: const Offset(0, 8),
-                ),
-              ],
-              border: Border.all(
-                color: CustomColors.primaryColor.withValues(alpha: 0.1),
-                width: 1,
-              ),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Container(
-                      padding: EdgeInsets.all(12.w),
-                      decoration: BoxDecoration(
-                        color: CustomColors.primaryColor.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(16.r),
-                      ),
-                      child: Icon(
-                        Iconsax.scan,
-                        color: CustomColors.primaryColor,
-                        size: 24.sp,
-                      ),
-                    ),
-                    SizedBox(width: 16.w),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Identity Verification',
-                            style: TextStyle(
-                              fontFamily: 'CircularStd',
-                              fontSize: 18.sp,
-                              fontWeight: FontWeight.w600,
-                              color: CustomColors.blackColor,
-                            ),
-                          ),
-                          SizedBox(height: 4.h),
-                          Text(
-                            'Take a selfie for identity verification',
-                            style: TextStyle(
-                              fontFamily: 'CircularStd',
-                              fontSize: 14.sp,
-                              color: CustomColors.blackColor.withValues(alpha: 0.6),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 24.h),
-                _buildIdentityImagePreview(viewModel),
-                SizedBox(height: 20.h),
-                _buildVerificationButton(viewModel),
-              ],
-            ),
+    return Container(
+      padding: EdgeInsets.all(20.w),
+      decoration: BoxDecoration(
+        boxShadow: kElevationToShadow[9],
+        color: CustomColors.whiteColor,
+        borderRadius: BorderRadius.circular(20.r),
+        border: Border.all(
+          color: CustomColors.primaryColor.withValues(
+            alpha: 0.1,
           ),
+          width: 1,
         ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(
+                Iconsax.scan,
+                color: CustomColors.primaryColor,
+                size: 24.sp,
+              ),
+              SizedBox(width: 12.w),
+              black18w500(data: 'Identity Verification'),
+            ],
+          ),
+          SizedBox(height: 8.h),
+          grey12(
+            data: 'Take a selfie for identity verification',
+          ),
+          SizedBox(height: 20.h),
+          _buildIdentityImagePreview(viewModel),
+          SizedBox(height: 20.h),
+          _buildVerificationButton(viewModel),
+        ],
       ),
     );
   }
@@ -348,80 +281,40 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
   }
 
   Widget _buildRequiredDocumentsSection(DriverDocumentsViewModel viewModel) {
-    return AnimationConfiguration.staggeredList(
-      position: 1,
-      duration: const Duration(milliseconds: 600),
-      child: SlideAnimation(
-        verticalOffset: 50.0,
-        child: FadeInAnimation(
-          child: Container(
-            padding: EdgeInsets.all(24.w),
-            decoration: BoxDecoration(
-              color: CustomColors.whiteColor,
-              borderRadius: BorderRadius.circular(24.r),
-              boxShadow: [
-                BoxShadow(
-                  color: CustomColors.primaryColor.withValues(alpha: 0.08),
-                  blurRadius: 20,
-                  offset: const Offset(0, 8),
-                ),
-              ],
-              border: Border.all(
-                color: CustomColors.primaryColor.withValues(alpha: 0.1),
-                width: 1,
-              ),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Container(
-                      padding: EdgeInsets.all(12.w),
-                      decoration: BoxDecoration(
-                        color: CustomColors.primaryColor.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(16.r),
-                      ),
-                      child: Icon(
-                        Iconsax.document_text,
-                        color: CustomColors.primaryColor,
-                        size: 24.sp,
-                      ),
-                    ),
-                    SizedBox(width: 16.w),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Required Documents',
-                            style: TextStyle(
-                              fontFamily: 'CircularStd',
-                              fontSize: 18.sp,
-                              fontWeight: FontWeight.w600,
-                              color: CustomColors.blackColor,
-                            ),
-                          ),
-                          SizedBox(height: 4.h),
-                          Text(
-                            'Upload all required documents for verification',
-                            style: TextStyle(
-                              fontFamily: 'CircularStd',
-                              fontSize: 14.sp,
-                              color: CustomColors.blackColor.withValues(alpha: 0.6),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 24.h),
-                _buildDocumentList(viewModel),
-              ],
-            ),
+    return Container(
+      padding: EdgeInsets.all(20.w),
+      decoration: BoxDecoration(
+        boxShadow: kElevationToShadow[9],
+        color: CustomColors.whiteColor,
+        borderRadius: BorderRadius.circular(20.r),
+        border: Border.all(
+          color: CustomColors.primaryColor.withValues(
+            alpha: 0.1,
           ),
+          width: 1,
         ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(
+                Iconsax.document_text,
+                color: CustomColors.primaryColor,
+                size: 24.sp,
+              ),
+              SizedBox(width: 12.w),
+              black18w500(data: 'Required Documents'),
+            ],
+          ),
+          SizedBox(height: 8.h),
+          grey12(
+            data: 'Upload all required documents for verification',
+          ),
+          SizedBox(height: 20.h),
+          _buildDocumentList(viewModel),
+        ],
       ),
     );
   }
@@ -571,110 +464,79 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
     final uploadedDocuments = _getUploadedDocumentsCount(viewModel);
     final progress = uploadedDocuments / totalDocuments;
 
-    return AnimationConfiguration.staggeredList(
-      position: 2,
-      duration: const Duration(milliseconds: 600),
-      child: SlideAnimation(
-        verticalOffset: 50.0,
-        child: FadeInAnimation(
-          child: Container(
-            padding: EdgeInsets.all(24.w),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  CustomColors.primaryColor.withValues(alpha: 0.1),
-                  CustomColors.primaryColor.withValues(alpha: 0.05),
-                ],
-              ),
-              borderRadius: BorderRadius.circular(20.r),
-              border: Border.all(
-                color: CustomColors.primaryColor.withValues(alpha: 0.2),
-                width: 1,
-              ),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Icon(
-                      Iconsax.chart_2,
-                      color: CustomColors.primaryColor,
-                      size: 20.sp,
-                    ),
-                    SizedBox(width: 12.w),
-                    Text(
-                      'Upload Progress',
-                      style: TextStyle(
-                        fontFamily: 'CircularStd',
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w600,
-                        color: CustomColors.blackColor,
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 16.h),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '$uploadedDocuments of $totalDocuments documents uploaded',
-                            style: TextStyle(
-                              fontFamily: 'CircularStd',
-                              fontSize: 14.sp,
-                              color: CustomColors.blackColor.withValues(alpha: 0.7),
-                            ),
-                          ),
-                          SizedBox(height: 8.h),
-                          Container(
-                            height: 8.h,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(4.r),
-                              color: CustomColors.primaryColor.withValues(alpha: 0.2),
-                            ),
-                            child: FractionallySizedBox(
-                              alignment: Alignment.centerLeft,
-                              widthFactor: progress,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(4.r),
-                                  color: CustomColors.primaryColor,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(width: 16.w),
-                    Container(
-                      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
-                      decoration: BoxDecoration(
-                        color: CustomColors.primaryColor,
-                        borderRadius: BorderRadius.circular(12.r),
-                      ),
-                      child: Text(
-                        '${(progress * 100).toInt()}%',
-                        style: TextStyle(
-                          fontFamily: 'CircularStd',
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w600,
-                          color: CustomColors.whiteColor,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
+    return Container(
+      padding: EdgeInsets.all(20.w),
+      decoration: BoxDecoration(
+        boxShadow: kElevationToShadow[9],
+        color: CustomColors.whiteColor,
+        borderRadius: BorderRadius.circular(20.r),
+        border: Border.all(
+          color: CustomColors.primaryColor.withValues(
+            alpha: 0.1,
           ),
+          width: 1,
         ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(
+                Iconsax.chart_2,
+                color: CustomColors.primaryColor,
+                size: 24.sp,
+              ),
+              SizedBox(width: 12.w),
+              black18w500(data: 'Upload Progress'),
+            ],
+          ),
+          SizedBox(height: 8.h),
+          grey12(
+            data: '$uploadedDocuments of $totalDocuments documents uploaded',
+          ),
+          SizedBox(height: 20.h),
+          Row(
+            children: [
+              Expanded(
+                child: Container(
+                  height: 8.h,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(4.r),
+                    color: CustomColors.primaryColor.withValues(alpha: 0.2),
+                  ),
+                  child: FractionallySizedBox(
+                    alignment: Alignment.centerLeft,
+                    widthFactor: progress,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(4.r),
+                        color: CustomColors.primaryColor,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(width: 16.w),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+                decoration: BoxDecoration(
+                  color: CustomColors.primaryColor,
+                  borderRadius: BorderRadius.circular(12.r),
+                ),
+                child: Text(
+                  '${(progress * 100).toInt()}%',
+                  style: TextStyle(
+                    fontFamily: 'CircularStd',
+                    fontSize: 12.sp,
+                    fontWeight: FontWeight.w600,
+                    color: CustomColors.whiteColor,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }

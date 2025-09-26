@@ -11,32 +11,30 @@ import '../../view_models/auth_view_model.dart';
 import '../../view_models/driver_personal_info_view_model.dart';
 import '../../widgets/user_form_fields_widget.dart';
 
-class DriverPersonalInfoScreen extends StatefulWidget {
+class DriverPersonalInfoScreen extends StatelessWidget {
   const DriverPersonalInfoScreen({super.key});
 
-  @override
-  State<DriverPersonalInfoScreen> createState() =>
-      _DriverPersonalInfoScreenState();
-}
-
-class _DriverPersonalInfoScreenState extends State<DriverPersonalInfoScreen> {
   @override
   Widget build(BuildContext context) {
     return Consumer<DriverPersonalInfoViewModel>(
       builder: (_, driverPersonalInfoViewModel, _) {
+        final authViewModel = context.read<AuthViewModel>();
         return Form(
           key: driverPersonalInfoViewModel.getFormKey,
           child: SingleChildScrollView(
             child: AnimationLimiter(
               child: Padding(
-                padding: EdgeInsets.only(left: 10.w, right: 10.w, bottom: 20.h),
+                padding: EdgeInsets.only(
+                  left: 10.w,
+                  right: 10.w,
+                  bottom: 20.h,
+                ),
                 child: Column(
                   children: [
                     // Header (not animated)
                     black24w600(data: 'Personal Information'),
                     grey12(data: 'Enter your personal details'),
                     SizedBox(height: 20.h),
-                    
                     // All Sections in One Column (animated)
                     Column(
                       children: AnimationConfiguration.toStaggeredList(
@@ -53,7 +51,9 @@ class _DriverPersonalInfoScreenState extends State<DriverPersonalInfoScreen> {
                               color: CustomColors.whiteColor,
                               borderRadius: BorderRadius.circular(20.r),
                               border: Border.all(
-                                color: CustomColors.primaryColor.withValues(alpha: 0.1),
+                                color: CustomColors.primaryColor.withValues(
+                                  alpha: 0.1,
+                                ),
                                 width: 1,
                               ),
                             ),
@@ -73,7 +73,8 @@ class _DriverPersonalInfoScreenState extends State<DriverPersonalInfoScreen> {
                                 ),
                                 SizedBox(height: 8.h),
                                 grey12(
-                                  data: 'Please provide your personal information to complete registration',
+                                  data:
+                                      'Please provide your personal information to complete registration',
                                 ),
                                 SizedBox(height: 20.h),
                                 Row(
@@ -88,13 +89,15 @@ class _DriverPersonalInfoScreenState extends State<DriverPersonalInfoScreen> {
                                           ),
                                         ),
                                         child: TextFormField(
-                                          controller: driverPersonalInfoViewModel
-                                              .getFirstNameController,
+                                          controller:
+                                              driverPersonalInfoViewModel
+                                                  .getFirstNameController,
                                           decoration: InputDecoration(
-                                            contentPadding: EdgeInsets.symmetric(
-                                              horizontal: 10.w,
-                                              vertical: 14.h,
-                                            ),
+                                            contentPadding:
+                                                EdgeInsets.symmetric(
+                                                  horizontal: 10.w,
+                                                  vertical: 14.h,
+                                                ),
                                             prefixIcon: Icon(Iconsax.user),
                                             labelText: 'First Name',
                                             hintText: 'John',
@@ -114,13 +117,15 @@ class _DriverPersonalInfoScreenState extends State<DriverPersonalInfoScreen> {
                                           ),
                                         ),
                                         child: TextFormField(
-                                          controller: driverPersonalInfoViewModel
-                                              .getLastNameController,
+                                          controller:
+                                              driverPersonalInfoViewModel
+                                                  .getLastNameController,
                                           decoration: InputDecoration(
-                                            contentPadding: EdgeInsets.symmetric(
-                                              horizontal: 10.w,
-                                              vertical: 14.h,
-                                            ),
+                                            contentPadding:
+                                                EdgeInsets.symmetric(
+                                                  horizontal: 10.w,
+                                                  vertical: 14.h,
+                                                ),
                                             prefixIcon: Icon(Iconsax.user),
                                             labelText: 'Last Name',
                                             hintText: 'Smith',
@@ -141,7 +146,8 @@ class _DriverPersonalInfoScreenState extends State<DriverPersonalInfoScreen> {
                                     ),
                                   ),
                                   child: phoneFieldWidget(
-                                    viewOnly: context.read<AuthViewModel>().getLoginWith ==
+                                    viewOnly:
+                                        authViewModel.getLoginWith ==
                                         LoginWith.phone.value,
                                   ),
                                 ),
@@ -155,14 +161,15 @@ class _DriverPersonalInfoScreenState extends State<DriverPersonalInfoScreen> {
                                     ),
                                   ),
                                   child: emailFieldWidget(
-                                    viewOnly: context.read<AuthViewModel>().getLoginWith ==
+                                    viewOnly:
+                                        authViewModel.getLoginWith ==
                                         LoginWith.email.value,
                                   ),
                                 ),
                               ],
                             ),
                           ),
-                          
+
                           // Address Details Section
                           SizedBox(height: 24.h),
                           Container(
@@ -172,7 +179,9 @@ class _DriverPersonalInfoScreenState extends State<DriverPersonalInfoScreen> {
                               color: CustomColors.whiteColor,
                               borderRadius: BorderRadius.circular(20.r),
                               border: Border.all(
-                                color: CustomColors.primaryColor.withValues(alpha: 0.1),
+                                color: CustomColors.primaryColor.withValues(
+                                  alpha: 0.1,
+                                ),
                                 width: 1,
                               ),
                             ),
@@ -192,7 +201,8 @@ class _DriverPersonalInfoScreenState extends State<DriverPersonalInfoScreen> {
                                 ),
                                 SizedBox(height: 8.h),
                                 grey12(
-                                  data: 'Please provide your address information for verification',
+                                  data:
+                                      'Please provide your address information for verification',
                                 ),
                                 SizedBox(height: 20.h),
 
@@ -235,14 +245,18 @@ class _DriverPersonalInfoScreenState extends State<DriverPersonalInfoScreen> {
                                           ),
                                         ),
                                         child: TextFormField(
-                                          controller: driverPersonalInfoViewModel
-                                              .getSuburbController,
+                                          controller:
+                                              driverPersonalInfoViewModel
+                                                  .getSuburbController,
                                           decoration: InputDecoration(
-                                            contentPadding: EdgeInsets.symmetric(
-                                              horizontal: 10.w,
-                                              vertical: 14.h,
+                                            contentPadding:
+                                                EdgeInsets.symmetric(
+                                                  horizontal: 10.w,
+                                                  vertical: 14.h,
+                                                ),
+                                            prefixIcon: Icon(
+                                              Iconsax.location,
                                             ),
-                                            prefixIcon: Icon(Iconsax.location),
                                             labelText: 'Suburb',
                                             hintText: 'Sydney',
                                           ),
@@ -261,13 +275,15 @@ class _DriverPersonalInfoScreenState extends State<DriverPersonalInfoScreen> {
                                           ),
                                         ),
                                         child: TextFormField(
-                                          controller: driverPersonalInfoViewModel
-                                              .getPostcodeController,
+                                          controller:
+                                              driverPersonalInfoViewModel
+                                                  .getPostcodeController,
                                           decoration: InputDecoration(
-                                            contentPadding: EdgeInsets.symmetric(
-                                              horizontal: 10.w,
-                                              vertical: 14.h,
-                                            ),
+                                            contentPadding:
+                                                EdgeInsets.symmetric(
+                                                  horizontal: 10.w,
+                                                  vertical: 14.h,
+                                                ),
                                             prefixIcon: Icon(Iconsax.code),
                                             labelText: 'Postcode',
                                             hintText: '2000',
@@ -282,7 +298,7 @@ class _DriverPersonalInfoScreenState extends State<DriverPersonalInfoScreen> {
                               ],
                             ),
                           ),
-                          
+
                           // License & Registration Section
                           SizedBox(height: 24.h),
                           Container(
@@ -292,7 +308,9 @@ class _DriverPersonalInfoScreenState extends State<DriverPersonalInfoScreen> {
                               color: CustomColors.whiteColor,
                               borderRadius: BorderRadius.circular(20.r),
                               border: Border.all(
-                                color: CustomColors.primaryColor.withValues(alpha: 0.1),
+                                color: CustomColors.primaryColor.withValues(
+                                  alpha: 0.1,
+                                ),
                                 width: 1,
                               ),
                             ),
@@ -307,12 +325,15 @@ class _DriverPersonalInfoScreenState extends State<DriverPersonalInfoScreen> {
                                       size: 24.sp,
                                     ),
                                     SizedBox(width: 12.w),
-                                    black18w500(data: 'License & Registration'),
+                                    black18w500(
+                                      data: 'License & Registration',
+                                    ),
                                   ],
                                 ),
                                 SizedBox(height: 8.h),
                                 grey12(
-                                  data: 'Please provide your license and registration details',
+                                  data:
+                                      'Please provide your license and registration details',
                                 ),
                                 SizedBox(height: 20.h),
 
@@ -329,14 +350,18 @@ class _DriverPersonalInfoScreenState extends State<DriverPersonalInfoScreen> {
                                           ),
                                         ),
                                         child: TextFormField(
-                                          controller: driverPersonalInfoViewModel
-                                              .getAbnController,
+                                          controller:
+                                              driverPersonalInfoViewModel
+                                                  .getAbnController,
                                           decoration: InputDecoration(
-                                            contentPadding: EdgeInsets.symmetric(
-                                              horizontal: 10.w,
-                                              vertical: 14.h,
+                                            contentPadding:
+                                                EdgeInsets.symmetric(
+                                                  horizontal: 10.w,
+                                                  vertical: 14.h,
+                                                ),
+                                            prefixIcon: Icon(
+                                              Iconsax.building,
                                             ),
-                                            prefixIcon: Icon(Iconsax.building),
                                             labelText: 'ABN',
                                             hintText: '12345678901',
                                           ),
@@ -356,13 +381,15 @@ class _DriverPersonalInfoScreenState extends State<DriverPersonalInfoScreen> {
                                           ),
                                         ),
                                         child: TextFormField(
-                                          controller: driverPersonalInfoViewModel
-                                              .getEtagNumberController,
+                                          controller:
+                                              driverPersonalInfoViewModel
+                                                  .getEtagNumberController,
                                           decoration: InputDecoration(
-                                            contentPadding: EdgeInsets.symmetric(
-                                              horizontal: 10.w,
-                                              vertical: 14.h,
-                                            ),
+                                            contentPadding:
+                                                EdgeInsets.symmetric(
+                                                  horizontal: 10.w,
+                                                  vertical: 14.h,
+                                                ),
                                             prefixIcon: Icon(Iconsax.tag),
                                             labelText: 'E-tag Number',
                                             hintText: 'ET123456',
@@ -388,13 +415,15 @@ class _DriverPersonalInfoScreenState extends State<DriverPersonalInfoScreen> {
                                           ),
                                         ),
                                         child: TextFormField(
-                                          controller: driverPersonalInfoViewModel
-                                              .getLicenseNumberController,
+                                          controller:
+                                              driverPersonalInfoViewModel
+                                                  .getLicenseNumberController,
                                           decoration: InputDecoration(
-                                            contentPadding: EdgeInsets.symmetric(
-                                              horizontal: 10.w,
-                                              vertical: 14.h,
-                                            ),
+                                            contentPadding:
+                                                EdgeInsets.symmetric(
+                                                  horizontal: 10.w,
+                                                  vertical: 14.h,
+                                                ),
                                             prefixIcon: Icon(Iconsax.driving),
                                             labelText: 'License Number',
                                             hintText: '123456789',
@@ -414,32 +443,51 @@ class _DriverPersonalInfoScreenState extends State<DriverPersonalInfoScreen> {
                                           ),
                                         ),
                                         child: TextFormField(
-                                          controller: driverPersonalInfoViewModel
-                                              .getLicenseExpiryController,
+                                          controller:
+                                              driverPersonalInfoViewModel
+                                                  .getLicenseExpiryController,
                                           decoration: InputDecoration(
-                                            contentPadding: EdgeInsets.symmetric(
-                                              horizontal: 10.w,
-                                              vertical: 14.h,
+                                            contentPadding:
+                                                EdgeInsets.symmetric(
+                                                  horizontal: 10.w,
+                                                  vertical: 14.h,
+                                                ),
+                                            prefixIcon: Icon(
+                                              Iconsax.calendar,
                                             ),
-                                            prefixIcon: Icon(Iconsax.calendar),
                                             labelText: 'License Expiry',
                                             hintText: 'DD/MM/YYYY',
                                             suffixIcon: IconButton(
                                               icon: Icon(Iconsax.calendar_1),
                                               onPressed: () async {
-                                                final DateTime? pickedDate = await showDatePicker(
+                                                final DateTime?
+                                                pickedDate = await showDatePicker(
                                                   context: context,
-                                                  initialDate: DateTime.now().add(Duration(days: 365)),
+                                                  initialDate: DateTime.now()
+                                                      .add(
+                                                        Duration(days: 365),
+                                                      ),
                                                   firstDate: DateTime.now(),
-                                                  lastDate: DateTime.now().add(Duration(days: 3650)), // 10 years from now
+                                                  lastDate: DateTime.now()
+                                                      .add(
+                                                        Duration(days: 3650),
+                                                      ),
+                                                  // 10 years from now
                                                   builder: (context, child) {
                                                     return Theme(
                                                       data: Theme.of(context).copyWith(
                                                         colorScheme: ColorScheme.light(
-                                                          primary: CustomColors.primaryColor,
-                                                          onPrimary: CustomColors.whiteColor,
-                                                          surface: CustomColors.whiteColor,
-                                                          onSurface: CustomColors.blackColor,
+                                                          primary: CustomColors
+                                                              .primaryColor,
+                                                          onPrimary:
+                                                              CustomColors
+                                                                  .whiteColor,
+                                                          surface:
+                                                              CustomColors
+                                                                  .whiteColor,
+                                                          onSurface:
+                                                              CustomColors
+                                                                  .blackColor,
                                                         ),
                                                       ),
                                                       child: child!,
@@ -447,8 +495,12 @@ class _DriverPersonalInfoScreenState extends State<DriverPersonalInfoScreen> {
                                                   },
                                                 );
                                                 if (pickedDate != null) {
-                                                  final formattedDate = "${pickedDate.day.toString().padLeft(2, '0')}/${pickedDate.month.toString().padLeft(2, '0')}/${pickedDate.year}";
-                                                  driverPersonalInfoViewModel.getLicenseExpiryController.text = formattedDate;
+                                                  final formattedDate =
+                                                      "${pickedDate.day.toString().padLeft(2, '0')}/${pickedDate.month.toString().padLeft(2, '0')}/${pickedDate.year}";
+                                                  driverPersonalInfoViewModel
+                                                          .getLicenseExpiryController
+                                                          .text =
+                                                      formattedDate;
                                                 }
                                               },
                                             ),
@@ -463,7 +515,7 @@ class _DriverPersonalInfoScreenState extends State<DriverPersonalInfoScreen> {
                               ],
                             ),
                           ),
-                          
+
                           // Emergency Contact Section
                           SizedBox(height: 24.h),
                           Container(
@@ -473,7 +525,9 @@ class _DriverPersonalInfoScreenState extends State<DriverPersonalInfoScreen> {
                               color: CustomColors.whiteColor,
                               borderRadius: BorderRadius.circular(20.r),
                               border: Border.all(
-                                color: CustomColors.primaryColor.withValues(alpha: 0.1),
+                                color: CustomColors.primaryColor.withValues(
+                                  alpha: 0.1,
+                                ),
                                 width: 1,
                               ),
                             ),
@@ -493,7 +547,8 @@ class _DriverPersonalInfoScreenState extends State<DriverPersonalInfoScreen> {
                                 ),
                                 SizedBox(height: 8.h),
                                 grey12(
-                                  data: 'Please provide emergency contact information',
+                                  data:
+                                      'Please provide emergency contact information',
                                 ),
                                 SizedBox(height: 20.h),
 
@@ -539,16 +594,18 @@ class _DriverPersonalInfoScreenState extends State<DriverPersonalInfoScreen> {
                                           controller: driverPersonalInfoViewModel
                                               .getEmergencyContactNumberController,
                                           decoration: InputDecoration(
-                                            contentPadding: EdgeInsets.symmetric(
-                                              horizontal: 10.w,
-                                              vertical: 14.h,
-                                            ),
+                                            contentPadding:
+                                                EdgeInsets.symmetric(
+                                                  horizontal: 10.w,
+                                                  vertical: 14.h,
+                                                ),
                                             prefixIcon: Icon(Iconsax.mobile),
                                             labelText: 'Contact Number',
                                             hintText: '0412 345 678',
                                           ),
                                           keyboardType: TextInputType.phone,
-                                          validator: validateEmergencyContactNumber,
+                                          validator:
+                                              validateEmergencyContactNumber,
                                         ),
                                       ),
                                     ),
@@ -566,16 +623,19 @@ class _DriverPersonalInfoScreenState extends State<DriverPersonalInfoScreen> {
                                           controller: driverPersonalInfoViewModel
                                               .getEmergencyContactEmailController,
                                           decoration: InputDecoration(
-                                            contentPadding: EdgeInsets.symmetric(
-                                              horizontal: 10.w,
-                                              vertical: 14.h,
-                                            ),
+                                            contentPadding:
+                                                EdgeInsets.symmetric(
+                                                  horizontal: 10.w,
+                                                  vertical: 14.h,
+                                                ),
                                             prefixIcon: Icon(Iconsax.sms),
                                             labelText: 'Email',
                                             hintText: 'john@example.com',
                                           ),
-                                          keyboardType: TextInputType.emailAddress,
-                                          validator: validateEmergencyContactEmail,
+                                          keyboardType:
+                                              TextInputType.emailAddress,
+                                          validator:
+                                              validateEmergencyContactEmail,
                                         ),
                                       ),
                                     ),
