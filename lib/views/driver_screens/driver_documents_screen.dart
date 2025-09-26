@@ -7,7 +7,7 @@ import 'package:untitled_sample_app/widgets/custom_app_bar_widget.dart';
 import '../../utils/custom_colors.dart';
 import '../../utils/custom_font_style.dart';
 import '../../view_models/driver_documents_view_model.dart';
-import '../identity_verification_screen.dart';
+import '../face_verification_screen.dart';
 
 class DriverDocumentsScreen extends StatefulWidget {
   const DriverDocumentsScreen({super.key});
@@ -15,14 +15,18 @@ class DriverDocumentsScreen extends StatefulWidget {
   static Widget withAppBar({Key? key}) {
     return Scaffold(
       appBar: CustomAppBarWidget(title: ''),
-        body: DriverDocumentsScreen(key: key));
+      body: ChangeNotifierProvider(
+        create: (BuildContext context) => DriverDocumentsViewModel(),
+        child: DriverDocumentsScreen(key: key),
+      ),
+    );
   }
+
   @override
   State<DriverDocumentsScreen> createState() => _DriverDocumentsScreenState();
 }
 
 class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
-
   @override
   Widget build(BuildContext context) {
     return Consumer<DriverDocumentsViewModel>(
@@ -32,11 +36,7 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
           child: SingleChildScrollView(
             child: AnimationLimiter(
               child: Padding(
-                padding: EdgeInsets.only(
-                  left: 10.w,
-                  right: 10.w,
-                  bottom: 20.h,
-                ),
+                padding: EdgeInsets.only(left: 10.w, right: 10.w, bottom: 20.h),
                 child: Column(
                   children: [
                     // Header (not animated)
@@ -56,9 +56,6 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
                           SizedBox(height: 24.h),
                           // Required Documents Section
                           _buildRequiredDocumentsSection(viewModel),
-                          SizedBox(height: 24.h),
-                          // Progress Summary
-                          _buildProgressSummary(viewModel),
                         ],
                       ),
                     ),
@@ -72,7 +69,6 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
     );
   }
 
-
   Widget _buildIdentityVerificationSection(DriverDocumentsViewModel viewModel) {
     return Container(
       padding: EdgeInsets.all(20.w),
@@ -81,9 +77,7 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
         color: CustomColors.whiteColor,
         borderRadius: BorderRadius.circular(20.r),
         border: Border.all(
-          color: CustomColors.primaryColor.withValues(
-            alpha: 0.1,
-          ),
+          color: CustomColors.primaryColor.withValues(alpha: 0.1),
           width: 1,
         ),
       ),
@@ -92,19 +86,13 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
         children: [
           Row(
             children: [
-              Icon(
-                Iconsax.scan,
-                color: CustomColors.primaryColor,
-                size: 24.sp,
-              ),
+              Icon(Iconsax.scan, color: CustomColors.primaryColor, size: 24.sp),
               SizedBox(width: 12.w),
               black18w500(data: 'Identity Verification'),
             ],
           ),
           SizedBox(height: 8.h),
-          grey12(
-            data: 'Take a selfie for identity verification',
-          ),
+          grey12(data: 'Take a selfie for identity verification'),
           SizedBox(height: 20.h),
           _buildIdentityImagePreview(viewModel),
           SizedBox(height: 20.h),
@@ -136,8 +124,8 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
                 },
               )
             : viewModel.getUpLoadingProfileImage > 0
-                ? _buildUploadingPreview(viewModel)
-                : _buildEmptyImagePreview(),
+            ? _buildUploadingPreview(viewModel)
+            : _buildEmptyImagePreview(),
       ),
     );
   }
@@ -252,7 +240,7 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
         onPressed: () => Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => const IdentityVerificationScreen(),
+            builder: (context) => const FaceVerificationScreen(),
           ),
         ),
         style: ElevatedButton.styleFrom(
@@ -264,12 +252,11 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
             borderRadius: BorderRadius.circular(16.r),
           ),
         ),
-        icon: Icon(
-          Iconsax.camera,
-          size: 20.sp,
-        ),
+        icon: Icon(Iconsax.camera, size: 20.sp),
         label: Text(
-          viewModel.hasIdentityVerificationImage ? 'Retake Photo' : 'Start Verification',
+          viewModel.hasIdentityVerificationImage
+              ? 'Retake Photo'
+              : 'Start Verification',
           style: TextStyle(
             fontFamily: 'CircularStd',
             fontSize: 16.sp,
@@ -288,9 +275,7 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
         color: CustomColors.whiteColor,
         borderRadius: BorderRadius.circular(20.r),
         border: Border.all(
-          color: CustomColors.primaryColor.withValues(
-            alpha: 0.1,
-          ),
+          color: CustomColors.primaryColor.withValues(alpha: 0.1),
           width: 1,
         ),
       ),
@@ -309,9 +294,7 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
             ],
           ),
           SizedBox(height: 8.h),
-          grey12(
-            data: 'Upload all required documents for verification',
-          ),
+          grey12(data: 'Upload all required documents for verification'),
           SizedBox(height: 20.h),
           _buildDocumentList(viewModel),
         ],
@@ -321,13 +304,37 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
 
   Widget _buildDocumentList(DriverDocumentsViewModel viewModel) {
     final documents = [
-      {'title': 'Driver License (Front)', 'key': 'driverLicenseFront', 'icon': Iconsax.card},
-      {'title': 'Driver License (Back)', 'key': 'driverLicenseBack', 'icon': Iconsax.card},
-      {'title': 'Driving Record (5 years)', 'key': 'drivingRecord', 'icon': Iconsax.document},
-      {'title': 'Police Check (6 months)', 'key': 'policeCheck', 'icon': Iconsax.verify},
+      {
+        'title': 'Driver License (Front)',
+        'key': 'driverLicenseFront',
+        'icon': Iconsax.card,
+      },
+      {
+        'title': 'Driver License (Back)',
+        'key': 'driverLicenseBack',
+        'icon': Iconsax.card,
+      },
+      {
+        'title': 'Driving Record (5 years)',
+        'key': 'drivingRecord',
+        'icon': Iconsax.document,
+      },
+      {
+        'title': 'Police Check (6 months)',
+        'key': 'policeCheck',
+        'icon': Iconsax.verify,
+      },
       {'title': 'Passport', 'key': 'passport', 'icon': Iconsax.card},
-      {'title': 'VEVO Details', 'key': 'vevoDetails', 'icon': Iconsax.document_download},
-      {'title': 'English Certificate', 'key': 'englishCertificate', 'icon': Iconsax.book},
+      {
+        'title': 'VEVO Details',
+        'key': 'vevoDetails',
+        'icon': Iconsax.document_download,
+      },
+      {
+        'title': 'English Certificate',
+        'key': 'englishCertificate',
+        'icon': Iconsax.book,
+      },
     ];
 
     return Column(
@@ -341,7 +348,9 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
             verticalOffset: 30.0,
             child: FadeInAnimation(
               child: Padding(
-                padding: EdgeInsets.only(bottom: index < documents.length - 1 ? 16.h : 0),
+                padding: EdgeInsets.only(
+                  bottom: index < documents.length - 1 ? 16.h : 0,
+                ),
                 child: _buildDocumentItem(
                   doc['title'] as String,
                   doc['key'] as String,
@@ -372,7 +381,7 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
         child: Container(
           padding: EdgeInsets.all(20.w),
           decoration: BoxDecoration(
-            color: hasImage 
+            color: hasImage
                 ? CustomColors.primaryColor.withValues(alpha: 0.05)
                 : CustomColors.whiteColor,
             borderRadius: BorderRadius.circular(16.r),
@@ -382,13 +391,15 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
                   : CustomColors.primaryColor.withValues(alpha: 0.2),
               width: 2,
             ),
-            boxShadow: hasImage ? [
-              BoxShadow(
-                color: CustomColors.primaryColor.withValues(alpha: 0.1),
-                blurRadius: 8,
-                offset: const Offset(0, 4),
-              ),
-            ] : null,
+            boxShadow: hasImage
+                ? [
+                    BoxShadow(
+                      color: CustomColors.primaryColor.withValues(alpha: 0.1),
+                      blurRadius: 8,
+                      offset: const Offset(0, 4),
+                    ),
+                  ]
+                : null,
           ),
           child: Row(
             children: [
@@ -428,7 +439,7 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
                       style: TextStyle(
                         fontFamily: 'CircularStd',
                         fontSize: 13.sp,
-                        color: hasImage 
+                        color: hasImage
                             ? CustomColors.primaryColor
                             : CustomColors.blackColor.withValues(alpha: 0.6),
                       ),
@@ -457,113 +468,5 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
         ),
       ),
     );
-  }
-
-  Widget _buildProgressSummary(DriverDocumentsViewModel viewModel) {
-    final totalDocuments = 7; // Total number of required documents
-    final uploadedDocuments = _getUploadedDocumentsCount(viewModel);
-    final progress = uploadedDocuments / totalDocuments;
-
-    return Container(
-      padding: EdgeInsets.all(20.w),
-      decoration: BoxDecoration(
-        boxShadow: kElevationToShadow[9],
-        color: CustomColors.whiteColor,
-        borderRadius: BorderRadius.circular(20.r),
-        border: Border.all(
-          color: CustomColors.primaryColor.withValues(
-            alpha: 0.1,
-          ),
-          width: 1,
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(
-                Iconsax.chart_2,
-                color: CustomColors.primaryColor,
-                size: 24.sp,
-              ),
-              SizedBox(width: 12.w),
-              black18w500(data: 'Upload Progress'),
-            ],
-          ),
-          SizedBox(height: 8.h),
-          grey12(
-            data: '$uploadedDocuments of $totalDocuments documents uploaded',
-          ),
-          SizedBox(height: 20.h),
-          Row(
-            children: [
-              Expanded(
-                child: Container(
-                  height: 8.h,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(4.r),
-                    color: CustomColors.primaryColor.withValues(alpha: 0.2),
-                  ),
-                  child: FractionallySizedBox(
-                    alignment: Alignment.centerLeft,
-                    widthFactor: progress,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(4.r),
-                        color: CustomColors.primaryColor,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(width: 16.w),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
-                decoration: BoxDecoration(
-                  color: CustomColors.primaryColor,
-                  borderRadius: BorderRadius.circular(12.r),
-                ),
-                child: Text(
-                  '${(progress * 100).toInt()}%',
-                  style: TextStyle(
-                    fontFamily: 'CircularStd',
-                    fontSize: 12.sp,
-                    fontWeight: FontWeight.w600,
-                    color: CustomColors.whiteColor,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  int _getUploadedDocumentsCount(DriverDocumentsViewModel viewModel) {
-    final documentKeys = [
-      'driverLicenseFront',
-      'driverLicenseBack',
-      'drivingRecord',
-      'policeCheck',
-      'passport',
-      'vevoDetails',
-      'englishCertificate',
-    ];
-    
-    int count = 0;
-    for (String key in documentKeys) {
-      if (viewModel.hasDocumentImage(key)) {
-        count++;
-      }
-    }
-    
-    // Add identity verification if uploaded
-    if (viewModel.hasIdentityVerificationImage) {
-      count++;
-    }
-    
-    return count;
   }
 }

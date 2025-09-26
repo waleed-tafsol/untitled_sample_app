@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:untitled_sample_app/views/driver_screens/driver_documents_screen.dart';
-import 'package:untitled_sample_app/views/driver_screens/driver_registration_stepper_screen.dart';
+import 'package:untitled_sample_app/views/driver_screens/driver_stepper_screen.dart';
 import 'package:untitled_sample_app/views/login_screen.dart';
 import 'package:untitled_sample_app/views/otp_screen.dart';
 import 'package:untitled_sample_app/views/splash_screen.dart';
@@ -25,7 +25,7 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => const OtpScreen());
       case driverRegistrationStepperRoute:
         return MaterialPageRoute(
-          builder: (_) => const DriverRegistrationStepperScreen(),
+          builder: (_) => const DriverStepperScreen(),
         );
       case homeRoute:
         return MaterialPageRoute(builder: (_) => const UserHomeScreen());

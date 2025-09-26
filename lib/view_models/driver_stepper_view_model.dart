@@ -9,7 +9,7 @@ class StepData {
   StepData({required this.title, required this.subtitle, required this.icon});
 }
 
-class DriverRegistrationViewModel extends ChangeNotifier {
+class DriverStepperViewModel extends ChangeNotifier {
   final Map<int, GlobalKey<FormState>> _stepFormKeys = {};
 
   // Stepper state management

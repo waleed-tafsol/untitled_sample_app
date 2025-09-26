@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import '../../utils/custom_colors.dart';
 import '../../utils/custom_buttons.dart';
 import '../../view_models/driver_documents_view_model.dart';
-import '../../view_models/driver_registration_view_model.dart';
+import '../../view_models/driver_stepper_view_model.dart';
 import '../../view_models/driver_personal_info_view_model.dart';
 import '../../view_models/driver_shift_view_model.dart';
 import '../../view_models/driver_vehicle_view_model.dart';
@@ -17,15 +17,15 @@ import 'driver_stripe_kyc_screen.dart';
 import 'driver_shift_screen.dart';
 import 'driver_vehicle_screen.dart';
 
-class DriverRegistrationStepperScreen extends StatelessWidget {
-  const DriverRegistrationStepperScreen({super.key});
+class DriverStepperScreen extends StatelessWidget {
+  const DriverStepperScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (context) => DriverRegistrationViewModel(),
+          create: (context) => DriverStepperViewModel(),
         ),
         ChangeNotifierProvider(
           create: (context) => DriverPersonalInfoViewModel(),
@@ -34,7 +34,7 @@ class DriverRegistrationStepperScreen extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => DriverVehicleViewModel()),
         ChangeNotifierProvider(create: (context) => DriverShiftViewModel()),
       ],
-      child: Consumer<DriverRegistrationViewModel>(
+      child: Consumer<DriverStepperViewModel>(
         builder: (context, viewModel, child) {
           return Scaffold(
             backgroundColor: CustomColors.whiteColor,
@@ -59,7 +59,7 @@ class DriverRegistrationStepperScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildProgressIndicator(DriverRegistrationViewModel viewModel) {
+  Widget _buildProgressIndicator(DriverStepperViewModel viewModel) {
     return Container(
       padding: EdgeInsets.all(20.w),
       child: Column(
@@ -103,7 +103,7 @@ class DriverRegistrationStepperScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildPageView(DriverRegistrationViewModel viewModel) {
+  Widget _buildPageView(DriverStepperViewModel viewModel) {
     return PageView.builder(
       controller: viewModel.getPageController,
       physics: const NeverScrollableScrollPhysics(),
@@ -127,7 +127,7 @@ class DriverRegistrationStepperScreen extends StatelessWidget {
 
   Widget _buildNavigationButtons(
     BuildContext context,
-    DriverRegistrationViewModel viewModel,
+    DriverStepperViewModel viewModel,
   ) {
     final isFirstStep = viewModel.getCurrentStep == 0;
     final isLastStep =
@@ -214,7 +214,7 @@ class DriverRegistrationStepperScreen extends StatelessWidget {
 
   void _handleNextOrComplete(
     BuildContext context,
-    DriverRegistrationViewModel viewModel,
+    DriverStepperViewModel viewModel,
   ) {
     // Validate the current step's form
     bool isValid = _validateCurrentStep(context, viewModel.getCurrentStep);

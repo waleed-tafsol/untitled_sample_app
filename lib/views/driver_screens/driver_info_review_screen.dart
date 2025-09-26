@@ -8,7 +8,7 @@ import '../../utils/custom_buttons.dart';
 import '../../utils/custom_font_style.dart';
 import '../../utils/phone_formator.dart';
 import '../../view_models/auth_view_model.dart';
-import '../../view_models/driver_registration_view_model.dart';
+import '../../view_models/driver_stepper_view_model.dart';
 import '../../view_models/driver_personal_info_view_model.dart';
 import '../../view_models/driver_documents_view_model.dart';
 import '../../view_models/driver_shift_view_model.dart';
@@ -18,7 +18,7 @@ class DriverInfoReviewScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer4<DriverRegistrationViewModel, DriverPersonalInfoViewModel, DriverDocumentsViewModel, DriverShiftViewModel>(
+    return Consumer4<DriverStepperViewModel, DriverPersonalInfoViewModel, DriverDocumentsViewModel, DriverShiftViewModel>(
       builder: (context, viewModel, personalInfoViewModel, documentsViewModel, shiftViewModel, child) {
         return Form(
           key: viewModel.getFormKeyForStep(2),
@@ -513,7 +513,7 @@ class DriverInfoReviewScreen extends StatelessWidget {
 
   Widget _buildSubmitButton(
     BuildContext context,
-    DriverRegistrationViewModel viewModel,
+    DriverStepperViewModel viewModel,
     DriverDocumentsViewModel documentsViewModel,
     DriverShiftViewModel shiftViewModel,
   ) {

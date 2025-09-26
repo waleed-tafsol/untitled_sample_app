@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import '../../utils/custom_colors.dart';
 import '../../utils/custom_font_style.dart';
 import '../../utils/custom_buttons.dart';
-import '../../view_models/driver_registration_view_model.dart';
+import '../../view_models/driver_stepper_view_model.dart';
 
 class DriverStripeKycScreen extends StatefulWidget {
   const DriverStripeKycScreen({super.key});
@@ -20,7 +20,7 @@ class _DriverStripeKycScreenState extends State<DriverStripeKycScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<DriverRegistrationViewModel>(
+    return Consumer<DriverStepperViewModel>(
       builder: (context, viewModel, child) {
         return Form(
           key: viewModel.getFormKeyForStep(5),
@@ -32,15 +32,15 @@ class _DriverStripeKycScreenState extends State<DriverStripeKycScreen> {
                   // Header
                   _buildHeader(context),
                   SizedBox(height: 20.h),
-                  
+
                   // Stripe Connection Section
                   _buildStripeConnectionSection(context),
                   SizedBox(height: 20.h),
-                  
+
                   // Benefits Section
                   _buildBenefitsSection(context),
                   SizedBox(height: 20.h),
-                  
+
                   // Security Information
                   _buildSecurityInfo(context),
                 ],

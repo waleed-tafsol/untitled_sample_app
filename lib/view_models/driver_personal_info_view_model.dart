@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:untitled_sample_app/models/driver_personal_info_model.dart';
 import 'package:untitled_sample_app/models/responses/driver_personal_info_response.dart';
 import '../models/requests/driver_personal_info_request.dart';
 import '../services/driver_personal_info_service.dart';

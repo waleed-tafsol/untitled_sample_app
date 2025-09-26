@@ -4,7 +4,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
 import 'package:untitled_sample_app/utils/custom_colors.dart';
 import 'package:untitled_sample_app/view_models/auth_view_model.dart';
-import 'package:untitled_sample_app/view_models/driver_registration_view_model.dart';
+import 'package:untitled_sample_app/view_models/driver_stepper_view_model.dart';
 import 'package:untitled_sample_app/view_models/driver_personal_info_view_model.dart';
 import 'package:untitled_sample_app/view_models/driver_documents_view_model.dart';
 import 'package:untitled_sample_app/view_models/driver_vehicle_view_model.dart';

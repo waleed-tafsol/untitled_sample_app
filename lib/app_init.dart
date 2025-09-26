@@ -75,7 +75,7 @@ class AppInit extends StatelessWidget {
             ),
           ),
           debugShowCheckedModeBanner: false,
-          title: 'Captain Taxis',
+          title: 'sample app',
           navigatorObservers: [routeObserver],
           initialRoute: splashRoute,
           navigatorKey: navigatorKey,
