@@ -40,6 +40,12 @@ android {
             signingConfig = signingConfigs.getByName("debug")
         }
     }
+
+    // Suppress warnings from ML Kit plugins
+    lint {
+        disable += "UnsafeOptInUsageError"
+        checkReleaseBuilds = false
+    }
 }
 
 flutter {

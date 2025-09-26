@@ -2,7 +2,8 @@
 import 'package:flutter/widgets.dart';
 
 class CustomColors {
-  static const Color primaryColor = Color.fromRGBO(123, 76, 223, 1);
+  static const Color primaryColor = Color.fromRGBO(203, 150, 112, 1 );
+  //123, 76, 223, 1
 
   static const Color primaryColorTint = Color.fromRGBO(123, 76, 223, 0.5);
 
